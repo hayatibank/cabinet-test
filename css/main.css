@@ -1,0 +1,54 @@
+/* /webapp/css/main.css v1.7.0 */
+/* CHANGELOG v1.7.0:
+ * - ADDED: ../HayatiCoin/hayatiCoin.css
+ * CHANGELOG v1.6.0:
+ * - ADDED: ../auth/auth.css
+ * - REMOVED: ./screens/auth.css (moved to module)
+ * CHANGELOG v1.5.0:
+ * - ADDED: ../finStatement/financial-report.css
+ * - ADDED: ../offeringZone/offering-zone.css
+ * - REMOVED: ./screens/financial-report.css, ./screens/offering-zone.css (moved to modules)
+ * CHANGELOG v1.4.0:
+ * - ADDED: ../accountDashboard/dashboard.css (7-step navigation)
+ * - REMOVED: ./screens/dashboard.css (merged in module)
+ * CHANGELOG v1.3.0:
+ * - CHANGED: cabinet.css now imported from ../cabinet/cabinet.css (modular)
+ * - REMOVED: ./screens/cabinet.css, ./screens/create-account.css (merged in module)
+ * CHANGELOG v1.2.0:
+ * - CHANGED: 20L.css now imported from ../20L/20L.css (modular)
+ * CHANGELOG v1.1.1:
+ * - Added investments.css import
+ */
+
+@import "./base/reset.css";
+@import "./base/variables.css";
+@import "./base/typography.css";
+
+@import "./layout/body.css";
+@import "./layout/container.css";
+@import "./layout/visibility.css";
+
+@import "./effects/backgrounds.css";
+@import "./effects/animations.css";
+
+@import "./components/spinner.css";
+@import "./components/buttons.css";
+@import "./components/forms.css";
+@import "./components/cards.css";
+@import "./components/dropdown.css";
+@import "./components/modal.css";
+
+@import "./screens/loading.css";
+
+/* Modules (isolated) */
+@import "../auth/auth.css";                    /* Auth module (Login/Register/Reset/Logout/Delete) */
+@import "../cabinet/cabinet.css";              /* Cabinet module */
+@import "../accountDashboard/dashboard.css";   /* Account Dashboard (7 steps) */
+@import "../finStatement/financial-report.css"; /* Financial Statement module */
+@import "../offeringZone/offering-zone.css";   /* Offering Zone module */
+@import "../investments/investments.css";      /* Investment Level 1 module */
+@import "../businessTriangle/triangle.css";    /* Business Triangle module */
+@import "../20L/20L.css";                      /* 20L System module */
+@import "../HayatiCoin/hayatiCoin.css";        /* HayatiCoin (HYC) module */
+
+@import "./responsive.css";
