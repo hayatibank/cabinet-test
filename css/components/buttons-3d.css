@@ -1,48 +1,60 @@
-/* /webapp/css/components/buttons-3d.css v3.0.0 */
-/* CHANGELOG v3.0.0:
+/* /webapp/css/components/buttons-3d.css v1.0.0 */
+/* CHANGELOG v1.0.0:
  * - Initial release
- * - Futuristic 3D buttons with states
- * - Glass morphism + neon glows
- * - Loading/Success/Error animations
- * - Mobile-first responsive
+ * - 3D buttons with depth, glow, animations
+ * - Ferrari red, neon blue, neon green, glass variants
+ * - Small/default/large sizes
+ * - Loading/success/error states
+ * - Full-width option
+ * - Mobile-optimized (44px+ touch targets)
  */
 
 /* ==================== BASE 3D BUTTON ==================== */
 
 .btn-3d {
-  position: relative;
+  /* Layout */
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: var(--btn-gap, 12px);
   
-  height: var(--btn-height-medium);
-  padding: var(--btn-padding-medium);
+  /* Size */
+  min-height: 52px;
+  padding: var(--btn-padding-y, 14px) var(--btn-padding-x, 28px);
   
-  font-size: var(--btn-font-medium);
+  /* Typography */
+  font-size: var(--btn-font-size, 16px);
   font-weight: 700;
+  line-height: 1.2;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: white;
   
+  /* Appearance */
+  background: linear-gradient(135deg, var(--neon-blue) 0%, #0066cc 100%);
+  color: white;
   border: none;
-  border-radius: var(--btn-radius);
+  border-radius: var(--btn-border-radius, 12px);
   cursor: pointer;
   user-select: none;
   
-  background: linear-gradient(135deg, var(--btn-blue-from), var(--btn-blue-to));
-  box-shadow: var(--btn-shadow-default), var(--btn-glow-blue);
+  /* 3D Effects */
+  box-shadow: 
+    /* Depth shadow */
+    0 4px 0 rgba(0, 102, 204, 0.8),
+    /* Outer glow */
+    0 0 30px rgba(0, 240, 255, 0.4),
+    /* Inner highlight */
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
   
-  transition: var(--btn-transition);
-  transform-style: preserve-3d;
+  /* Transitions */
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Position for shine effect */
+  position: relative;
   overflow: hidden;
-  
-  /* Prevent double-tap zoom on mobile */
-  touch-action: manipulation;
 }
 
-/* ==================== SHINE EFFECT ==================== */
-
+/* Shine effect */
 .btn-3d::before {
   content: '';
   position: absolute;
@@ -57,206 +69,255 @@
     transparent 70%
   );
   transform: rotate(45deg);
-  animation: btn-shine 3s infinite;
-  pointer-events: none;
+  animation: shine 3s infinite;
 }
 
-@keyframes btn-shine {
-  0%, 100% { 
-    transform: translateX(-100%) translateY(-100%) rotate(45deg); 
-  }
-  50% { 
-    transform: translateX(100%) translateY(100%) rotate(45deg); 
-  }
+@keyframes shine {
+  0%, 100% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+  50% { transform: translateX(100%) translateY(100%) rotate(45deg); }
 }
 
-/* ==================== STATES ==================== */
-
-/* Hover */
+/* Hover state */
 .btn-3d:hover:not(:disabled) {
-  transform: translateY(-3px) scale(1.02);
-  box-shadow: var(--btn-shadow-hover), var(--btn-glow-blue);
+  transform: translateY(-2px);
+  box-shadow: 
+    0 6px 0 rgba(0, 102, 204, 0.8),
+    0 0 40px rgba(0, 240, 255, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
 }
 
-/* Focus (keyboard navigation) */
-.btn-3d:focus-visible {
-  outline: 2px solid var(--neon-blue);
-  outline-offset: 3px;
-}
-
-/* Active/Pressed */
+/* Active (pressed) state */
 .btn-3d:active:not(:disabled) {
-  transform: translateY(0) scale(0.98);
-  box-shadow: var(--btn-shadow-pressed);
-  transition: all 0.1s ease-out;
+  transform: translateY(2px);
+  box-shadow: 
+    0 2px 0 rgba(0, 102, 204, 0.8),
+    0 0 20px rgba(0, 240, 255, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
-/* Disabled */
+/* Focus state */
+.btn-3d:focus-visible {
+  outline: 3px solid rgba(0, 240, 255, 0.5);
+  outline-offset: 4px;
+}
+
+/* Disabled state */
 .btn-3d:disabled {
-  opacity: 0.4;
+  opacity: 0.5;
   cursor: not-allowed;
   transform: none !important;
-  filter: grayscale(50%);
+  box-shadow: 
+    0 4px 0 rgba(100, 116, 139, 0.3),
+    0 0 20px rgba(100, 116, 139, 0.2);
 }
 
-/* ==================== VARIANTS ==================== */
+/* ==================== FERRARI RED VARIANT ==================== */
 
-/* Ferrari Red (primary hero action) */
 .btn-3d-ferrari {
-  background: linear-gradient(135deg, var(--btn-ferrari-from), var(--btn-ferrari-to));
-  box-shadow: var(--btn-shadow-default), var(--btn-glow-red);
+  background: linear-gradient(135deg, var(--ferrari-red) 0%, var(--ferrari-red-dark) 100%);
+  
+  box-shadow: 
+    0 4px 0 #a00000,
+    0 0 30px rgba(220, 0, 0, 0.5),
+    0 0 60px rgba(255, 215, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.btn-3d-ferrari::before {
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(255, 215, 0, 0.3) 50%,
+    transparent 70%
+  );
 }
 
 .btn-3d-ferrari:hover:not(:disabled) {
-  box-shadow: var(--btn-shadow-hover), var(--btn-glow-red);
+  box-shadow: 
+    0 6px 0 #a00000,
+    0 0 40px rgba(220, 0, 0, 0.7),
+    0 0 80px rgba(255, 215, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
 }
 
-/* Neon Green (success) */
+.btn-3d-ferrari:active:not(:disabled) {
+  box-shadow: 
+    0 2px 0 #a00000,
+    0 0 20px rgba(220, 0, 0, 0.4),
+    0 0 40px rgba(255, 215, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* ==================== SUCCESS (GREEN) VARIANT ==================== */
+
 .btn-3d-success {
-  background: linear-gradient(135deg, var(--btn-green-from), var(--btn-green-to));
-  box-shadow: var(--btn-shadow-default), var(--btn-glow-green);
-  color: #0f172a;
+  background: linear-gradient(135deg, var(--neon-green) 0%, #00cc7f 100%);
+  
+  box-shadow: 
+    0 4px 0 #00994f,
+    0 0 30px rgba(0, 255, 159, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
 .btn-3d-success:hover:not(:disabled) {
-  box-shadow: var(--btn-shadow-hover), var(--btn-glow-green);
+  box-shadow: 
+    0 6px 0 #00994f,
+    0 0 40px rgba(0, 255, 159, 0.7),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
 }
 
-/* Glass Gray (cancel/secondary) */
+.btn-3d-success:active:not(:disabled) {
+  box-shadow: 
+    0 2px 0 #00994f,
+    0 0 20px rgba(0, 255, 159, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* ==================== GLASS VARIANT ==================== */
+
 .btn-3d-glass {
-  background: linear-gradient(135deg, var(--btn-gray-from), var(--btn-gray-to));
+  background: rgba(30, 41, 59, 0.6);
   backdrop-filter: blur(10px);
-  box-shadow: var(--btn-shadow-default);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  
+  box-shadow: 
+    0 4px 0 rgba(0, 0, 0, 0.3),
+    0 0 30px rgba(0, 240, 255, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 .btn-3d-glass:hover:not(:disabled) {
-  background: linear-gradient(135deg, rgba(120, 136, 159, 0.9), rgba(91, 105, 125, 0.9));
-  box-shadow: var(--btn-shadow-hover);
+  background: rgba(30, 41, 59, 0.8);
+  border-color: rgba(0, 240, 255, 0.5);
+  
+  box-shadow: 
+    0 6px 0 rgba(0, 0, 0, 0.3),
+    0 0 40px rgba(0, 240, 255, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.btn-3d-glass:active:not(:disabled) {
+  box-shadow: 
+    0 2px 0 rgba(0, 0, 0, 0.3),
+    0 0 20px rgba(0, 240, 255, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 /* ==================== SIZES ==================== */
 
 .btn-3d-small {
-  height: var(--btn-height-small);
-  padding: var(--btn-padding-small);
-  font-size: var(--btn-font-small);
+  min-height: 40px;
+  padding: 10px 20px;
+  font-size: 14px;
+  gap: 8px;
 }
 
 .btn-3d-large {
-  height: var(--btn-height-large);
-  padding: var(--btn-padding-large);
-  font-size: var(--btn-font-large);
-  border-radius: var(--btn-radius-large);
+  min-height: 64px;
+  padding: 18px 36px;
+  font-size: 18px;
+  gap: 14px;
 }
 
-/* ==================== LOADING STATE ==================== */
-
-.btn-3d-loading {
-  position: relative;
-  color: transparent !important;
-  pointer-events: none;
-}
-
-.btn-3d-loading::after {
-  content: '';
-  position: absolute;
-  width: var(--btn-loading-size);
-  height: var(--btn-loading-size);
-  border: var(--btn-loading-border) solid rgba(255, 255, 255, 0.2);
-  border-top-color: white;
-  border-radius: 50%;
-  animation: btn-loading-spin 0.8s linear infinite;
-}
-
-@keyframes btn-loading-spin {
-  to { transform: rotate(360deg); }
-}
-
-/* ==================== SUCCESS ANIMATION ==================== */
-
-.btn-3d-state-success {
-  background: linear-gradient(135deg, var(--btn-green-from), var(--btn-green-to)) !important;
-  box-shadow: var(--btn-shadow-default), var(--btn-glow-green) !important;
-  animation: btn-success-pulse 0.6s ease-out;
-}
-
-@keyframes btn-success-pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-}
-
-.btn-3d-state-success .btn-icon {
-  animation: btn-success-bounce 0.6s var(--btn-bounce);
-}
-
-@keyframes btn-success-bounce {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.3) rotate(10deg); }
-}
-
-/* ==================== ERROR ANIMATION ==================== */
-
-.btn-3d-state-error {
-  background: linear-gradient(135deg, #ef4444, #dc2626) !important;
-  box-shadow: var(--btn-shadow-default), 0 0 20px rgba(239, 68, 68, 0.6) !important;
-  animation: btn-error-shake 0.5s ease-out;
-}
-
-@keyframes btn-error-shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-10px); }
-  75% { transform: translateX(10px); }
-}
-
-/* ==================== ICON SUPPORT ==================== */
-
-.btn-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-  transition: transform 0.3s var(--btn-bounce);
-}
-
-.btn-3d:hover .btn-icon {
-  transform: translateX(4px);
-}
-
-.btn-icon-left {
-  order: -1;
-}
-
-.btn-3d:hover .btn-icon-left {
-  transform: translateX(-4px);
-}
-
-/* ==================== FULL WIDTH ==================== */
+/* ==================== MODIFIERS ==================== */
 
 .btn-3d-full {
   width: 100%;
 }
 
-/* ==================== BUTTON GROUP ==================== */
+/* ==================== ICONS ==================== */
 
-.btn-3d-group {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
+.btn-icon {
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
 }
 
-.btn-3d-group .btn-3d {
-  flex: 1;
-  min-width: 120px;
+.btn-icon-left {
+  margin-right: -4px;
+}
+
+/* ==================== STATES ==================== */
+
+/* Loading state */
+.btn-3d.loading {
+  pointer-events: none;
+}
+
+.btn-3d.loading .btn-icon,
+.btn-3d.loading span {
+  opacity: 0;
+}
+
+.btn-3d.loading::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  z-index: 2;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Success state */
+.btn-3d.success {
+  animation: btnBounce 0.5s ease-out;
+}
+
+@keyframes btnBounce {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+/* Error state */
+.btn-3d.error {
+  animation: btnShake 0.4s ease-in-out;
+}
+
+@keyframes btnShake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-10px); }
+  75% { transform: translateX(10px); }
+}
+
+/* ==================== RESPONSIVE ==================== */
+
+@media (max-width: 768px) {
+  .btn-3d {
+    min-height: 48px;
+    padding: 12px 24px;
+    font-size: 15px;
+  }
+  
+  .btn-3d-small {
+    min-height: 44px;
+    padding: 10px 18px;
+    font-size: 14px;
+  }
+  
+  .btn-3d-large {
+    min-height: 56px;
+    padding: 14px 28px;
+    font-size: 16px;
+  }
 }
 
 @media (max-width: 480px) {
-  .btn-3d-group {
-    flex-direction: column;
+  .btn-3d {
+    min-height: 44px;
+    padding: 10px 20px;
+    font-size: 14px;
   }
   
-  .btn-3d-group .btn-3d {
-    width: 100%;
+  .btn-3d-large {
+    min-height: 52px;
+    padding: 12px 24px;
+    font-size: 15px;
   }
 }
