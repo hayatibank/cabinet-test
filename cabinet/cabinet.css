@@ -1,5 +1,10 @@
-/* /webapp/cabinet/cabinet.css v1.0.0 */
-/* CHANGELOG v1.0.0:
+/* /webapp/cabinet/cabinet.css v2.0.0 */
+/* CHANGELOG v2.0.0:
+ * - UPDATED: Cabinet actions use new button system
+ * - REMOVED: width: 100% from buttons
+ * - ADDED: btn-group layout
+ * - Buttons now centered, not stretched
+ * CHANGELOG v1.0.0:
  * - Initial release
  * - Merged cabinet.css + create-account.css
  * - Isolated for Cabinet module
@@ -22,6 +27,7 @@
 .user-email {
   color: var(--text-muted);
   font-size: 14px;
+  margin-top: 8px;
 }
 
 .cabinet-content {
@@ -87,11 +93,32 @@
   gap: 12px;
 }
 
+/* ==================== CABINET ACTIONS (NEW) ==================== */
+
 .cabinet-actions {
   display: flex;
   flex-direction: column;
-  gap: 16px; /* 🔥 FIXED: равные отступы (было 12px) */
+  gap: 12px;
+  align-items: center;
   margin-top: 24px;
+}
+
+/* Primary action (Create Account) */
+.cabinet-actions .btn-create-account {
+  /* Uses btn-primary from buttons.css */
+  min-width: 200px;
+}
+
+/* Secondary actions group */
+.cabinet-actions-secondary {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.cabinet-actions-secondary .btn {
+  flex: 1;
 }
 
 /* ==================== CREATE ACCOUNT FORM ==================== */
@@ -206,14 +233,28 @@
   margin-bottom: 20px;
 }
 
+/* ==================== FORM ACTIONS (NEW) ==================== */
+
 .form-actions {
   display: flex;
   gap: 12px;
   margin-top: 24px;
+  justify-content: center;
 }
 
 .form-actions .btn {
-  flex: 1;
+  min-width: 140px;
+}
+
+/* On mobile - stack vertically */
+@media (max-width: 480px) {
+  .form-actions {
+    flex-direction: column;
+  }
+  
+  .form-actions .btn {
+    width: 100%;
+  }
 }
 
 /* ==================== RESPONSIVE ==================== */
@@ -225,6 +266,11 @@
   
   .type-cards {
     grid-template-columns: 1fr;
+  }
+  
+  .cabinet-actions-secondary {
+    flex-direction: column;
+    max-width: 100%;
   }
 }
 
@@ -239,5 +285,14 @@
   
   .account-form {
     padding: 16px;
+  }
+  
+  .cabinet-actions {
+    width: 100%;
+  }
+  
+  .cabinet-actions .btn-create-account {
+    width: 100%;
+    max-width: none;
   }
 }
