@@ -25,7 +25,7 @@ const translations = {
     'auth.register.passwordPlaceholder': 'Минимум 6 символов',
     'auth.register.passwordConfirm': 'Подтвердите пароль',
     'auth.register.passwordConfirmPlaceholder': '••••••••',
-    'auth.register.submit': '+ Создать аккаунт',
+    'auth.register.submit': 'Зарегистрировать Hayati 🆔',
     'auth.register.haveAccount': 'Уже есть аккаунт?',
     'auth.register.login': 'Войти',
     
@@ -101,7 +101,7 @@ const translations = {
     'auth.register.passwordPlaceholder': 'Minimum 6 characters',
     'auth.register.passwordConfirm': 'Confirm Password',
     'auth.register.passwordConfirmPlaceholder': '••••••••',
-    'auth.register.submit': '+ Create Account',
+    'auth.register.submit': 'Register Hayati 🆔',
     'auth.register.haveAccount': 'Already have an account?',
     'auth.register.login': 'Sign In',
     
