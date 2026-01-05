@@ -1,9 +1,8 @@
-/* /webapp/css/components/buttons-3d.css v2.0.0 */
-/* CHANGELOG v2.0.0:
- * - FIXED: Compact button size (52px → 48px height)
- * - FIXED: Larger icons (20px → 24px)
- * - FIXED: Better spacing
- * - REMOVED: btn-3d-large (was too big)
+/* /webapp/css/components/buttons-3d.css v3.0.0 */
+/* CHANGELOG v3.0.0:
+ * - FIXED: Centered auth buttons (margin: 0 auto)
+ * - FIXED: 1.5x smaller: 48px → 40px height, 280px → 220px width
+ * - Icons: 24px → 20px
  */
 
 /* ==================== BASE 3D BUTTON ==================== */
@@ -171,10 +170,20 @@
   gap: 8px;
 }
 
+/* 🆕 FIXED: Auth button - CENTERED & COMPACT */
 .btn-3d-compact {
-  /* Default compact size for auth forms */
-  min-width: 280px;
-  max-width: 400px;
+  /* 🔥 1.5x smaller dimensions */
+  min-width: 220px;
+  max-width: 280px;
+  min-height: 40px;
+  padding: 10px 18px;
+  font-size: 15px;
+  gap: 8px;
+  
+  /* 🔥 CENTERED - key fix! */
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
 }
 
 .btn-3d-full {
@@ -184,8 +193,8 @@
 /* ==================== ICONS ==================== */
 
 .btn-icon {
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   flex-shrink: 0;
 }
 
@@ -195,11 +204,11 @@
 }
 
 .btn-icon-left {
-  margin-right: -6px;
+  margin-right: -4px;
 }
 
 .btn-icon-right {
-  margin-left: -6px;
+  margin-left: -4px;
 }
 
 /* ==================== STATES ==================== */
@@ -217,8 +226,8 @@
 .btn-3d.loading::after {
   content: '';
   position: absolute;
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   border: 3px solid rgba(255, 255, 255, 0.3);
   border-top-color: white;
   border-radius: 50%;
