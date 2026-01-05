@@ -1,205 +1,164 @@
-/* /webapp/css/components/buttons-3d.css v1.0.0 */
-/* CHANGELOG v1.0.0:
- * - Initial release
- * - 3D buttons with depth, glow, animations
- * - Ferrari red, neon blue, neon green, glass variants
- * - Small/default/large sizes
- * - Loading/success/error states
- * - Full-width option
- * - Mobile-optimized (44px+ touch targets)
+/* /webapp/css/components/buttons-3d.css v2.0.0 */
+/* CHANGELOG v2.0.0:
+ * - FIXED: Compact button size (52px → 48px height)
+ * - FIXED: Larger icons (20px → 24px)
+ * - FIXED: Better spacing
+ * - REMOVED: btn-3d-large (was too big)
  */
 
 /* ==================== BASE 3D BUTTON ==================== */
 
 .btn-3d {
+  /* Size */
+  min-height: 48px;
+  padding: 12px 24px;
+  
   /* Layout */
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--btn-gap, 12px);
-  
-  /* Size */
-  min-height: 52px;
-  padding: var(--btn-padding-y, 14px) var(--btn-padding-x, 28px);
+  gap: 10px;
   
   /* Typography */
-  font-size: var(--btn-font-size, 16px);
-  font-weight: 700;
-  line-height: 1.2;
+  font-size: 16px;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  white-space: nowrap;
   
-  /* Appearance */
-  background: linear-gradient(135deg, var(--neon-blue) 0%, #0066cc 100%);
+  /* Base style */
+  background: linear-gradient(135deg, var(--neon-blue) 0%, #0080ff 100%);
   color: white;
   border: none;
-  border-radius: var(--btn-border-radius, 12px);
+  border-radius: 8px;
   cursor: pointer;
-  user-select: none;
   
-  /* 3D Effects */
+  /* 3D Effect */
   box-shadow: 
-    /* Depth shadow */
-    0 4px 0 rgba(0, 102, 204, 0.8),
-    /* Outer glow */
-    0 0 30px rgba(0, 240, 255, 0.4),
-    /* Inner highlight */
-    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    0 4px 0 0 #005bb5,
+    0 8px 16px rgba(0, 128, 255, 0.3),
+    0 0 30px rgba(0, 240, 255, 0.2),
+    inset 0 2px 0 rgba(255, 255, 255, 0.3);
   
-  /* Transitions */
+  /* Interaction */
   transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-  
-  /* Position for shine effect */
   position: relative;
   overflow: hidden;
 }
 
-/* Shine effect */
-.btn-3d::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(
-    45deg,
-    transparent 30%,
-    rgba(255, 255, 255, 0.15) 50%,
-    transparent 70%
-  );
-  transform: rotate(45deg);
-  animation: shine 3s infinite;
-}
-
-@keyframes shine {
-  0%, 100% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-  50% { transform: translateX(100%) translateY(100%) rotate(45deg); }
-}
-
-/* Hover state */
-.btn-3d:hover:not(:disabled) {
+.btn-3d:hover {
   transform: translateY(-2px);
   box-shadow: 
-    0 6px 0 rgba(0, 102, 204, 0.8),
-    0 0 40px rgba(0, 240, 255, 0.6),
-    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    0 6px 0 0 #005bb5,
+    0 12px 24px rgba(0, 128, 255, 0.4),
+    0 0 40px rgba(0, 240, 255, 0.3),
+    inset 0 2px 0 rgba(255, 255, 255, 0.4);
 }
 
-/* Active (pressed) state */
-.btn-3d:active:not(:disabled) {
+.btn-3d:active {
   transform: translateY(2px);
   box-shadow: 
-    0 2px 0 rgba(0, 102, 204, 0.8),
-    0 0 20px rgba(0, 240, 255, 0.3),
+    0 2px 0 0 #005bb5,
+    0 4px 8px rgba(0, 128, 255, 0.2),
+    0 0 20px rgba(0, 240, 255, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
-/* Focus state */
-.btn-3d:focus-visible {
-  outline: 3px solid rgba(0, 240, 255, 0.5);
-  outline-offset: 4px;
-}
-
-/* Disabled state */
 .btn-3d:disabled {
-  opacity: 0.5;
+  opacity: 0.6;
   cursor: not-allowed;
   transform: none !important;
   box-shadow: 
-    0 4px 0 rgba(100, 116, 139, 0.3),
-    0 0 20px rgba(100, 116, 139, 0.2);
+    0 4px 0 0 rgba(0, 91, 181, 0.5),
+    0 8px 16px rgba(0, 128, 255, 0.2);
 }
 
-/* ==================== FERRARI RED VARIANT ==================== */
+/* ==================== FERRARI VARIANT ==================== */
 
 .btn-3d-ferrari {
   background: linear-gradient(135deg, var(--ferrari-red) 0%, var(--ferrari-red-dark) 100%);
   
   box-shadow: 
-    0 4px 0 #a00000,
-    0 0 30px rgba(220, 0, 0, 0.5),
-    0 0 60px rgba(255, 215, 0, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    0 4px 0 0 #7a0000,
+    0 8px 16px rgba(220, 0, 0, 0.4),
+    0 0 30px rgba(255, 215, 0, 0.2),
+    inset 0 2px 0 rgba(255, 255, 255, 0.3);
 }
 
-.btn-3d-ferrari::before {
-  background: linear-gradient(
-    45deg,
-    transparent 30%,
-    rgba(255, 215, 0, 0.3) 50%,
-    transparent 70%
-  );
-}
-
-.btn-3d-ferrari:hover:not(:disabled) {
+.btn-3d-ferrari:hover {
   box-shadow: 
-    0 6px 0 #a00000,
-    0 0 40px rgba(220, 0, 0, 0.7),
-    0 0 80px rgba(255, 215, 0, 0.5),
-    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    0 6px 0 0 #7a0000,
+    0 12px 24px rgba(220, 0, 0, 0.5),
+    0 0 40px rgba(255, 215, 0, 0.3),
+    inset 0 2px 0 rgba(255, 255, 255, 0.4);
 }
 
-.btn-3d-ferrari:active:not(:disabled) {
+.btn-3d-ferrari:active {
   box-shadow: 
-    0 2px 0 #a00000,
-    0 0 20px rgba(220, 0, 0, 0.4),
-    0 0 40px rgba(255, 215, 0, 0.2),
+    0 2px 0 0 #7a0000,
+    0 4px 8px rgba(220, 0, 0, 0.3),
+    0 0 20px rgba(255, 215, 0, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
-/* ==================== SUCCESS (GREEN) VARIANT ==================== */
+/* ==================== SUCCESS VARIANT ==================== */
 
 .btn-3d-success {
   background: linear-gradient(135deg, var(--neon-green) 0%, #00cc7f 100%);
   
   box-shadow: 
-    0 4px 0 #00994f,
-    0 0 30px rgba(0, 255, 159, 0.5),
-    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    0 4px 0 0 #00804f,
+    0 8px 16px rgba(0, 255, 159, 0.3),
+    0 0 30px rgba(0, 255, 159, 0.2),
+    inset 0 2px 0 rgba(255, 255, 255, 0.3);
 }
 
-.btn-3d-success:hover:not(:disabled) {
+.btn-3d-success:hover {
   box-shadow: 
-    0 6px 0 #00994f,
-    0 0 40px rgba(0, 255, 159, 0.7),
-    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    0 6px 0 0 #00804f,
+    0 12px 24px rgba(0, 255, 159, 0.4),
+    0 0 40px rgba(0, 255, 159, 0.3),
+    inset 0 2px 0 rgba(255, 255, 255, 0.4);
 }
 
-.btn-3d-success:active:not(:disabled) {
+.btn-3d-success:active {
   box-shadow: 
-    0 2px 0 #00994f,
-    0 0 20px rgba(0, 255, 159, 0.4),
+    0 2px 0 0 #00804f,
+    0 4px 8px rgba(0, 255, 159, 0.2),
+    0 0 20px rgba(0, 255, 159, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 /* ==================== GLASS VARIANT ==================== */
 
 .btn-3d-glass {
-  background: rgba(30, 41, 59, 0.6);
+  background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(0, 240, 255, 0.3);
   
   box-shadow: 
-    0 4px 0 rgba(0, 0, 0, 0.3),
-    0 0 30px rgba(0, 240, 255, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    0 4px 0 0 rgba(0, 240, 255, 0.2),
+    0 8px 16px rgba(0, 0, 0, 0.3),
+    0 0 30px rgba(0, 240, 255, 0.1),
+    inset 0 2px 0 rgba(255, 255, 255, 0.1);
 }
 
-.btn-3d-glass:hover:not(:disabled) {
-  background: rgba(30, 41, 59, 0.8);
+.btn-3d-glass:hover {
+  background: rgba(255, 255, 255, 0.08);
   border-color: rgba(0, 240, 255, 0.5);
   
   box-shadow: 
-    0 6px 0 rgba(0, 0, 0, 0.3),
-    0 0 40px rgba(0, 240, 255, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    0 6px 0 0 rgba(0, 240, 255, 0.3),
+    0 12px 24px rgba(0, 0, 0, 0.4),
+    0 0 40px rgba(0, 240, 255, 0.2),
+    inset 0 2px 0 rgba(255, 255, 255, 0.15);
 }
 
-.btn-3d-glass:active:not(:disabled) {
+.btn-3d-glass:active {
   box-shadow: 
-    0 2px 0 rgba(0, 0, 0, 0.3),
-    0 0 20px rgba(0, 240, 255, 0.2),
+    0 2px 0 0 rgba(0, 240, 255, 0.2),
+    0 4px 8px rgba(0, 0, 0, 0.2),
+    0 0 20px rgba(0, 240, 255, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
@@ -207,19 +166,16 @@
 
 .btn-3d-small {
   min-height: 40px;
-  padding: 10px 20px;
+  padding: 10px 16px;
   font-size: 14px;
   gap: 8px;
 }
 
-.btn-3d-large {
-  min-height: 64px;
-  padding: 18px 36px;
-  font-size: 18px;
-  gap: 14px;
+.btn-3d-compact {
+  /* Default compact size for auth forms */
+  min-width: 280px;
+  max-width: 400px;
 }
-
-/* ==================== MODIFIERS ==================== */
 
 .btn-3d-full {
   width: 100%;
@@ -228,23 +184,32 @@
 /* ==================== ICONS ==================== */
 
 .btn-icon {
+  width: 24px;
+  height: 24px;
   flex-shrink: 0;
-  position: relative;
-  z-index: 1;
+}
+
+.btn-3d-small .btn-icon {
+  width: 18px;
+  height: 18px;
 }
 
 .btn-icon-left {
-  margin-right: -4px;
+  margin-right: -6px;
+}
+
+.btn-icon-right {
+  margin-left: -6px;
 }
 
 /* ==================== STATES ==================== */
 
-/* Loading state */
+/* Loading State */
 .btn-3d.loading {
   pointer-events: none;
+  position: relative;
 }
 
-.btn-3d.loading .btn-icon,
 .btn-3d.loading span {
   opacity: 0;
 }
@@ -252,72 +217,91 @@
 .btn-3d.loading::after {
   content: '';
   position: absolute;
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
   border: 3px solid rgba(255, 255, 255, 0.3);
   border-top-color: white;
   border-radius: 50%;
-  animation: spin 0.6s linear infinite;
-  z-index: 2;
+  animation: btn-spin 0.8s linear infinite;
 }
 
-@keyframes spin {
+/* Success State */
+.btn-3d.success {
+  animation: btn-bounce 0.5s ease-out;
+}
+
+/* Error State */
+.btn-3d.error {
+  animation: btn-shake 0.4s ease-in-out;
+}
+
+/* ==================== ANIMATIONS ==================== */
+
+@keyframes btn-spin {
   to { transform: rotate(360deg); }
 }
 
-/* Success state */
-.btn-3d.success {
-  animation: btnBounce 0.5s ease-out;
-}
-
-@keyframes btnBounce {
+@keyframes btn-bounce {
   0%, 100% { transform: scale(1); }
   50% { transform: scale(1.05); }
 }
 
-/* Error state */
-.btn-3d.error {
-  animation: btnShake 0.4s ease-in-out;
+@keyframes btn-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-8px); }
+  75% { transform: translateX(8px); }
 }
 
-@keyframes btnShake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-10px); }
-  75% { transform: translateX(10px); }
+/* ==================== SHINE EFFECT ==================== */
+
+.btn-3d::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(255, 255, 255, 0.2), 
+    transparent
+  );
+  transition: left 0.5s;
+}
+
+.btn-3d:hover::before {
+  left: 100%;
 }
 
 /* ==================== RESPONSIVE ==================== */
 
 @media (max-width: 768px) {
   .btn-3d {
-    min-height: 48px;
-    padding: 12px 24px;
+    min-height: 44px;
+    padding: 10px 20px;
     font-size: 15px;
   }
   
-  .btn-3d-small {
-    min-height: 44px;
-    padding: 10px 18px;
-    font-size: 14px;
+  .btn-3d-compact {
+    min-width: 100%;
+    max-width: 100%;
   }
   
-  .btn-3d-large {
-    min-height: 56px;
-    padding: 14px 28px;
-    font-size: 16px;
+  .btn-icon {
+    width: 20px;
+    height: 20px;
   }
 }
 
 @media (max-width: 480px) {
   .btn-3d {
     min-height: 44px;
-    padding: 10px 20px;
+    padding: 10px 16px;
     font-size: 14px;
   }
   
-  .btn-3d-large {
-    min-height: 52px;
-    padding: 12px 24px;
-    font-size: 15px;
+  .btn-icon {
+    width: 18px;
+    height: 18px;
   }
 }

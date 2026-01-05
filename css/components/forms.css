@@ -1,3 +1,11 @@
+/* /webapp/css/components/forms.css v2.0.0 */
+/* CHANGELOG v2.0.0:
+ * - FIXED: Darker input fields (cyberpunk)
+ * - ADDED: Password toggle button
+ * - FIXED: Compact form width (max 500px)
+ * - IMPROVED: Better focus states
+ */
+
 .input-group {
   margin-bottom: 20px;
 }
@@ -13,19 +21,81 @@
 .input-group input {
   width: 100%;
   padding: 12px 16px;
-  background: var(--bg);
+  
+  /* 🆕 FIXED: Darker background (cyberpunk) */
+  background: rgba(15, 23, 42, 0.8);
   border: 1px solid var(--border);
   border-radius: 8px;
+  
+  /* 🆕 FIXED: Lighter text (was too dark) */
   color: var(--text);
   font-size: 16px;
+  
   transition: all 0.2s;
 }
 
 .input-group input:focus {
   outline: none;
+  background: rgba(15, 23, 42, 0.9);
   border-color: var(--neon-blue);
-  box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.1),
-              0 0 20px rgba(0, 240, 255, 0.3);
+  box-shadow: 
+    0 0 0 3px rgba(0, 240, 255, 0.1),
+    0 0 20px rgba(0, 240, 255, 0.3);
+}
+
+.input-group input::placeholder {
+  color: rgba(148, 163, 184, 0.5);
+}
+
+/* 🆕 NEW: Password Input Wrapper */
+.password-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-input-wrapper input {
+  padding-right: 48px;
+}
+
+.btn-toggle-password {
+  position: absolute;
+  right: 8px;
+  width: 36px;
+  height: 36px;
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  background: none;
+  border: none;
+  border-radius: 6px;
+  
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-toggle-password:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text);
+}
+
+.btn-toggle-password svg {
+  width: 20px;
+  height: 20px;
+}
+
+.btn-toggle-password .eye-off-icon.hidden,
+.btn-toggle-password .eye-icon.hidden {
+  display: none;
+}
+
+/* 🆕 FIXED: Compact form width */
+.form-card {
+  max-width: 500px;
+  margin: 0 auto;
 }
 
 .form-label {
@@ -35,6 +105,7 @@
   color: var(--text-muted);
 }
 
+/* Account Type Selector */
 .account-type-selector {
   margin-bottom: 32px;
 }
@@ -124,8 +195,10 @@
 
 .form-actions {
   display: flex;
+  flex-direction: column;
   gap: 12px;
   margin-top: 24px;
+  align-items: center;
 }
 
 .form-actions .btn {
