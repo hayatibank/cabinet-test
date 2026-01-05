@@ -1,14 +1,10 @@
-// webapp/cabinet/createAccount.js v1.4.1
+// webapp/cabinet/createAccount.js v1.5.0
+// CHANGELOG v1.5.0:
+// - UPGRADED: All buttons to 3D system
+// - Ferrari "Создать аккаунт" button
+// - Glass "Отмена" button
 // CHANGELOG v1.4.1:
-// - CHANGED: Silent rewards (no modal, no notification)
-// - KEEP: Auto-refresh HYC balance (user sees updated number)
-// CHANGELOG v1.4.0:
-// - ADDED: HYC reward notification after account creation
-// - ADDED: Auto-refresh HYC balance display
-// CHANGELOG v1.3.0:
-// - MOVED: From /js/cabinet/ to /cabinet/ (modular)
-// - TODO: Add i18n integration (next version)
-// Create account form and logic
+// - Silent HYC rewards
 
 import { createAccount } from './accounts.js';
 import { renderAccountsList } from './accountsUI.js';
@@ -75,11 +71,20 @@ export function showCreateAccountForm() {
         </div>
         
         <div class="form-actions">
-          <button id="createIndividualBtn" class="btn btn-primary">
-            Создать аккаунт
+          <!-- 🆕 NEW: 3D Ferrari Button -->
+          <button id="createIndividualBtn" class="btn-3d btn-3d-ferrari btn-3d-large">
+            <svg class="btn-icon btn-icon-left" width="24" height="24" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M10 0c5.5 0 10 4.5 10 10s-4.5 10-10 10S0 15.5 0 10 4.5 0 10 0zm1 5H9v4H5v2h4v4h2v-4h4V9h-4V5z"/>
+            </svg>
+            <span>Создать аккаунт</span>
           </button>
-          <button id="cancelBtn" class="btn btn-secondary">
-            Отмена
+          
+          <!-- 🆕 NEW: 3D Glass Button -->
+          <button id="cancelBtn" class="btn-3d btn-3d-glass">
+            <svg class="btn-icon btn-icon-left" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M10 0l10 10-10 10-2-2 6-6H0V8h14l-6-6 2-2z"/>
+            </svg>
+            <span>Отмена</span>
           </button>
         </div>
         
@@ -98,12 +103,11 @@ export function showCreateAccountForm() {
     </div>
   `;
   
-  // Attach event listeners
   attachFormListeners();
 }
 
 /**
- * Attach event listeners to form
+ * Attach form event listeners
  */
 function attachFormListeners() {
   // Type selector
@@ -127,13 +131,11 @@ function attachFormListeners() {
  * Select account type
  */
 function selectAccountType(type) {
-  // Update active type card
   document.querySelectorAll('.type-card').forEach(card => {
     card.classList.remove('active');
   });
   document.querySelector(`[data-type="${type}"]`)?.classList.add('active');
   
-  // Show appropriate form
   document.querySelectorAll('.account-form').forEach(form => {
     form.classList.add('hidden');
   });
@@ -141,7 +143,7 @@ function selectAccountType(type) {
 }
 
 /**
- * Handle create individual account
+ * Handle create individual account (with 3D loading state)
  */
 async function handleCreateIndividual() {
   try {
@@ -149,21 +151,19 @@ async function handleCreateIndividual() {
     const lastName = document.getElementById('lastName')?.value.trim();
     const birthDate = document.getElementById('birthDate')?.value;
     
-    // Clear errors
     document.getElementById('createError')?.classList.add('hidden');
     
-    // Validate
     if (!firstName || !lastName) {
       showError('Заполните имя и фамилию');
       return;
     }
     
-    // Disable button
     const btn = document.getElementById('createIndividualBtn');
-    btn.disabled = true;
-    btn.textContent = 'Создание...';
     
-    // Create account
+    // 🆕 NEW: 3D Loading State
+    btn.disabled = true;
+    btn.classList.add('loading');
+    
     const account = await createAccount('individual', {
       firstName,
       lastName,
@@ -172,27 +172,35 @@ async function handleCreateIndividual() {
     
     console.log('✅ Individual account created:', account.accountId);
     
-    // 🔇 SILENT: Just refresh balance (no notification)
+    // 🆕 NEW: 3D Success State
+    btn.classList.remove('loading');
+    btn.classList.add('success');
+    
+    // Silent HYC reward
     if (account.hycReward) {
       await refreshHYCBalance();
       console.log(`🔇 Silent reward: ${formatHYC(account.hycReward.amount)} HYC`);
     }
     
-    // Simple success
-    alert('✅ Аккаунт успешно создан!');
-    
-    // Reload accounts list
-    await renderAccountsList();
+    setTimeout(async () => {
+      alert('✅ Аккаунт успешно создан!');
+      await renderAccountsList();
+    }, 500);
     
   } catch (err) {
     console.error('❌ Error creating individual account:', err);
     
-    // Re-enable button
     const btn = document.getElementById('createIndividualBtn');
-    btn.disabled = false;
-    btn.textContent = 'Создать аккаунт';
     
-    // Show error
+    // 🆕 NEW: 3D Error State
+    btn.classList.remove('loading');
+    btn.classList.add('error');
+    
+    setTimeout(() => {
+      btn.disabled = false;
+      btn.classList.remove('error');
+    }, 400);
+    
     showError(err.message || 'Ошибка создания аккаунта');
   }
 }

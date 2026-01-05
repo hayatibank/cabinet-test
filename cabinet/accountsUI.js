@@ -1,19 +1,10 @@
-/* /webapp/cabinet/accountsUI.js v1.5.0 */
+/* /webapp/cabinet/accountsUI.js v1.6.0 */
+// CHANGELOG v1.6.0:
+// - UPGRADED: All buttons to 3D system
+// - Ferrari "Войти" button on account cards
+// - Glass "Создать аккаунт" button
 // CHANGELOG v1.5.0:
 // - REMOVED: RUB balance from account cards
-// - Account cards now show only name and type
-// CHANGELOG v1.4.0:
-// - ADDED: Event listener for 'cabinetReady' event from ui.js
-// - FIXED: No longer relies on ui.js to auto-initialize
-// CHANGELOG v1.3.1:
-// - FIXED: Import accountNavigation from ../accountDashboard/ (modular)
-// CHANGELOG v1.3.0:
-// - Added three-dot menu for account actions
-// - Added "Edit" option (UI only, no backend yet)
-// - Moved "Delete" to dropdown menu
-// - Added Ferrari-style "Enter" button for accounts
-// - Improved card layout and responsiveness
-// UI rendering for accounts list and management
 
 import { getUserAccounts, deleteAccount } from './accounts.js';
 import { showCreateAccountForm } from './createAccount.js';
@@ -25,10 +16,7 @@ export async function renderAccountsList() {
   try {
     console.log('📋 Loading accounts...');
     
-    // Get accounts
     const accounts = await getUserAccounts();
-    
-    // Get container
     const container = document.querySelector('.cabinet-content');
     
     if (!container) {
@@ -36,7 +24,6 @@ export async function renderAccountsList() {
       return;
     }
     
-    // Render
     if (accounts.length === 0) {
       container.innerHTML = `
         <div class="no-accounts">
@@ -51,7 +38,6 @@ export async function renderAccountsList() {
         </div>
       `;
       
-      // Attach event listeners
       attachAccountListeners();
     }
     
@@ -65,8 +51,11 @@ export async function renderAccountsList() {
       container.innerHTML = `
         <div class="error-message">
           <p>❌ Ошибка загрузки аккаунтов</p>
-          <button onclick="location.reload()" class="btn btn-secondary">
-            Обновить
+          <button onclick="location.reload()" class="btn-3d btn-3d-small">
+            <svg class="btn-icon btn-icon-left" width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M10 2c4.4 0 8 3.6 8 8s-3.6 8-8 8-8-3.6-8-8h2c0 3.3 2.7 6 6 6s6-2.7 6-6-2.7-6-6-6V0L4 5l6 5V6z"/>
+            </svg>
+            <span>Обновить</span>
           </button>
         </div>
       `;
@@ -75,12 +64,11 @@ export async function renderAccountsList() {
 }
 
 /**
- * Render single account card (WITHOUT BALANCE)
+ * Render single account card (3D Ferrari button)
  */
 function renderAccountCard(account) {
   const { accountId, type, profile } = account;
   
-  // Type labels
   const typeLabels = {
     individual: '👤 Физическое лицо',
     business: '🏢 Юридическое лицо',
@@ -89,7 +77,6 @@ function renderAccountCard(account) {
   
   const typeLabel = typeLabels[type] || 'Аккаунт';
   
-  // Profile name
   let profileName = 'Без имени';
   if (type === 'individual' && profile) {
     profileName = `${profile.firstName || ''} ${profile.lastName || ''}`.trim();
@@ -114,14 +101,13 @@ function renderAccountCard(account) {
           <div class="dropdown-menu" id="menu-${accountId}">
             <button class="dropdown-item" data-action="edit" data-account-id="${accountId}">
               <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
+                <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10z"/>
               </svg>
               Редактировать
             </button>
             <button class="dropdown-item dropdown-item-danger" data-action="delete" data-account-id="${accountId}">
               <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
-                <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5z"/>
               </svg>
               Удалить
             </button>
@@ -134,12 +120,12 @@ function renderAccountCard(account) {
       </div>
       
       <div class="account-actions">
-        <button class="btn btn-enter ferrari-style" data-action="enter" data-account-id="${accountId}">
-          <span class="btn-shine"></span>
-          <span class="btn-text">Войти</span>
-          <svg class="btn-arrow" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+        <!-- 🆕 NEW: 3D Ferrari Button -->
+        <button class="btn-3d btn-3d-ferrari btn-3d-full" data-action="enter" data-account-id="${accountId}">
+          <svg class="btn-icon btn-icon-left" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
             <path d="M10 0l10 10-10 10-2-2 6-6H0V8h14l-6-6 2-2z"/>
           </svg>
+          <span>Войти</span>
         </button>
       </div>
     </div>
@@ -147,7 +133,7 @@ function renderAccountCard(account) {
 }
 
 /**
- * Attach event listeners to account cards
+ * Attach event listeners
  */
 function attachAccountListeners() {
   // Menu toggle
@@ -157,7 +143,6 @@ function attachAccountListeners() {
       const accountId = btn.dataset.accountId;
       const menu = document.getElementById(`menu-${accountId}`);
       
-      // Close all other menus
       document.querySelectorAll('.dropdown-menu').forEach(m => {
         if (m.id !== `menu-${accountId}`) {
           m.classList.remove('show');
@@ -168,7 +153,7 @@ function attachAccountListeners() {
     });
   });
   
-  // Edit account (placeholder)
+  // Edit account
   document.querySelectorAll('[data-action="edit"]').forEach(btn => {
     btn.addEventListener('click', (e) => {
       const accountId = btn.dataset.accountId;
@@ -203,7 +188,7 @@ function attachAccountListeners() {
 }
 
 /**
- * Handle account edit (placeholder)
+ * Handle account edit
  */
 function handleEditAccount(accountId) {
   alert('🚧 Редактирование аккаунта будет доступно в следующей версии');
@@ -221,17 +206,13 @@ async function handleDeleteAccount(accountId) {
       'Это действие нельзя отменить.'
     );
     
-    if (!confirmed) {
-      return;
-    }
+    if (!confirmed) return;
     
     console.log(`🗑️ Deleting account: ${accountId}`);
     
     await deleteAccount(accountId);
     
     alert('✅ Аккаунт успешно удалён');
-    
-    // Reload accounts list
     await renderAccountsList();
     
   } catch (err) {
@@ -241,12 +222,11 @@ async function handleDeleteAccount(accountId) {
 }
 
 /**
- * Handle entering account (navigate to account dashboard)
+ * Handle entering account
  */
 function handleEnterAccount(accountId) {
   console.log(`🚀 Entering account: ${accountId}`);
   
-  // Import and show account navigation
   import('../accountDashboard/accountNavigation.js').then(module => {
     module.showAccountDashboard(accountId);
   }).catch(err => {
@@ -256,7 +236,7 @@ function handleEnterAccount(accountId) {
 }
 
 /**
- * Show create account button
+ * Show create account button (3D Glass)
  */
 export function showCreateAccountButton() {
   const actionsContainer = document.querySelector('.cabinet-actions');
@@ -266,18 +246,21 @@ export function showCreateAccountButton() {
     return;
   }
   
-  // Check if button already exists
   if (actionsContainer.querySelector('.btn-create-account')) {
     return;
   }
   
-  // Add create account button
+  // 🆕 NEW: 3D Glass Button
   const createBtn = document.createElement('button');
-  createBtn.className = 'btn btn-primary btn-create-account';
-  createBtn.textContent = '➕ Создать аккаунт';
+  createBtn.className = 'btn-3d btn-3d-glass btn-3d-full btn-create-account';
   createBtn.onclick = showCreateAccountForm;
+  createBtn.innerHTML = `
+    <svg class="btn-icon btn-icon-left" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+      <path d="M10 0c5.5 0 10 4.5 10 10s-4.5 10-10 10S0 15.5 0 10 4.5 0 10 0zm1 5H9v4H5v2h4v4h2v-4h4V9h-4V5z"/>
+    </svg>
+    <span>Создать аккаунт</span>
+  `;
   
-  // Insert before logout button
   const logoutBtn = actionsContainer.querySelector('[onclick="logout()"]');
   if (logoutBtn) {
     actionsContainer.insertBefore(createBtn, logoutBtn);
@@ -288,13 +271,11 @@ export function showCreateAccountButton() {
 
 /**
  * Initialize cabinet when ready
- * Listens to 'cabinetReady' event from ui.js
  */
 if (typeof window !== 'undefined') {
   window.addEventListener('cabinetReady', async (event) => {
     console.log('📋 Cabinet ready event received:', event.detail);
     
-    // Initialize cabinet UI
     showCreateAccountButton();
     await renderAccountsList();
   });
