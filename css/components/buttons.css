@@ -1,12 +1,11 @@
-/* /webapp/css/components/buttons.css v2.0.0 */
-/* CHANGELOG v2.0.0:
- * - REVOLUTIONARY: Complete button system redesign
- * - Ferrari/Cyberpunk aesthetic with halaal principles
- * - Unified hierarchy: Primary > Secondary > Ghost > Danger
- * - Removed width: 100% (buttons are content-sized by default)
- * - Added hover/active states with neon glow
- * - Added size variants: large, medium, small, icon
- * - Added button groups and layouts
+/* /webapp/css/components/buttons.css v3.0.0 */
+/* CHANGELOG v3.0.0:
+ * - UNIFIED: Single cyberpunk gradient style (blue → pink)
+ * - REMOVED: Ferrari red (too many colors)
+ * - SIMPLIFIED: 3 types only: Primary (gradient), Secondary (outline), Ghost (minimal)
+ * - Holographic shimmer effect on all buttons
+ * - Consistent neon glow
+ * - Desktop: horizontal layout, Mobile: vertical
  */
 
 /* ==================== BASE BUTTON ==================== */
@@ -25,7 +24,7 @@
   /* Typography */
   font-size: 15px;
   font-weight: 600;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.5px;
   text-transform: none;
   white-space: nowrap;
   
@@ -55,53 +54,59 @@
   transform: scale(0.97);
 }
 
-/* ==================== PRIMARY (Ferrari Red) ==================== */
-
-.btn-primary {
-  background: linear-gradient(135deg, var(--ferrari-red) 0%, var(--ferrari-red-dark) 100%);
-  color: white;
-  box-shadow: 
-    0 4px 15px rgba(220, 0, 0, 0.4),
-    0 0 30px rgba(255, 215, 0, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
-}
-
-.btn-primary::before {
+/* Holographic shimmer effect (all buttons) */
+.btn::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, 
-    transparent, 
-    rgba(255, 255, 255, 0.3), 
-    transparent
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 70%
   );
-  transition: left 0.5s;
+  transform: rotate(45deg);
+  animation: shimmer 3s infinite;
+  pointer-events: none;
+}
+
+@keyframes shimmer {
+  0%, 100% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+  50% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+}
+
+/* ==================== PRIMARY (Cyberpunk Gradient) ==================== */
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--neon-blue) 0%, var(--neon-pink) 100%);
+  color: white;
+  box-shadow: 
+    0 4px 15px rgba(0, 240, 255, 0.4),
+    0 0 30px rgba(255, 0, 110, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .btn-primary:hover:not(:disabled) {
-  transform: translateY(-2px) scale(1.02);
+  background: linear-gradient(135deg, var(--neon-pink) 0%, var(--neon-blue) 100%);
+  transform: translateY(-2px);
   box-shadow: 
-    0 6px 20px rgba(220, 0, 0, 0.6),
-    0 0 40px rgba(255, 215, 0, 0.4),
+    0 6px 20px rgba(0, 240, 255, 0.6),
+    0 0 40px rgba(255, 0, 110, 0.6),
     inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
-.btn-primary:hover:not(:disabled)::before {
-  left: 100%;
-}
-
-/* ==================== SECONDARY (Neon Blue Outline) ==================== */
+/* ==================== SECONDARY (Neon Outline with Gradient) ==================== */
 
 .btn-secondary {
   background: rgba(0, 240, 255, 0.05);
-  border: 2px solid var(--neon-blue);
+  border: 2px solid transparent;
+  background-clip: padding-box;
   color: var(--neon-blue);
-  box-shadow: 
-    0 0 15px rgba(0, 240, 255, 0.2),
-    inset 0 0 20px rgba(0, 240, 255, 0.05);
+  position: relative;
 }
 
 .btn-secondary::after {
@@ -114,26 +119,20 @@
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
-  opacity: 0;
-  transition: opacity 0.3s;
+  z-index: -1;
 }
 
 .btn-secondary:hover:not(:disabled) {
   background: rgba(0, 240, 255, 0.1);
-  border-color: var(--neon-pink);
   color: var(--neon-pink);
   box-shadow: 
     0 0 25px rgba(0, 240, 255, 0.4),
-    0 4px 12px rgba(0, 240, 255, 0.2),
+    0 4px 12px rgba(255, 0, 110, 0.3),
     inset 0 0 30px rgba(0, 240, 255, 0.1);
   transform: translateY(-2px);
 }
 
-.btn-secondary:hover:not(:disabled)::after {
-  opacity: 1;
-}
-
-/* ==================== GHOST (Transparent) ==================== */
+/* ==================== GHOST (Minimal Transparent) ==================== */
 
 .btn-ghost {
   background: transparent;
@@ -141,27 +140,43 @@
   color: var(--text-muted);
 }
 
+.btn-ghost::before {
+  display: none; /* No shimmer on ghost */
+}
+
 .btn-ghost:hover:not(:disabled) {
   background: rgba(255, 255, 255, 0.05);
   border-color: rgba(0, 240, 255, 0.3);
   color: var(--text);
   box-shadow: 0 0 20px rgba(0, 240, 255, 0.1);
+  transform: translateY(-1px);
 }
 
-/* ==================== DANGER (Red Outline) ==================== */
+/* ==================== DANGER (Red Gradient - for destructive only) ==================== */
 
 .btn-danger {
   background: rgba(220, 38, 38, 0.05);
-  border: 2px solid var(--danger);
+  border: 2px solid transparent;
+  background-clip: padding-box;
   color: var(--danger);
-  box-shadow: 
-    0 0 15px rgba(220, 38, 38, 0.2),
-    inset 0 0 20px rgba(220, 38, 38, 0.05);
+  position: relative;
+}
+
+.btn-danger::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 2px;
+  background: linear-gradient(135deg, #dc2626, #ef4444);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  z-index: -1;
 }
 
 .btn-danger:hover:not(:disabled) {
   background: rgba(220, 38, 38, 0.1);
-  border-color: #ef4444;
   color: #ef4444;
   box-shadow: 
     0 0 25px rgba(220, 38, 38, 0.4),
@@ -244,10 +259,10 @@
   justify-content: flex-start;
 }
 
-/* ==================== SPECIAL: Ferrari Enter Button ==================== */
+/* ==================== SPECIAL: Enter Account Button ==================== */
 
-.btn-ferrari {
-  background: linear-gradient(135deg, var(--ferrari-red) 0%, var(--ferrari-red-dark) 100%);
+.btn-enter {
+  background: linear-gradient(135deg, var(--neon-blue) 0%, var(--neon-pink) 100%);
   color: white;
   font-weight: 700;
   text-transform: uppercase;
@@ -255,43 +270,26 @@
   padding: 14px 28px;
   border-radius: 12px;
   box-shadow: 
-    0 4px 15px rgba(220, 0, 0, 0.4),
-    0 0 30px rgba(255, 215, 0, 0.2),
+    0 4px 15px rgba(0, 240, 255, 0.4),
+    0 0 30px rgba(255, 0, 110, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.btn-ferrari::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, 
-    transparent, 
-    rgba(255, 255, 255, 0.3), 
-    transparent
-  );
-  transition: left 0.5s;
-}
-
-.btn-ferrari:hover:not(:disabled) {
+.btn-enter:hover:not(:disabled) {
+  background: linear-gradient(135deg, var(--neon-pink) 0%, var(--neon-blue) 100%);
   transform: translateY(-2px) scale(1.02);
   box-shadow: 
-    0 6px 20px rgba(220, 0, 0, 0.6),
-    0 0 40px rgba(255, 215, 0, 0.4),
+    0 6px 20px rgba(0, 240, 255, 0.6),
+    0 0 40px rgba(255, 0, 110, 0.6),
     inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
-.btn-ferrari:hover:not(:disabled)::before {
-  left: 100%;
-}
-
-.btn-ferrari .btn-arrow {
+.btn-enter .btn-arrow {
   transition: transform 0.3s;
 }
 
-.btn-ferrari:hover:not(:disabled) .btn-arrow {
+.btn-enter:hover:not(:disabled) .btn-arrow {
   transform: translateX(4px);
 }
 
@@ -348,39 +346,41 @@
   border-top-color: white;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
+  z-index: 10;
 }
-
-/* ==================== ANIMATIONS ==================== */
 
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
 
-@keyframes pulse-glow {
-  0%, 100% {
-    box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
-  }
-  50% {
-    box-shadow: 0 0 40px rgba(0, 240, 255, 0.6);
-  }
-}
-
 /* ==================== LEGACY SUPPORT ==================== */
 
-/* Old classes - mapped to new system */
-.btn-enter {
-  /* Mapped to btn-ferrari */
-  background: linear-gradient(135deg, var(--ferrari-red) 0%, var(--ferrari-red-dark) 100%);
+/* Map old Ferrari classes to new gradient style */
+.btn-ferrari,
+.ferrari-style {
+  background: linear-gradient(135deg, var(--neon-blue) 0%, var(--neon-pink) 100%);
   color: white;
   font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 
+    0 4px 15px rgba(0, 240, 255, 0.4),
+    0 0 30px rgba(255, 0, 110, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.ferrari-style {
-  /* Alias for btn-ferrari */
+.btn-ferrari:hover:not(:disabled),
+.ferrari-style:hover:not(:disabled) {
+  background: linear-gradient(135deg, var(--neon-pink) 0%, var(--neon-blue) 100%);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 
+    0 6px 20px rgba(0, 240, 255, 0.6),
+    0 0 40px rgba(255, 0, 110, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
 .btn-back {
-  /* Mapped to btn-ghost */
   display: inline-flex;
   align-items: center;
   gap: 8px;

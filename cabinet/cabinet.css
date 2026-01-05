@@ -98,27 +98,32 @@
 .cabinet-actions {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
   align-items: center;
   margin-top: 24px;
 }
 
-/* Primary action (Create Account) */
-.cabinet-actions .btn-create-account {
-  /* Uses btn-primary from buttons.css */
-  min-width: 200px;
+/* Desktop: horizontal layout */
+@media (min-width: 769px) {
+  .cabinet-actions {
+    flex-direction: row;
+    justify-content: center;
+  }
+  
+  .cabinet-actions .btn {
+    min-width: 160px;
+  }
 }
 
-/* Secondary actions group */
-.cabinet-actions-secondary {
-  display: flex;
-  gap: 12px;
-  width: 100%;
-  max-width: 400px;
-}
-
-.cabinet-actions-secondary .btn {
-  flex: 1;
+/* Mobile: vertical layout (default) */
+@media (max-width: 768px) {
+  .cabinet-actions {
+    width: 100%;
+  }
+  
+  .cabinet-actions .btn {
+    width: 100%;
+  }
 }
 
 /* ==================== CREATE ACCOUNT FORM ==================== */
@@ -267,11 +272,6 @@
   .type-cards {
     grid-template-columns: 1fr;
   }
-  
-  .cabinet-actions-secondary {
-    flex-direction: column;
-    max-width: 100%;
-  }
 }
 
 @media (max-width: 480px) {
@@ -285,14 +285,5 @@
   
   .account-form {
     padding: 16px;
-  }
-  
-  .cabinet-actions {
-    width: 100%;
-  }
-  
-  .cabinet-actions .btn-create-account {
-    width: 100%;
-    max-width: none;
   }
 }

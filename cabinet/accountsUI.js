@@ -140,8 +140,8 @@ function renderAccountCard(account) {
       </div>
       
       <div class="account-actions">
-        <button class="btn btn-ferrari" data-action="enter" data-account-id="${accountId}">
-          <span class="btn-text">Войти</span>
+        <button class="btn btn-enter" data-action="enter" data-account-id="${accountId}">
+          <span class="btn-text">ВОЙТИ</span>
           <svg class="btn-arrow" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
             <path d="M10 0l10 10-10 10-2-2 6-6H0V8h14l-6-6 2-2z"/>
           </svg>
@@ -261,7 +261,7 @@ function handleEnterAccount(accountId) {
 }
 
 /**
- * Show create account button (NEW: uses btn-primary)
+ * Show create account button (NEW: unified cyberpunk style, horizontal on desktop)
  */
 export function showCreateAccountButton() {
   const actionsContainer = document.querySelector('.cabinet-actions');
@@ -271,24 +271,22 @@ export function showCreateAccountButton() {
     return;
   }
   
-  // Check if button already exists
+  // Check if already initialized
   if (actionsContainer.querySelector('.btn-create-account')) {
     return;
   }
   
-  // Clear and rebuild
+  // Horizontal layout: [Создать] [Настройки] [Выйти]
   actionsContainer.innerHTML = `
     <button class="btn btn-primary btn-create-account">
       ➕ Создать аккаунт
     </button>
-    <div class="cabinet-actions-secondary">
-      <button onclick="logout()" class="btn btn-ghost">
-        🚪 Выйти
-      </button>
-      <button onclick="showProfileMenu()" class="btn btn-secondary">
-        ⚙️ Настройки
-      </button>
-    </div>
+    <button onclick="showProfileMenu()" class="btn btn-secondary">
+      ⚙️ Настройки
+    </button>
+    <button onclick="logout()" class="btn btn-ghost">
+      🚪 Выйти
+    </button>
   `;
   
   // Attach create account listener
