@@ -1,46 +1,83 @@
- /* /webapp/HayatiCoin/hayatiCoin.css v1.2.0 */
-/* CHANGELOG v1.2.0:
- * - CHANGED: Color to match RUB balance (neon-green #00ff9f)
- * - ADDED: Same glow effect as RUB balance
- * CHANGELOG v1.1.0:
- * - IMPROVED: Brighter gradient (purple/violet like in screenshot)
- * - ADDED: Text shadow for glow effect
- * - INCREASED: Font size to 20px
- * CHANGELOG v1.0.0:
- * - Initial release
- * - Minimal gradient styling for HYC balance
+/* /webapp/HayatiCoin/hayatiCoin.css v2.0.0 */
+/* CHANGELOG v2.0.0:
+ * - ADDED: .hyc-logo styles for official logo image
+ * - CHANGED: Icon size to fit logo (was 24px, now 28px)
  */
 
+/* ==================== HYC BALANCE DISPLAY ==================== */
+
 .hyc-balance {
-  font-size: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 16px;
+  margin: 12px auto 0;
+  
+  background: rgba(0, 255, 159, 0.1);
+  border: 1px solid rgba(0, 255, 159, 0.3);
+  border-radius: 20px;
+  
+  max-width: fit-content;
+  
+  transition: all 0.2s;
+}
+
+.hyc-balance:hover {
+  background: rgba(0, 255, 159, 0.15);
+  border-color: rgba(0, 255, 159, 0.5);
+  box-shadow: 0 0 20px rgba(0, 255, 159, 0.2);
+}
+
+/* 🆕 NEW: Official HYC logo image */
+.hyc-logo {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  flex-shrink: 0;
+  
+  /* Smooth loading */
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.hyc-amount {
+  font-size: 16px;
   font-weight: 700;
-  color: #00ff9f;
+  color: var(--neon-green);
   text-shadow: 0 0 10px rgba(0, 255, 159, 0.5);
-  margin: 8px 0;
-  text-align: center;
-  letter-spacing: 0.5px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
-/*
-.hyc-balance {
-  font-size: 20px;
-  font-weight: 700;
-  background: linear-gradient(135deg, #9333EA 0%, #EC4899 50%, #F59E0B 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  margin: 8px 0;
-  text-align: center;
-  text-shadow: 0 0 20px rgba(147, 51, 234, 0.5);
-  letter-spacing: 0.5px;
-}
+/* ==================== RESPONSIVE ==================== */
 
-Dark theme support
-@media (prefers-color-scheme: dark) {
+@media (max-width: 768px) {
   .hyc-balance {
-    background: linear-gradient(135deg, #A855F7 0%, #EC4899 50%, #FBBF24 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    padding: 6px 12px;
+  }
+  
+  .hyc-logo {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .hyc-amount {
+    font-size: 14px;
   }
 }
-*/
+
+@media (max-width: 480px) {
+  .hyc-logo {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .hyc-amount {
+    font-size: 13px;
+  }
+}

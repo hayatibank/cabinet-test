@@ -1,76 +1,71 @@
-/* /webapp/HayatiCoin/hycUI.js v1.1.0 */
-// CHANGELOG v1.1.0:
-// - ADDED: Auto-refresh after claim/reward
-// - IMPROVED: Brighter gradient styling (like in screenshot)
-// - ADDED: refreshHYCBalance() for external calls
+/* /webapp/HayatiCoin/hycUI.js v2.0.0 */
+// CHANGELOG v2.0.0:
+// - CHANGED: Diamond icon → HYC official logo (logo2.png)
 // CHANGELOG v1.0.0:
 // - Initial release
 // - Render HYC balance in cabinet header
-// - Minimal gradient styling
-
-import { formatHYC, getHYCBalance } from './hycService.js';
-import { t } from './i18n.js';
 
 /**
  * Render HYC balance in cabinet header
+ * @param {number} balance - HYC balance
  */
 export function renderHYCBalance(balance) {
-  const userEmailEl = document.querySelector('.user-email');
-  
-  if (!userEmailEl) {
-    console.warn('⚠️ [HYC] User email element not found');
-    return;
-  }
-  
-  // Check if HYC balance already exists
-  let hycEl = document.querySelector('.hyc-balance');
-  
-  if (!hycEl) {
-    // Create element
-    hycEl = document.createElement('p');
-    hycEl.className = 'hyc-balance';
+  try {
+    const header = document.querySelector('.cabinet-header');
     
-    // Insert after user email
-    userEmailEl.parentNode.insertBefore(hycEl, userEmailEl.nextSibling);
+    if (!header) {
+      console.warn('⚠️ [HYC UI] Cabinet header not found');
+      return;
+    }
+    
+    // Check if already rendered
+    let balanceEl = header.querySelector('.hyc-balance');
+    
+    if (!balanceEl) {
+      // Create balance element
+      balanceEl = document.createElement('div');
+      balanceEl.className = 'hyc-balance';
+      header.appendChild(balanceEl);
+    }
+    
+    // Format balance (max 4 decimals)
+    const formatted = Number(balance).toFixed(4).replace(/\.?0+$/, '');
+    
+    // 🆕 CHANGED: Use official HYC logo instead of diamond
+    balanceEl.innerHTML = `
+      <img 
+        src="https://hayati-coin.github.io/website/logo2.png" 
+        alt="HYC" 
+        class="hyc-logo"
+        onerror="this.style.display='none'"
+      />
+      <span class="hyc-amount">${formatted} HYC</span>
+    `;
+    
+    console.log('✅ [HYC] Balance rendered:', formatted);
+    
+  } catch (err) {
+    console.error('❌ [HYC UI] Error rendering balance:', err);
   }
-  
-  // Update balance with diamond icon
-  hycEl.innerHTML = `💎 ${formatHYC(balance)} HYC`;
-  
-  console.log('✅ [HYC] Balance rendered:', formatHYC(balance));
 }
 
 /**
- * Refresh HYC balance from server
- * @returns {Promise<number|null>} - New balance or null
+ * Refresh HYC balance display
  */
 export async function refreshHYCBalance() {
   try {
-    console.log('🔄 [HYC] Refreshing balance...');
+    const { getHYCBalance } = await import('./hycService.js');
     
-    const hycData = await getHYCBalance();
+    const result = await getHYCBalance();
     
-    if (hycData && hycData.success) {
-      renderHYCBalance(hycData.balance);
-      console.log('✅ [HYC] Balance refreshed:', hycData.balance);
-      return hycData.balance;
+    if (result && result.success) {
+      renderHYCBalance(result.balance);
+      console.log('✅ [HYC] Balance refreshed:', result.balance);
+    } else {
+      console.warn('⚠️ [HYC] Failed to refresh balance');
     }
     
-    return null;
   } catch (err) {
-    console.error('❌ [HYC] Error refreshing balance:', err);
-    return null;
+    console.error('❌ [HYC UI] Error refreshing balance:', err);
   }
-}
-
-/**
- * Update HYC balance (silent)
- */
-export async function updateHYCBalance(newBalance) {
-  renderHYCBalance(newBalance);
-}
-
-// Expose refreshHYCBalance globally for easy access
-if (typeof window !== 'undefined') {
-  window.refreshHYCBalance = refreshHYCBalance;
 }
