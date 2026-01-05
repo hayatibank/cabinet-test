@@ -1,0 +1,262 @@
+/* /webapp/css/components/buttons-3d.css v3.0.0 */
+/* CHANGELOG v3.0.0:
+ * - Initial release
+ * - Futuristic 3D buttons with states
+ * - Glass morphism + neon glows
+ * - Loading/Success/Error animations
+ * - Mobile-first responsive
+ */
+
+/* ==================== BASE 3D BUTTON ==================== */
+
+.btn-3d {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  
+  height: var(--btn-height-medium);
+  padding: var(--btn-padding-medium);
+  
+  font-size: var(--btn-font-medium);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: white;
+  
+  border: none;
+  border-radius: var(--btn-radius);
+  cursor: pointer;
+  user-select: none;
+  
+  background: linear-gradient(135deg, var(--btn-blue-from), var(--btn-blue-to));
+  box-shadow: var(--btn-shadow-default), var(--btn-glow-blue);
+  
+  transition: var(--btn-transition);
+  transform-style: preserve-3d;
+  overflow: hidden;
+  
+  /* Prevent double-tap zoom on mobile */
+  touch-action: manipulation;
+}
+
+/* ==================== SHINE EFFECT ==================== */
+
+.btn-3d::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.15) 50%,
+    transparent 70%
+  );
+  transform: rotate(45deg);
+  animation: btn-shine 3s infinite;
+  pointer-events: none;
+}
+
+@keyframes btn-shine {
+  0%, 100% { 
+    transform: translateX(-100%) translateY(-100%) rotate(45deg); 
+  }
+  50% { 
+    transform: translateX(100%) translateY(100%) rotate(45deg); 
+  }
+}
+
+/* ==================== STATES ==================== */
+
+/* Hover */
+.btn-3d:hover:not(:disabled) {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: var(--btn-shadow-hover), var(--btn-glow-blue);
+}
+
+/* Focus (keyboard navigation) */
+.btn-3d:focus-visible {
+  outline: 2px solid var(--neon-blue);
+  outline-offset: 3px;
+}
+
+/* Active/Pressed */
+.btn-3d:active:not(:disabled) {
+  transform: translateY(0) scale(0.98);
+  box-shadow: var(--btn-shadow-pressed);
+  transition: all 0.1s ease-out;
+}
+
+/* Disabled */
+.btn-3d:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none !important;
+  filter: grayscale(50%);
+}
+
+/* ==================== VARIANTS ==================== */
+
+/* Ferrari Red (primary hero action) */
+.btn-3d-ferrari {
+  background: linear-gradient(135deg, var(--btn-ferrari-from), var(--btn-ferrari-to));
+  box-shadow: var(--btn-shadow-default), var(--btn-glow-red);
+}
+
+.btn-3d-ferrari:hover:not(:disabled) {
+  box-shadow: var(--btn-shadow-hover), var(--btn-glow-red);
+}
+
+/* Neon Green (success) */
+.btn-3d-success {
+  background: linear-gradient(135deg, var(--btn-green-from), var(--btn-green-to));
+  box-shadow: var(--btn-shadow-default), var(--btn-glow-green);
+  color: #0f172a;
+}
+
+.btn-3d-success:hover:not(:disabled) {
+  box-shadow: var(--btn-shadow-hover), var(--btn-glow-green);
+}
+
+/* Glass Gray (cancel/secondary) */
+.btn-3d-glass {
+  background: linear-gradient(135deg, var(--btn-gray-from), var(--btn-gray-to));
+  backdrop-filter: blur(10px);
+  box-shadow: var(--btn-shadow-default);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.btn-3d-glass:hover:not(:disabled) {
+  background: linear-gradient(135deg, rgba(120, 136, 159, 0.9), rgba(91, 105, 125, 0.9));
+  box-shadow: var(--btn-shadow-hover);
+}
+
+/* ==================== SIZES ==================== */
+
+.btn-3d-small {
+  height: var(--btn-height-small);
+  padding: var(--btn-padding-small);
+  font-size: var(--btn-font-small);
+}
+
+.btn-3d-large {
+  height: var(--btn-height-large);
+  padding: var(--btn-padding-large);
+  font-size: var(--btn-font-large);
+  border-radius: var(--btn-radius-large);
+}
+
+/* ==================== LOADING STATE ==================== */
+
+.btn-3d-loading {
+  position: relative;
+  color: transparent !important;
+  pointer-events: none;
+}
+
+.btn-3d-loading::after {
+  content: '';
+  position: absolute;
+  width: var(--btn-loading-size);
+  height: var(--btn-loading-size);
+  border: var(--btn-loading-border) solid rgba(255, 255, 255, 0.2);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: btn-loading-spin 0.8s linear infinite;
+}
+
+@keyframes btn-loading-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ==================== SUCCESS ANIMATION ==================== */
+
+.btn-3d-state-success {
+  background: linear-gradient(135deg, var(--btn-green-from), var(--btn-green-to)) !important;
+  box-shadow: var(--btn-shadow-default), var(--btn-glow-green) !important;
+  animation: btn-success-pulse 0.6s ease-out;
+}
+
+@keyframes btn-success-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.btn-3d-state-success .btn-icon {
+  animation: btn-success-bounce 0.6s var(--btn-bounce);
+}
+
+@keyframes btn-success-bounce {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.3) rotate(10deg); }
+}
+
+/* ==================== ERROR ANIMATION ==================== */
+
+.btn-3d-state-error {
+  background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+  box-shadow: var(--btn-shadow-default), 0 0 20px rgba(239, 68, 68, 0.6) !important;
+  animation: btn-error-shake 0.5s ease-out;
+}
+
+@keyframes btn-error-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-10px); }
+  75% { transform: translateX(10px); }
+}
+
+/* ==================== ICON SUPPORT ==================== */
+
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  transition: transform 0.3s var(--btn-bounce);
+}
+
+.btn-3d:hover .btn-icon {
+  transform: translateX(4px);
+}
+
+.btn-icon-left {
+  order: -1;
+}
+
+.btn-3d:hover .btn-icon-left {
+  transform: translateX(-4px);
+}
+
+/* ==================== FULL WIDTH ==================== */
+
+.btn-3d-full {
+  width: 100%;
+}
+
+/* ==================== BUTTON GROUP ==================== */
+
+.btn-3d-group {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btn-3d-group .btn-3d {
+  flex: 1;
+  min-width: 120px;
+}
+
+@media (max-width: 480px) {
+  .btn-3d-group {
+    flex-direction: column;
+  }
+  
+  .btn-3d-group .btn-3d {
+    width: 100%;
+  }
+}

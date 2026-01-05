@@ -1,0 +1,118 @@
+/* /webapp/css/base/buttons-3d-variables.css v3.0.0 */
+/* CHANGELOG v3.0.0:
+ * - Initial release
+ * - 3D button system variables
+ * - Cyberpunk 2050 design
+ * - Responsive sizes (mobile/desktop)
+ */
+
+:root {
+  /* ==================== SIZES ==================== */
+  --btn-height-small: 40px;      /* Mobile primary */
+  --btn-height-medium: 52px;     /* Desktop primary */
+  --btn-height-large: 64px;      /* Hero buttons */
+  
+  --btn-padding-small: 12px 20px;
+  --btn-padding-medium: 14px 28px;
+  --btn-padding-large: 18px 36px;
+  
+  --btn-font-small: 14px;
+  --btn-font-medium: 16px;
+  --btn-font-large: 18px;
+  
+  --btn-radius: 12px;            /* Modern rounded */
+  --btn-radius-large: 16px;      /* Hero buttons */
+  
+  /* ==================== 3D EFFECTS ==================== */
+  
+  /* Depth shadows */
+  --btn-shadow-default: 
+    0 4px 12px rgba(0, 0, 0, 0.3),
+    0 2px 4px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  
+  --btn-shadow-hover: 
+    0 6px 20px rgba(0, 0, 0, 0.4),
+    0 3px 8px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  
+  --btn-shadow-pressed: 
+    0 2px 6px rgba(0, 0, 0, 0.4),
+    inset 0 2px 4px rgba(0, 0, 0, 0.3);
+  
+  /* Neon glows */
+  --btn-glow-blue: 
+    0 0 20px rgba(0, 240, 255, 0.4),
+    0 0 40px rgba(0, 240, 255, 0.2);
+  
+  --btn-glow-red: 
+    0 0 20px rgba(220, 0, 0, 0.5),
+    0 0 40px rgba(255, 215, 0, 0.3);
+  
+  --btn-glow-green: 
+    0 0 20px rgba(0, 255, 159, 0.5),
+    0 0 40px rgba(0, 255, 159, 0.2);
+  
+  --btn-glow-gold: 
+    0 0 20px rgba(255, 215, 0, 0.5),
+    0 0 40px rgba(255, 215, 0, 0.3);
+  
+  /* ==================== COLORS ==================== */
+  
+  /* Ferrari Red (primary action) */
+  --btn-ferrari-from: #dc0000;
+  --btn-ferrari-to: #a00000;
+  --btn-ferrari-glow: rgba(220, 0, 0, 0.6);
+  
+  /* Neon Blue (secondary action) */
+  --btn-blue-from: #0ea5e9;
+  --btn-blue-to: #0284c7;
+  --btn-blue-glow: rgba(14, 165, 233, 0.6);
+  
+  /* Neon Green (success) */
+  --btn-green-from: #00ff9f;
+  --btn-green-to: #00cc7f;
+  --btn-green-glow: rgba(0, 255, 159, 0.6);
+  
+  /* Gray Glass (cancel/secondary) */
+  --btn-gray-from: rgba(100, 116, 139, 0.8);
+  --btn-gray-to: rgba(71, 85, 105, 0.8);
+  
+  /* Gold Accent */
+  --btn-gold: #ffd700;
+  --btn-gold-glow: rgba(255, 215, 0, 0.6);
+  
+  /* ==================== ANIMATIONS ==================== */
+  --btn-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --btn-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  
+  /* ==================== LOADING ==================== */
+  --btn-loading-size: 20px;
+  --btn-loading-border: 3px;
+}
+
+/* ==================== RESPONSIVE OVERRIDES ==================== */
+
+/* Tablet and below */
+@media (max-width: 768px) {
+  :root {
+    --btn-height-medium: 48px;
+    --btn-height-large: 56px;
+    --btn-font-medium: 15px;
+    --btn-font-large: 17px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  :root {
+    --btn-height-small: 44px;     /* Bigger touch targets */
+    --btn-height-medium: 48px;
+    --btn-height-large: 52px;
+    --btn-font-small: 14px;
+    --btn-font-medium: 15px;
+    --btn-font-large: 16px;
+    --btn-padding-small: 12px 16px;
+    --btn-padding-medium: 14px 20px;
+  }
+}
