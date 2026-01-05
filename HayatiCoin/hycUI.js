@@ -34,7 +34,7 @@ export function renderHYCBalance(balance) {
     // 🆕 CHANGED: Use official HYC logo instead of diamond
     balanceEl.innerHTML = `
       <img 
-        src="https://hayati-coin.github.io/website/logo2.png" 
+        src="https://hayati-coin.github.io/website/logo3.png" 
         alt="HYC" 
         class="hyc-logo"
         onerror="this.style.display='none'"
