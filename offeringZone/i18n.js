@@ -1,250 +1,148 @@
-/* /webapp/offeringZone/offeringZone.js v1.3.0 */
-// CHANGELOG v1.3.0:
-// - FIXED: Import t() from local ./i18n.js (not core)
-// - Module i18n auto-registers on import
-// CHANGELOG v1.2.0:
-// - UPDATED: Now uses fetchMarketSnapshot() instead of fetchAvailableUnits()
-// - ADDED: Snapshot metadata logging
-// CHANGELOG v1.1.0:
-// - MOVED: From /js/cabinet/reports/ to /offeringZone/ (modular)
-// - FIXED: Import paths
+/* /webapp/offeringZone/i18n.js v2.0.0 */
+// CHANGELOG v2.0.0:
+// - BREAKING: Now uses modular registration system
+// - ADDED: registerModuleTranslations() call
+// - Offering Zone translations registered with core
+// CHANGELOG v1.0.0:
+// - Initial release
+// - Standalone i18n for Offering Zone module
+// - RU/EN translations for personalized real estate offers
 
-import { t } from './i18n.js'; // ✅ Import from local module
-import { calculateAvailableBudget, fetchMarketSnapshot, filterUnitsByBudget, getTopOffers } from './offeringService.js';
+import { 
+  registerModuleTranslations,
+  t,
+  setLanguage,
+  getCurrentLanguage
+} from '../js/utils/i18n.js';
 
-/**
- * Render offering zone
- */
-export async function renderOfferingZone(accountId, year, financialData, rates) {
-  try {
-    console.log('🎁 Rendering offering zone...');
+const offeringZoneTranslations = {
+  ru: {
+    // Main
+    'offering.title': '🎁 Персональные предложения',
+    'offering.subtitle': 'Основано на вашем финансовом положении',
+    'offering.loading': 'Загрузка предложений...',
+    'offering.noOffers': 'Пока нет подходящих предложений',
+    'offering.noOffersDesc': 'Увеличьте свой денежный поток или ликвидные активы',
+    'offering.error': '❌ Ошибка загрузки предложений',
     
-    // Check if container exists
-    const reportContainer = document.querySelector('.financial-report');
-    if (!reportContainer) {
-      console.warn('⚠️ Financial report container not found');
-      return;
-    }
+    // Budget
+    'offering.budget': 'Доступный бюджет',
+    'offering.budget.cashFlow': 'Денежный поток (3 года)',
+    'offering.budget.liquidAssets': 'Ликвидные активы (80%)',
+    'offering.budget.formula': 'Формула: (денежный поток × 3) + (ликвидные активы × 80%)',
     
-    // Calculate available budget
-    const budgetInfo = calculateAvailableBudget(financialData);
+    // Offer Details
+    'offering.learnMore': 'Узнать больше',
+    'offering.price': 'Цена',
+    'offering.location': 'Местоположение',
+    'offering.type': 'Тип',
+    'offering.bedrooms': 'Спальни',
+    'offering.area': 'Площадь',
+    'offering.roi': 'Доходность',
+    'offering.handover': 'Передача',
+    'offering.status': 'Статус',
     
-    // Show loading state
-    const offeringContainer = createOfferingContainer(budgetInfo, 'loading');
-    reportContainer.appendChild(offeringContainer);
+    // Property Types
+    'property.apartment': 'Квартира',
+    'property.studio': 'Студия',
+    'property.penthouse': 'Пентхаус',
+    'property.villa': 'Вилла',
+    'property.townhouse': 'Таунхаус',
     
-    // 🆕 NEW: Fetch from market pool
-    const allUnits = await fetchMarketSnapshot();
+    // Status
+    'status.available': 'Доступно',
+    'status.reserved': 'Зарезервировано',
+    'status.sold': 'Продано',
     
-    if (allUnits.length === 0) {
-      updateOfferingContainer(offeringContainer, budgetInfo, [], rates);
-      return;
-    }
+    // Units
+    'units.sqm': 'м²',
+    'units.sqft': 'кв.фт',
+    'units.bedroom': 'спальня',
+    'units.bedrooms': 'спальни',
     
-    // Filter by budget
-    const filteredUnits = filterUnitsByBudget(allUnits, budgetInfo.budget, rates);
+    // Actions
+    'action.viewDetails': 'Посмотреть детали',
+    'action.contact': 'Связаться',
+    'action.compare': 'Сравнить',
+    'action.favorite': 'В избранное',
     
-    // Get top 3
-    const topOffers = getTopOffers(filteredUnits, 3);
+    // Messages
+    'message.comingSoon': 'Детальная информация о юните будет доступна в следующей версии',
+    'message.projectLabel': 'Проект',
+    'message.unitLabel': 'Юнит',
     
-    // Update UI
-    updateOfferingContainer(offeringContainer, budgetInfo, topOffers, rates);
+    // Common
+    'common.loading': 'Загрузка...',
+    'common.error': 'Ошибка',
+    'common.retry': 'Повторить'
+  },
+  
+  en: {
+    // Main
+    'offering.title': '🎁 Personal Offers',
+    'offering.subtitle': 'Based on your financial position',
+    'offering.loading': 'Loading offers...',
+    'offering.noOffers': 'No suitable offers yet',
+    'offering.noOffersDesc': 'Increase your cash flow or liquid assets',
+    'offering.error': '❌ Error loading offers',
     
-    console.log('✅ Offering zone rendered');
+    // Budget
+    'offering.budget': 'Available Budget',
+    'offering.budget.cashFlow': 'Cash Flow (3 years)',
+    'offering.budget.liquidAssets': 'Liquid Assets (80%)',
+    'offering.budget.formula': 'Formula: (cash flow × 3) + (liquid assets × 80%)',
     
-  } catch (err) {
-    console.error('❌ Error rendering offering zone:', err);
+    // Offer Details
+    'offering.learnMore': 'Learn More',
+    'offering.price': 'Price',
+    'offering.location': 'Location',
+    'offering.type': 'Type',
+    'offering.bedrooms': 'Bedrooms',
+    'offering.area': 'Area',
+    'offering.roi': 'ROI',
+    'offering.handover': 'Handover',
+    'offering.status': 'Status',
+    
+    // Property Types
+    'property.apartment': 'Apartment',
+    'property.studio': 'Studio',
+    'property.penthouse': 'Penthouse',
+    'property.villa': 'Villa',
+    'property.townhouse': 'Townhouse',
+    
+    // Status
+    'status.available': 'Available',
+    'status.reserved': 'Reserved',
+    'status.sold': 'Sold',
+    
+    // Units
+    'units.sqm': 'm²',
+    'units.sqft': 'sq.ft',
+    'units.bedroom': 'bedroom',
+    'units.bedrooms': 'bedrooms',
+    
+    // Actions
+    'action.viewDetails': 'View Details',
+    'action.contact': 'Contact',
+    'action.compare': 'Compare',
+    'action.favorite': 'Add to Favorites',
+    
+    // Messages
+    'message.comingSoon': 'Detailed unit information will be available in the next version',
+    'message.projectLabel': 'Project',
+    'message.unitLabel': 'Unit',
+    
+    // Common
+    'common.loading': 'Loading...',
+    'common.error': 'Error',
+    'common.retry': 'Retry'
   }
-}
-
-
-
-/**
- * Create offering container (initial state)
- */
-function createOfferingContainer(budgetInfo, state = 'loading') {
-  const container = document.createElement('div');
-  container.className = 'offering-zone';
-  container.id = 'offeringZone';
-  
-  if (state === 'loading') {
-    container.innerHTML = `
-      <div class="offering-header">
-        <h3>${t('offering.title')}</h3>
-        <p class="offering-subtitle">${t('offering.subtitle')}</p>
-      </div>
-      
-      <div class="offering-budget">
-        <div class="budget-label">${t('offering.budget')}:</div>
-        <div class="budget-amount">${formatCurrency(budgetInfo.budget)} ₽</div>
-      </div>
-      
-      <div class="offering-loading">
-        <div class="spinner"></div>
-        <p>${t('offering.loading')}</p>
-      </div>
-    `;
-  }
-  
-  return container;
-}
-
-/**
- * Update offering container with offers
- */
-function updateOfferingContainer(container, budgetInfo, offers, rates) {
-  // Clear container
-  container.innerHTML = '';
-  
-  // Header
-  const header = document.createElement('div');
-  header.className = 'offering-header';
-  header.innerHTML = `
-    <h3>${t('offering.title')}</h3>
-    <p class="offering-subtitle">${t('offering.subtitle')}</p>
-  `;
-  container.appendChild(header);
-  
-  // Budget display
-  const budgetDisplay = document.createElement('div');
-  budgetDisplay.className = 'offering-budget';
-  budgetDisplay.innerHTML = `
-    <div class="budget-info">
-      <div class="budget-item">
-        <span class="budget-label">${t('offering.budget')}:</span>
-        <span class="budget-amount">${formatCurrency(budgetInfo.budget)} ₽</span>
-      </div>
-      <div class="budget-breakdown">
-        <span>💰 ${t('offering.budget.cashFlow')}: ${formatCurrency(budgetInfo.cashFlowYearly * 3)} ₽</span>
-        <span>🏦 ${t('offering.budget.liquidAssets')}: ${formatCurrency(budgetInfo.liquidAssets * 0.8)} ₽</span>
-      </div>
-    </div>
-  `;
-  container.appendChild(budgetDisplay);
-  
-  // Offers
-  if (offers.length === 0) {
-    const noOffers = document.createElement('div');
-    noOffers.className = 'no-offers';
-    noOffers.innerHTML = `
-      <svg width="64" height="64" viewBox="0 0 24 24" fill="currentColor" style="opacity: 0.3; margin-bottom: 16px;">
-        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
-      </svg>
-      <p>${t('offering.noOffers')}</p>
-      <p class="subtitle" style="margin-top: 8px;">${t('offering.noOffersDesc')}</p>
-    `;
-    container.appendChild(noOffers);
-    return;
-  }
-  
-  // Offers grid
-  const offersGrid = document.createElement('div');
-  offersGrid.className = 'offers-grid';
-  
-  offers.forEach(unit => {
-    const card = createOfferCard(unit, rates);
-    offersGrid.appendChild(card);
-  });
-  
-  container.appendChild(offersGrid);
-}
-
-/**
- * Create offer card
- */
-function createOfferCard(unit, rates) {
-  const card = document.createElement('div');
-  card.className = 'offer-card';
-  
-  // Convert price to RUB
-  const priceRub = unit.unitPriceAed * rates.rub;
-  
-  // Format area
-  let areaText = '';
-  if (unit.unitAreaTotalSqFt) {
-    const areaSqM = (unit.unitAreaTotalSqFt * 0.092903).toFixed(1);
-    areaText = `${areaSqM} ${t('units.sqm')}`;
-  }
-  
-  // Format ROI
-  let roiText = '';
-  if (unit.unitCashOnCashROI) {
-    roiText = `${(unit.unitCashOnCashROI * 100).toFixed(1)}%`;
-  }
-  
-  card.innerHTML = `
-    ${unit.unitFloorplanLink && unit.unitFloorplanLink !== '-' ? `
-      <div class="offer-image" style="background-image: url('${unit.unitFloorplanLink}');"></div>
-    ` : `
-      <div class="offer-image offer-image-placeholder">
-        <svg width="64" height="64" viewBox="0 0 24 24" fill="currentColor" style="opacity: 0.3;">
-          <path d="M19 7v2.99s-1.99.01-2 0V7h-3s.01-1.99 0-2h3V2h2v3h3v2h-3zm-3 4V8h-3V5H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-8h-3zM5 19l3-4 2 3 3-4 4 5H5z"/>
-        </svg>
-      </div>
-    `}
-    
-    <div class="offer-content">
-      <h4 class="offer-title">${unit.projectName || t('message.projectLabel')}</h4>
-      
-      <div class="offer-details">
-        ${unit.unitPropertyType && unit.unitPropertyType !== '-' ? `
-          <div class="offer-detail">
-            <span class="detail-icon">🏢</span>
-            <span>${unit.unitPropertyType}</span>
-          </div>
-        ` : ''}
-        
-        ${unit.unitBedrooms && unit.unitBedrooms !== '-' ? `
-          <div class="offer-detail">
-            <span class="detail-icon">🛏</span>
-            <span>${unit.unitBedrooms}</span>
-          </div>
-        ` : ''}
-        
-        ${areaText ? `
-          <div class="offer-detail">
-            <span class="detail-icon">📐</span>
-            <span>${areaText}</span>
-          </div>
-        ` : ''}
-        
-        ${roiText ? `
-          <div class="offer-detail roi-detail">
-            <span class="detail-icon">📈</span>
-            <span>${roiText} ${t('offering.roi')}</span>
-          </div>
-        ` : ''}
-      </div>
-      
-      <div class="offer-price">
-        <span class="price-label">${t('offering.price')}:</span>
-        <span class="price-amount">${formatCurrency(priceRub)} ₽</span>
-        <span class="price-aed">${Math.round(unit.unitPriceAed).toLocaleString()} AED</span>
-      </div>
-      
-      <button class="btn btn-primary btn-offer" onclick="window.openUnitDetails('${unit.projectId}', '${unit.id}')">
-        ${t('offering.learnMore')}
-      </button>
-    </div>
-  `;
-  
-  return card;
-}
-
-/**
- * Format currency
- */
-function formatCurrency(amount) {
-  return new Intl.NumberFormat('ru-RU', {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0
-  }).format(amount || 0);
-}
-
-/**
- * Open unit details (placeholder)
- */
-window.openUnitDetails = function(projectId, unitId) {
-  console.log('🏢 Opening unit details:', projectId, unitId);
-  alert(`${t('message.comingSoon')}\n\n${t('message.projectLabel')}: ${projectId}\n${t('message.unitLabel')}: ${unitId}`);
 };
+
+// Register module translations with core i18n
+registerModuleTranslations('offeringZone', offeringZoneTranslations);
+
+console.log('✅ [OfferingZone] i18n module registered');
+
+// Re-export core functions for convenience
+export { t, setLanguage, getCurrentLanguage };
