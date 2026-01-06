@@ -50,6 +50,9 @@ import './accountDashboard/i18n.js';
 // Investments module (registers translations)
 import './investments/i18n.js';
 
+// Financial Statement module (registers translations)
+import './finStatement/i18n.js';
+
 // ✅ All modules are now registered!
 console.log('✅ [App] All module i18n registered');
 

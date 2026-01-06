@@ -1,26 +1,28 @@
 /* /webapp/finStatement/i18n.js v1.0.0 */
 // CHANGELOG v1.0.0:
 // - Initial release
-// - Standalone i18n for Financial Statement module
-// - RU/EN translations for reports, categories, analysis
+// - Registers finStatement translations with core i18n
+// - Complete RU/EN translations for financial reporting
 
-const translations = {
+import { registerModuleTranslations } from '../js/utils/i18n.js';
+
+const finStatementTranslations = {
   ru: {
-    // Main
+    // ==================== MAIN ====================
     'report.title': '📊 Финансовый отчёт',
     'report.year': 'Год',
     'report.loading': 'Загрузка финансового отчёта...',
     'report.error': '❌ Ошибка загрузки финансового отчёта',
     'report.refresh': 'Обновить',
     
-    // Sections
+    // ==================== SECTIONS ====================
     'report.income': '💰 Доходы',
     'report.expenses': '💸 Расходы',
     'report.assets': '📊 Активы',
     'report.liabilities': '📉 Пассивы',
     'report.analysis': '📈 Анализ',
     
-    // Totals
+    // ==================== TOTALS ====================
     'report.total.income': 'G. ДОХОДЫ ИТОГО',
     'report.total.expenses': 'L. РАСХОДЫ ИТОГО',
     'report.total.assets.banker': 'R. АКТИВЫ ИТОГО по банкиру',
@@ -30,7 +32,7 @@ const translations = {
     'report.netWorth.banker': 'V. СОСТОЯНИЕ по банкиру (R - U)',
     'report.netWorth.factual': 'W. СОСТОЯНИЕ факт (S - U)',
     
-    // Income Categories
+    // ==================== INCOME CATEGORIES ====================
     'income.A': 'A. Найм',
     'income.A.1': 'Зарплата #1',
     'income.A.2': 'Зарплата #2',
@@ -48,7 +50,7 @@ const translations = {
     'income.E.4': 'Прочее роялти',
     'income.F': 'F. Портфолио итого',
     
-    // Expense Categories
+    // ==================== EXPENSE CATEGORIES ====================
     'expenses.0': 'Предварительные',
     'expenses.H': 'H. Предварительные',
     'expenses.0.1': 'Инвестиции',
@@ -75,35 +77,35 @@ const translations = {
     'expenses.1.13': 'Образовательные рассрочки',
     'expenses.1.14': 'Персональные займы',
     'expenses.1.15': 'Прочее задолженности',
-    'expenses.1.16': 'Прочее расходы',
+    'expenses.1.16': 'Прочие расходы',
     'expenses.K': 'K. Основные итого',
     
-    // Asset Categories
+    // ==================== ASSET CATEGORIES ====================
     'assets.N': 'N. Активы',
     'assets.N.1': 'Банковские счета',
     'assets.N.2': 'Цифровые активы',
-    'assets.N.3': 'Инвестиционный сертификаты',
+    'assets.N.3': 'Инвестиционные сертификаты',
     'assets.N.4': 'Дебиторская задолженность',
     'assets.N.5': 'Бизнес (оценка, NET)',
     'assets.N.6': 'Недвижимость (минус рассрочка)',
-    'assets.N.7': 'Прочее активы',
+    'assets.N.7': 'Прочие активы',
     'assets.O': 'O. Активы подытог',
     'assets.P': 'P. Роскошь',
     'assets.P.1': 'Дом',
     'assets.P.2': 'Автомобиль(и)',
-    'assets.P.3': 'Прочее роскошь',
+    'assets.P.3': 'Прочая роскошь',
     'assets.Q': 'Q. Роскошь итого',
     
-    // Liability Categories
+    // ==================== LIABILITY CATEGORIES ====================
     'liabilities.T': 'T. Пассивы',
     'liabilities.T.1': 'Жилищная рассрочка',
     'liabilities.T.2': 'Банковские услуги',
     'liabilities.T.3': 'Транспортные рассрочки',
     'liabilities.T.4': 'Образовательные рассрочки',
     'liabilities.T.5': 'Персональные займы',
-    'liabilities.T.6': 'Прочее пассивы',
+    'liabilities.T.6': 'Прочие пассивы',
     
-    // Analysis Metrics
+    // ==================== ANALYSIS METRICS ====================
     'analysis.saving': 'Сколько вы сохраняете?',
     'analysis.moneyWorking': 'Работают ли ваши деньги на вас?',
     'analysis.taxes': 'Сколько вы платите налогов?',
@@ -113,7 +115,7 @@ const translations = {
     'analysis.security': 'Насколько вы обеспечены?',
     'analysis.expensesCovered': 'Насколько ваши расходы покрыты пассивным доходом?',
     
-    // Analysis Formulas
+    // ==================== ANALYSIS FORMULAS ====================
     'analysis.formula.saving': 'Денежный поток / Общий доход',
     'analysis.formula.moneyWorking': 'Активы итого + портфолио итого / Общий доход',
     'analysis.formula.taxes': 'Налоги / Общий доход',
@@ -123,13 +125,13 @@ const translations = {
     'analysis.formula.security': 'Активы итого факт / Расходы',
     'analysis.formula.expensesCovered': 'Активы итого + портфолио итого / Расходы итого',
     
-    // Analysis Notes
+    // ==================== ANALYSIS NOTES ====================
     'analysis.note.shouldGrow': '***должен расти',
     'analysis.note.max33': '***не более 33%',
     'analysis.note.months': '***измеряется в месяцах',
     'analysis.note.target200': '***должен расти к 200%',
     
-    // Edit Modal
+    // ==================== EDIT MODAL ====================
     'edit.title': 'Редактирование',
     'edit.amount': 'Сумма (₽)',
     'edit.save': '💾 Сохранить',
@@ -141,29 +143,28 @@ const translations = {
     'edit.confirmDelete': 'Обнулить эту запись?',
     'edit.negativeError': 'Сумма не может быть отрицательной',
     
-    // Common
-    'common.loading': 'Загрузка...',
+    // ==================== COMMON ====================
     'common.currency': '₽',
     'common.months': 'мес.',
     'common.clickToEdit': 'Нажмите для редактирования'
   },
   
   en: {
-    // Main
+    // ==================== MAIN ====================
     'report.title': '📊 Financial Statement',
     'report.year': 'Year',
     'report.loading': 'Loading financial report...',
     'report.error': '❌ Error loading financial report',
     'report.refresh': 'Refresh',
     
-    // Sections
+    // ==================== SECTIONS ====================
     'report.income': '💰 Income',
     'report.expenses': '💸 Expenses',
     'report.assets': '📊 Assets',
     'report.liabilities': '📉 Liabilities',
     'report.analysis': '📈 Analysis',
     
-    // Totals
+    // ==================== TOTALS ====================
     'report.total.income': 'G. TOTAL INCOME',
     'report.total.expenses': 'L. TOTAL EXPENSES',
     'report.total.assets.banker': 'R. TOTAL ASSETS (banker)',
@@ -173,7 +174,7 @@ const translations = {
     'report.netWorth.banker': 'V. NET WORTH (banker) (R - U)',
     'report.netWorth.factual': 'W. NET WORTH (factual) (S - U)',
     
-    // Income Categories
+    // ==================== INCOME CATEGORIES ====================
     'income.A': 'A. Employment',
     'income.A.1': 'Salary #1',
     'income.A.2': 'Salary #2',
@@ -191,7 +192,7 @@ const translations = {
     'income.E.4': 'Other royalties',
     'income.F': 'F. Portfolio total',
     
-    // Expense Categories
+    // ==================== EXPENSE CATEGORIES ====================
     'expenses.0': 'Preliminary',
     'expenses.H': 'H. Preliminary',
     'expenses.0.1': 'Investments',
@@ -221,7 +222,7 @@ const translations = {
     'expenses.1.16': 'Other expenses',
     'expenses.K': 'K. Main total',
     
-    // Asset Categories
+    // ==================== ASSET CATEGORIES ====================
     'assets.N': 'N. Assets',
     'assets.N.1': 'Bank accounts',
     'assets.N.2': 'Digital assets',
@@ -237,7 +238,7 @@ const translations = {
     'assets.P.3': 'Other luxury',
     'assets.Q': 'Q. Luxury total',
     
-    // Liability Categories
+    // ==================== LIABILITY CATEGORIES ====================
     'liabilities.T': 'T. Liabilities',
     'liabilities.T.1': 'Mortgage',
     'liabilities.T.2': 'Banking services',
@@ -246,7 +247,7 @@ const translations = {
     'liabilities.T.5': 'Personal loans',
     'liabilities.T.6': 'Other liabilities',
     
-    // Analysis Metrics
+    // ==================== ANALYSIS METRICS ====================
     'analysis.saving': 'How much are you saving?',
     'analysis.moneyWorking': 'Is your money working for you?',
     'analysis.taxes': 'How much do you pay in taxes?',
@@ -256,7 +257,7 @@ const translations = {
     'analysis.security': 'How secure are you?',
     'analysis.expensesCovered': 'Are your expenses covered by passive income?',
     
-    // Analysis Formulas
+    // ==================== ANALYSIS FORMULAS ====================
     'analysis.formula.saving': 'Cash flow / Total income',
     'analysis.formula.moneyWorking': 'Total assets + portfolio / Total income',
     'analysis.formula.taxes': 'Taxes / Total income',
@@ -266,13 +267,13 @@ const translations = {
     'analysis.formula.security': 'Factual assets / Expenses',
     'analysis.formula.expensesCovered': 'Total assets + portfolio / Total expenses',
     
-    // Analysis Notes
+    // ==================== ANALYSIS NOTES ====================
     'analysis.note.shouldGrow': '***should grow',
     'analysis.note.max33': '***max 33%',
     'analysis.note.months': '***measured in months',
     'analysis.note.target200': '***should grow to 200%',
     
-    // Edit Modal
+    // ==================== EDIT MODAL ====================
     'edit.title': 'Edit',
     'edit.amount': 'Amount (₽)',
     'edit.save': '💾 Save',
@@ -284,51 +285,17 @@ const translations = {
     'edit.confirmDelete': 'Reset this entry?',
     'edit.negativeError': 'Amount cannot be negative',
     
-    // Common
-    'common.loading': 'Loading...',
+    // ==================== COMMON ====================
     'common.currency': '₽',
     'common.months': 'mo.',
     'common.clickToEdit': 'Click to edit'
   }
 };
 
-// Current language (default: ru)
-let currentLanguage = 'ru';
+// Auto-register with core i18n
+registerModuleTranslations('finStatement', finStatementTranslations);
 
-/**
- * Get translation for key
- */
-export function t(key, lang = null) {
-  const language = lang || currentLanguage;
-  return translations[language]?.[key] || key;
-}
+console.log('📦 [FinStatement] i18n module registered');
 
-/**
- * Set current language
- */
-export function setLanguage(lang) {
-  if (translations[lang]) {
-    currentLanguage = lang;
-    console.log(`🌍 [FinStatement] Language set to: ${lang}`);
-    return true;
-  }
-  console.warn(`⚠️ [FinStatement] Language not supported: ${lang}`);
-  return false;
-}
-
-/**
- * Get current language
- */
-export function getCurrentLanguage() {
-  return currentLanguage;
-}
-
-// Auto-detect language from Telegram
-if (typeof window !== 'undefined' && window.Telegram?.WebApp) {
-  const tgLang = window.Telegram.WebApp.initDataUnsafe?.user?.language_code;
-  if (tgLang === 'en') {
-    setLanguage('en');
-  }
-}
-
-console.log('🌍 [FinStatement] i18n initialized:', currentLanguage);
+// Re-export core functions for convenience
+export { t, setLanguage, getCurrentLanguage } from '../js/utils/i18n.js';
