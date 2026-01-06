@@ -1,10 +1,21 @@
-/* /webapp/accountDashboard/i18n.js v1.0.0 */
+/* /webapp/accountDashboard/i18n.js v2.0.0 */
+// CHANGELOG v2.0.0:
+// - BREAKING: Now uses modular registration system
+// - ADDED: registerModuleTranslations() call
+// - Account Dashboard translations registered with core
 // CHANGELOG v1.0.0:
 // - Initial release
 // - Standalone i18n for Account Dashboard module
 // - RU/EN translations for 7-step navigation
 
-const translations = {
+import { 
+  registerModuleTranslations,
+  t,
+  setLanguage,
+  getCurrentLanguage
+} from '../js/utils/i18n.js';
+
+const accountDashboardTranslations = {
   ru: {
     // Dashboard Main
     'dashboard.backToList': 'Назад к списку',
@@ -114,43 +125,10 @@ const translations = {
   }
 };
 
-// Current language (default: ru)
-let currentLanguage = 'ru';
+// Register module translations with core i18n
+registerModuleTranslations('accountDashboard', accountDashboardTranslations);
 
-/**
- * Get translation for key
- */
-export function t(key, lang = null) {
-  const language = lang || currentLanguage;
-  return translations[language]?.[key] || key;
-}
+console.log('✅ [AccountDashboard] i18n module registered');
 
-/**
- * Set current language
- */
-export function setLanguage(lang) {
-  if (translations[lang]) {
-    currentLanguage = lang;
-    console.log(`🌍 [AccountDashboard] Language set to: ${lang}`);
-    return true;
-  }
-  console.warn(`⚠️ [AccountDashboard] Language not supported: ${lang}`);
-  return false;
-}
-
-/**
- * Get current language
- */
-export function getCurrentLanguage() {
-  return currentLanguage;
-}
-
-// Auto-detect language from Telegram
-if (typeof window !== 'undefined' && window.Telegram?.WebApp) {
-  const tgLang = window.Telegram.WebApp.initDataUnsafe?.user?.language_code;
-  if (tgLang === 'en') {
-    setLanguage('en');
-  }
-}
-
-console.log('🌍 [AccountDashboard] i18n initialized:', currentLanguage);
+// Re-export core functions for convenience
+export { t, setLanguage, getCurrentLanguage };

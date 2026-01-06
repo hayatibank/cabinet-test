@@ -1,14 +1,20 @@
-/* /webapp/js/utils/i18n.js v2.0.0 */
+/* /webapp/js/utils/i18n.js v3.0.0 */
+// CHANGELOG v3.0.0:
+// - BREAKING: Modular i18n system with registration
+// - ADDED: registerModuleTranslations() for modules
+// - ADDED: getRegisteredModules() for debugging
+// - Core translations remain, modules can extend
 // CHANGELOG v2.0.0:
 // - BREAKING: Полная переработка для централизованного i18n
 // - ADDED: Support for data-i18n attributes
 // - ADDED: Language switcher integration
 // - ADDED: Auto-detect from Telegram
 // - ADDED: localStorage persistence
-// CHANGELOG v1.1.2:
-// - Added investment.* keys for Level 1 dashboard
 
-const translations = {
+// ==================== CORE TRANSLATIONS ====================
+// These are baseline translations available to all modules
+
+const coreTranslations = {
   ru: {
     // ==================== AUTH ====================
     // Login
@@ -314,6 +320,53 @@ const translations = {
   }
 };
 
+// ==================== MODULE TRANSLATIONS REGISTRY ====================
+
+const moduleTranslations = {};
+const registeredModules = new Set();
+
+/**
+ * Register module translations
+ * @param {string} moduleName - Module identifier (e.g., 'investments', 'auth')
+ * @param {object} translations - Translation object { ru: {...}, en: {...} }
+ */
+export function registerModuleTranslations(moduleName, translations) {
+  console.log(`📦 [i18n] Registering module: ${moduleName}`);
+  
+  moduleTranslations[moduleName] = translations;
+  registeredModules.add(moduleName);
+  
+  // Merge with core translations
+  Object.keys(translations).forEach(lang => {
+    if (!coreTranslations[lang]) {
+      coreTranslations[lang] = {};
+    }
+    coreTranslations[lang] = {
+      ...coreTranslations[lang],
+      ...translations[lang]
+    };
+  });
+  
+  console.log(`✅ [i18n] Module registered: ${moduleName} (${Object.keys(translations).join(', ')})`);
+}
+
+/**
+ * Get list of registered modules
+ * @returns {string[]} Array of module names
+ */
+export function getRegisteredModules() {
+  return Array.from(registeredModules);
+}
+
+/**
+ * Get translations for specific module
+ * @param {string} moduleName - Module identifier
+ * @returns {object|null} Module translations or null
+ */
+export function getModuleTranslations(moduleName) {
+  return moduleTranslations[moduleName] || null;
+}
+
 // ==================== STATE ====================
 
 let currentLanguage = 'ru';
@@ -329,7 +382,7 @@ const STORAGE_KEY = 'hayati_language';
  */
 export function t(key, lang = null) {
   const language = lang || currentLanguage;
-  return translations[language]?.[key] || key;
+  return coreTranslations[language]?.[key] || key;
 }
 
 /**
@@ -338,7 +391,7 @@ export function t(key, lang = null) {
  * @returns {boolean} Success
  */
 export function setLanguage(lang) {
-  if (translations[lang]) {
+  if (coreTranslations[lang]) {
     currentLanguage = lang;
     
     // Save to localStorage
@@ -377,7 +430,7 @@ export function getCurrentLanguage() {
  * @returns {string[]} Array of language codes
  */
 export function getSupportedLanguages() {
-  return Object.keys(translations);
+  return Object.keys(coreTranslations);
 }
 
 /**
@@ -429,7 +482,7 @@ function initializeI18n() {
   // 1. Try to load from localStorage
   try {
     const savedLang = localStorage.getItem(STORAGE_KEY);
-    if (savedLang && translations[savedLang]) {
+    if (savedLang && coreTranslations[savedLang]) {
       currentLanguage = savedLang;
       console.log(`💾 Loaded language from storage: ${savedLang}`);
     }
@@ -450,7 +503,8 @@ function initializeI18n() {
     }
   }
   
-  console.log(`🌍 i18n initialized: ${currentLanguage}`);
+  console.log(`🌍 i18n v3.0.0 initialized: ${currentLanguage}`);
+  console.log(`📦 Registered modules: ${registeredModules.size}`);
 }
 
 // Auto-initialize
@@ -466,5 +520,8 @@ export default {
   getCurrentLanguage,
   getSupportedLanguages,
   toggleLanguage,
-  updatePageTranslations
+  updatePageTranslations,
+  registerModuleTranslations,
+  getRegisteredModules,
+  getModuleTranslations
 };

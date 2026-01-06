@@ -1,227 +1,260 @@
-/* /webapp/investments/i18n.js v1.1.0 */
-// CHANGELOG v1.1.0:
-// - Added translations for HODL, Projects, SpotBot, PaymentsMade sections
+/* /webapp/investments/i18n.js v1.0.0 */
 // CHANGELOG v1.0.0:
-// - Standalone i18n for investments module
-// - RU/EN translations for Level 1
+// - Initial release
+// - Modular i18n for Investments module
+// - Registers with core i18n system
+// - RU/EN translations for Level 1 dashboard
 
-const translations = {
+import { registerModuleTranslations } from '../js/utils/i18n.js';
+
+const investmentsTranslations = {
   ru: {
-    // Level 1 Dashboard
-    'level1.title': '📊 Инвестор: уровень №1',
-    'level1.subtitle': 'Цифровые финансовые активы',
-    'level1.bot': 'Бот (USDT)',
-    'level1.hodl': 'HODL (BTC)',
-    'level1.projects': 'Проекты',
-    'level1.liquidity': 'Ликвидность (RUB)',
-    'level1.portfolio': 'Портфель',
-    'level1.totalInvested': 'Всего инвестировано',
-    'level1.balance': 'Баланс',
-    'level1.amount': 'Сумма',
-    'level1.date': 'Дата',
-    'level1.noBalance': 'Нет данных о балансе',
-    'level1.noInvestments': 'Нет активных инвестиций',
-    'level1.noCrypto': 'Нет криптоактивов',
-    'level1.cryptoPortfolio': 'HODL портфель долгосрочных инвестиций («Хаяти HODL»)',
-    'level1.cryptoNote': 'Курсы обновляются каждые 5 минут',
-    'level1.unknownInvestment': 'Неизвестная инвестиция',
+    // ==================== INVESTMENT LEVEL 1 ====================
     
-    // Investment Projects
-    'projects.title': '📊 Проекты роста капитала',
-    'projects.subtitle': 'Инвестиции в проекты',
-    'projects.noProjects': 'Нет активных проектов',
-    'projects.roi': 'ROI',
-    'projects.invested': 'Инвестировано',
+    // Main Dashboard
+    'investment.level1.title': '📊 Инвестиции: Уровень №1',
+    'investment.level1.subtitle': 'Цифровые финансовые активы (ЦФА)',
+    'investment.level1.description': 'Управление вашим инвестиционным портфелем',
     
-    // Spot Bot
-    'spotBot.title': '🦾 Спотовый бот «Хаяти»',
-    'spotBot.subtitle': 'Пассивный доход от торговли',
-    'spotBot.noBots': 'Нет активных ботов',
-    'spotBot.profit': 'Прибыль',
-    'spotBot.active': 'Активен',
+    // Summary Cards
+    'investment.summary.totalInvested': 'Всего инвестировано',
+    'investment.summary.currentValue': 'Текущая стоимость',
+    'investment.summary.totalReturn': 'Общая доходность',
+    'investment.summary.activePositions': 'Активные позиции',
     
-    // Payments Made
-    'payments.title': '💸 Осуществлённые выплаты',
-    'payments.subtitle': 'История транзакций',
-    'payments.noPayments': 'Нет выплат',
-    'payments.made': 'Выплачено',
-    'payments.reinvested': 'Реинвестировано',
-    'payments.savedInBtc': 'Сохранено в BTC',
-    'payments.transferred': 'Переведено',
-    'payments.total': 'Всего выплат',
+    // Portfolio Section
+    'investment.portfolio.title': '💼 Мой портфель',
+    'investment.portfolio.empty': 'Портфель пуст',
+    'investment.portfolio.emptyDesc': 'Начните инвестировать в ЦФА',
+    'investment.portfolio.loading': 'Загрузка портфеля...',
     
-    // Balance Section
-    'balance.title': '💰 Баланс активов',
-    'balance.bot': 'Бот (USDT)',
-    'balance.hodl': 'HODL (BTC)',
-    'balance.projects': 'Проекты',
-    'balance.liquidity': 'Ликвидность (RUB)',
-    'balance.total': 'Итого',
+    // Position Card
+    'investment.position.amount': 'Количество',
+    'investment.position.avgPrice': 'Средняя цена',
+    'investment.position.currentPrice': 'Текущая цена',
+    'investment.position.totalValue': 'Общая стоимость',
+    'investment.position.return': 'Доходность',
+    'investment.position.profit': 'Прибыль',
+    'investment.position.loss': 'Убыток',
     
-    // Investment List
-    'list.title': '📋 Мои инвестиции',
-    'list.empty': 'У вас пока нет активных инвестиций',
-    'list.addFirst': 'Добавьте первую инвестицию для начала',
+    // Available Assets Section
+    'investment.available.title': '📈 Доступные активы',
+    'investment.available.subtitle': 'Цифровые финансовые активы для инвестиций',
+    'investment.available.loading': 'Загрузка активов...',
+    'investment.available.empty': 'Нет доступных активов',
+    'investment.available.emptyDesc': 'Активы появятся позже',
     
-    // Investment Item
-    'item.roi': 'ROI',
-    'item.status': 'Статус',
-    'item.date': 'Дата',
+    // Asset Card
+    'investment.asset.price': 'Цена',
+    'investment.asset.change24h': 'Изменение (24ч)',
+    'investment.asset.marketCap': 'Капитализация',
+    'investment.asset.volume': 'Объем',
+    'investment.asset.buy': 'Купить',
+    'investment.asset.sell': 'Продать',
+    'investment.asset.details': 'Детали',
     
-    // Status
-    'status.active': 'Активна',
-    'status.completed': 'Завершена',
-    'status.pending': 'В ожидании',
+    // Transaction Actions
+    'investment.action.buy': '💰 Купить',
+    'investment.action.sell': '💸 Продать',
+    'investment.action.swap': '🔄 Обменять',
+    'investment.action.transfer': '📤 Перевести',
     
-    // Crypto Portfolio
-    'crypto.title': '₿ Крипто-портфель',
-    'crypto.empty': 'Нет криптоактивов',
-    'crypto.balance': 'Баланс',
-    'crypto.price': 'Цена',
-    'crypto.change24h': '24ч изменение',
+    // Transaction Modal
+    'investment.modal.buy.title': 'Купить актив',
+    'investment.modal.sell.title': 'Продать актив',
+    'investment.modal.amount': 'Количество',
+    'investment.modal.price': 'Цена',
+    'investment.modal.total': 'Итого',
+    'investment.modal.balance': 'Баланс',
+    'investment.modal.insufficient': 'Недостаточно средств',
+    'investment.modal.confirm': 'Подтвердить',
+    'investment.modal.cancel': 'Отмена',
     
-    // Actions
-    'actions.addInvestment': 'Добавить инвестицию',
-    'actions.viewDetails': 'Детали',
-    'actions.withdraw': 'Вывести',
+    // History Section
+    'investment.history.title': '📋 История операций',
+    'investment.history.empty': 'История пуста',
+    'investment.history.emptyDesc': 'Здесь будут ваши транзакции',
+    'investment.history.loading': 'Загрузка истории...',
+    
+    // Transaction Types
+    'investment.tx.buy': 'Покупка',
+    'investment.tx.sell': 'Продажа',
+    'investment.tx.swap': 'Обмен',
+    'investment.tx.transfer': 'Перевод',
+    'investment.tx.deposit': 'Пополнение',
+    'investment.tx.withdrawal': 'Вывод',
+    
+    // Transaction Status
+    'investment.status.pending': 'В обработке',
+    'investment.status.completed': 'Завершено',
+    'investment.status.failed': 'Ошибка',
+    'investment.status.cancelled': 'Отменено',
+    
+    // Filters
+    'investment.filter.all': 'Все',
+    'investment.filter.buy': 'Покупки',
+    'investment.filter.sell': 'Продажи',
+    'investment.filter.today': 'Сегодня',
+    'investment.filter.week': 'Неделя',
+    'investment.filter.month': 'Месяц',
+    'investment.filter.year': 'Год',
     
     // Common
-    'common.loading': 'Загрузка...',
-    'common.error': 'Ошибка загрузки',
-    'common.retry': 'Повторить',
-    'common.back': 'Назад',
+    'investment.comingSoon': '🚧 Скоро',
+    'investment.comingSoonDesc': 'Эта функция будет доступна в следующих версиях',
+    'investment.error': 'Ошибка',
+    'investment.success': 'Успешно',
+    'investment.loading': 'Загрузка...',
+    
+    // Units
+    'investment.units.pieces': 'шт.',
+    'investment.units.rub': '₽',
+    'investment.units.usd': '$',
+    'investment.units.eur': '€',
+    'investment.units.aed': 'AED',
+    
+    // Time periods
+    'investment.time.hour': 'час',
+    'investment.time.day': 'день',
+    'investment.time.week': 'неделя',
+    'investment.time.month': 'месяц',
+    'investment.time.year': 'год',
     
     // Errors
-    'error.loadingData': 'Ошибка загрузки данных'
+    'investment.error.loadFailed': 'Ошибка загрузки данных',
+    'investment.error.txFailed': 'Ошибка выполнения транзакции',
+    'investment.error.insufficientFunds': 'Недостаточно средств',
+    'investment.error.invalidAmount': 'Неверное количество',
+    'investment.error.minAmount': 'Минимальная сумма',
+    'investment.error.maxAmount': 'Максимальная сумма'
   },
   
   en: {
-    // Level 1 Dashboard
-    'level1.title': '📊 Investor: Level #1',
-    'level1.subtitle': 'Digital Financial Assets',
-    'level1.bot': 'Bot (USDT)',
-    'level1.hodl': 'HODL (BTC)',
-    'level1.projects': 'Projects',
-    'level1.liquidity': 'Liquidity (RUB)',
-    'level1.portfolio': 'Portfolio',
-    'level1.totalInvested': 'Total Invested',
-    'level1.balance': 'Balance',
-    'level1.amount': 'Amount',
-    'level1.date': 'Date',
-    'level1.noBalance': 'No balance data',
-    'level1.noInvestments': 'No active investments',
-    'level1.noCrypto': 'No crypto assets',
-    'level1.cryptoPortfolio': 'HODL Long-Term Investment Portfolio (Hayati HODL)',
-    'level1.cryptoNote': 'Rates update every 5 minutes',
-    'level1.unknownInvestment': 'Unknown investment',
+    // ==================== INVESTMENT LEVEL 1 ====================
     
-    // Investment Projects
-    'projects.title': '📊 Capital Growth Projects',
-    'projects.subtitle': 'Project investments',
-    'projects.noProjects': 'No active projects',
-    'projects.roi': 'ROI',
-    'projects.invested': 'Invested',
+    // Main Dashboard
+    'investment.level1.title': '📊 Investments: Level #1',
+    'investment.level1.subtitle': 'Digital Financial Assets (DFA)',
+    'investment.level1.description': 'Manage your investment portfolio',
     
-    // Spot Bot
-    'spotBot.title': '🦾 Hayati Spot Bot',
-    'spotBot.subtitle': 'Passive income from trading',
-    'spotBot.noBots': 'No active bots',
-    'spotBot.profit': 'Profit',
-    'spotBot.active': 'Active',
+    // Summary Cards
+    'investment.summary.totalInvested': 'Total Invested',
+    'investment.summary.currentValue': 'Current Value',
+    'investment.summary.totalReturn': 'Total Return',
+    'investment.summary.activePositions': 'Active Positions',
     
-    // Payments Made
-    'payments.title': '💸 Payments Made',
-    'payments.subtitle': 'Transaction history',
-    'payments.noPayments': 'No payments',
-    'payments.made': 'Paid out',
-    'payments.reinvested': 'Reinvested',
-    'payments.savedInBtc': 'Saved in BTC',
-    'payments.transferred': 'Transferred',
-    'payments.total': 'Total payments',
+    // Portfolio Section
+    'investment.portfolio.title': '💼 My Portfolio',
+    'investment.portfolio.empty': 'Portfolio is empty',
+    'investment.portfolio.emptyDesc': 'Start investing in DFA',
+    'investment.portfolio.loading': 'Loading portfolio...',
     
-    // Balance Section
-    'balance.title': '💰 Asset Balance',
-    'balance.bot': 'Bot (USDT)',
-    'balance.hodl': 'HODL (BTC)',
-    'balance.projects': 'Projects',
-    'balance.liquidity': 'Liquidity (RUB)',
-    'balance.total': 'Total',
+    // Position Card
+    'investment.position.amount': 'Amount',
+    'investment.position.avgPrice': 'Avg Price',
+    'investment.position.currentPrice': 'Current Price',
+    'investment.position.totalValue': 'Total Value',
+    'investment.position.return': 'Return',
+    'investment.position.profit': 'Profit',
+    'investment.position.loss': 'Loss',
     
-    // Investment List
-    'list.title': '📋 My Investments',
-    'list.empty': 'You have no active investments yet',
-    'list.addFirst': 'Add your first investment to start',
+    // Available Assets Section
+    'investment.available.title': '📈 Available Assets',
+    'investment.available.subtitle': 'Digital financial assets for investment',
+    'investment.available.loading': 'Loading assets...',
+    'investment.available.empty': 'No available assets',
+    'investment.available.emptyDesc': 'Assets will appear later',
     
-    // Investment Item
-    'item.roi': 'ROI',
-    'item.status': 'Status',
-    'item.date': 'Date',
+    // Asset Card
+    'investment.asset.price': 'Price',
+    'investment.asset.change24h': 'Change (24h)',
+    'investment.asset.marketCap': 'Market Cap',
+    'investment.asset.volume': 'Volume',
+    'investment.asset.buy': 'Buy',
+    'investment.asset.sell': 'Sell',
+    'investment.asset.details': 'Details',
     
-    // Status
-    'status.active': 'Active',
-    'status.completed': 'Completed',
-    'status.pending': 'Pending',
+    // Transaction Actions
+    'investment.action.buy': '💰 Buy',
+    'investment.action.sell': '💸 Sell',
+    'investment.action.swap': '🔄 Swap',
+    'investment.action.transfer': '📤 Transfer',
     
-    // Crypto Portfolio
-    'crypto.title': '₿ Crypto Portfolio',
-    'crypto.empty': 'No crypto assets',
-    'crypto.balance': 'Balance',
-    'crypto.price': 'Price',
-    'crypto.change24h': '24h Change',
+    // Transaction Modal
+    'investment.modal.buy.title': 'Buy Asset',
+    'investment.modal.sell.title': 'Sell Asset',
+    'investment.modal.amount': 'Amount',
+    'investment.modal.price': 'Price',
+    'investment.modal.total': 'Total',
+    'investment.modal.balance': 'Balance',
+    'investment.modal.insufficient': 'Insufficient funds',
+    'investment.modal.confirm': 'Confirm',
+    'investment.modal.cancel': 'Cancel',
     
-    // Actions
-    'actions.addInvestment': 'Add Investment',
-    'actions.viewDetails': 'Details',
-    'actions.withdraw': 'Withdraw',
+    // History Section
+    'investment.history.title': '📋 Transaction History',
+    'investment.history.empty': 'History is empty',
+    'investment.history.emptyDesc': 'Your transactions will appear here',
+    'investment.history.loading': 'Loading history...',
+    
+    // Transaction Types
+    'investment.tx.buy': 'Buy',
+    'investment.tx.sell': 'Sell',
+    'investment.tx.swap': 'Swap',
+    'investment.tx.transfer': 'Transfer',
+    'investment.tx.deposit': 'Deposit',
+    'investment.tx.withdrawal': 'Withdrawal',
+    
+    // Transaction Status
+    'investment.status.pending': 'Pending',
+    'investment.status.completed': 'Completed',
+    'investment.status.failed': 'Failed',
+    'investment.status.cancelled': 'Cancelled',
+    
+    // Filters
+    'investment.filter.all': 'All',
+    'investment.filter.buy': 'Purchases',
+    'investment.filter.sell': 'Sales',
+    'investment.filter.today': 'Today',
+    'investment.filter.week': 'Week',
+    'investment.filter.month': 'Month',
+    'investment.filter.year': 'Year',
     
     // Common
-    'common.loading': 'Loading...',
-    'common.error': 'Loading error',
-    'common.retry': 'Retry',
-    'common.back': 'Back',
+    'investment.comingSoon': '🚧 Coming Soon',
+    'investment.comingSoonDesc': 'This feature will be available in future versions',
+    'investment.error': 'Error',
+    'investment.success': 'Success',
+    'investment.loading': 'Loading...',
+    
+    // Units
+    'investment.units.pieces': 'pcs',
+    'investment.units.rub': '₽',
+    'investment.units.usd': '$',
+    'investment.units.eur': '€',
+    'investment.units.aed': 'AED',
+    
+    // Time periods
+    'investment.time.hour': 'hour',
+    'investment.time.day': 'day',
+    'investment.time.week': 'week',
+    'investment.time.month': 'month',
+    'investment.time.year': 'year',
     
     // Errors
-    'error.loadingData': 'Error loading data'
+    'investment.error.loadFailed': 'Failed to load data',
+    'investment.error.txFailed': 'Transaction failed',
+    'investment.error.insufficientFunds': 'Insufficient funds',
+    'investment.error.invalidAmount': 'Invalid amount',
+    'investment.error.minAmount': 'Minimum amount',
+    'investment.error.maxAmount': 'Maximum amount'
   }
 };
 
-// Current language (default: ru)
-let currentLanguage = 'ru';
+// Register module translations with core i18n
+registerModuleTranslations('investments', investmentsTranslations);
 
-/**
- * Get translation for key
- */
-export function t(key, lang = null) {
-  const language = lang || currentLanguage;
-  return translations[language]?.[key] || key;
-}
+console.log('✅ [Investments] i18n module registered');
 
-/**
- * Set current language
- */
-export function setLanguage(lang) {
-  if (translations[lang]) {
-    currentLanguage = lang;
-    console.log(`🌍 [Investments] Language set to: ${lang}`);
-    return true;
-  }
-  console.warn(`⚠️ [Investments] Language not supported: ${lang}`);
-  return false;
-}
-
-/**
- * Get current language
- */
-export function getCurrentLanguage() {
-  return currentLanguage;
-}
-
-// Auto-detect language from Telegram
-if (typeof window !== 'undefined' && window.Telegram?.WebApp) {
-  const tgLang = window.Telegram.WebApp.initDataUnsafe?.user?.language_code;
-  if (tgLang === 'en') {
-    setLanguage('en');
-  }
-}
-
-console.log('🌍 [Investments] i18n initialized:', currentLanguage);
+// Re-export core i18n functions for convenience
+export { t, setLanguage, getCurrentLanguage } from '../js/utils/i18n.js';

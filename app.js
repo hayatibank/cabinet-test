@@ -1,4 +1,7 @@
-/* /webapp/app.js v2.0.1 */
+/* /webapp/app.js v2.0.2 */
+// CHANGELOG v2.0.2:
+// - ADDED: Auto-import module i18n files for registration
+// - All modules now self-register on import
 // CHANGELOG v2.0.1:
 // - ADDED: Language switcher import
 // - ADDED: Update page translations on load
@@ -25,6 +28,36 @@ import './js/utils/languageSwitcher.js'; // ✅ Auto-creates language switcher
 import './auth/accountActions.js'; // Imports logout & deleteAccount functions
 import './cabinet/accountsUI.js'; // Registers cabinetReady event listener
 import { claimHYC } from './HayatiCoin/hycService.js';
+
+// ==================== 🌍 AUTO-REGISTER MODULE I18N ====================
+// Import all module i18n files to trigger auto-registration
+// Order doesn't matter - modules register themselves on import
+
+console.log('🌍 [App] Registering module i18n...');
+
+// Auth module (inherits from core)
+import './auth/i18n.js';
+
+// Cabinet module (inherits from core)
+import './cabinet/i18n.js';
+
+// Offering Zone module (registers translations)
+import './offeringZone/i18n.js';
+
+// Account Dashboard module (registers translations)
+import './accountDashboard/i18n.js';
+
+// Investments module (registers translations)
+import './investments/i18n.js';
+
+// ✅ All modules are now registered!
+console.log('✅ [App] All module i18n registered');
+
+// Import registered modules count for debugging
+import { getRegisteredModules } from './js/utils/i18n.js';
+console.log(`📦 [App] Registered modules: ${getRegisteredModules().join(', ')}`);
+
+// ==================== FIREBASE INITIALIZATION ====================
 
 // Initialize Firebase
 const app = initializeApp(FIREBASE_CONFIG);
