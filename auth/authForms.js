@@ -1,4 +1,8 @@
-/* /webapp/auth/authForms.js v2.0.0 */
+/* /webapp/auth/authForms.js v2.1.0 */
+// CHANGELOG v2.1.0:
+// - ADDED: Use centralized i18n from /js/utils/i18n.js
+// - REMOVED: Local error messages (now use t() function)
+// - IMPROVED: All user-facing strings use translations
 // CHANGELOG v2.0.0:
 // - BREAKING: Always use ID Token (never Custom Token)
 // - ADDED: Custom Token → ID Token exchange in all flows
@@ -15,7 +19,7 @@ import {
 import { linkTelegramAccount, createUserDocument } from '../js/api.js';
 import { saveSession, getCurrentChatId } from '../js/session.js';
 import { showLoadingScreen, showAuthScreen, showCabinet, showError, showSuccess, clearErrors } from '../js/ui.js';
-import { t } from './i18n.js';
+import { t } from '../js/utils/i18n.js';
 import { requestRegistrationReward } from '../HayatiCoin/hycService.js';
 
 // Get Telegram WebApp

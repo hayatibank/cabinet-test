@@ -1,4 +1,7 @@
-/* /webapp/app.js v2.0.0 */
+/* /webapp/app.js v2.0.1 */
+// CHANGELOG v2.0.1:
+// - ADDED: Language switcher import
+// - ADDED: Update page translations on load
 // CHANGELOG v2.0.0:
 // - BREAKING: Multi-session support
 // - ADDED: Custom Token → ID Token exchange in all flows
@@ -17,6 +20,8 @@ import { setupLoginHandler, setupRegisterHandler, setupResetHandler, setupFormSw
 import { getSession, saveSession, getCurrentChatId, listAllSessions } from './js/session.js';
 import { showLoadingScreen, showAuthScreen, showCabinet } from './js/ui.js';
 import { setupTokenInterceptor, setupPeriodicTokenCheck, setupBackgroundTokenRefresh, ensureFreshToken } from './js/tokenManager.js';
+import { updatePageTranslations } from './js/utils/i18n.js';
+import './js/utils/languageSwitcher.js'; // ✅ Auto-creates language switcher
 import './auth/accountActions.js'; // Imports logout & deleteAccount functions
 import './cabinet/accountsUI.js'; // Registers cabinetReady event listener
 import { claimHYC } from './HayatiCoin/hycService.js';
@@ -37,7 +42,7 @@ console.log('🔌 Firestore: Long Polling mode (WebSocket disabled)');
 // Setup token management system
 setupTokenInterceptor();
 setupPeriodicTokenCheck();
-setupBackgroundTokenRefresh(); // ✅ NEW: Background refresh
+setupBackgroundTokenRefresh();
 console.log('🔒 Token auto-refresh system enabled');
 
 // Get Telegram WebApp
@@ -98,8 +103,6 @@ async function initMiniApp() {
     if (chatId && initData) {
       console.log('🔍 Checking Telegram binding...');
       
-      // ✅ IMPORTANT: Don't fail on invalid initData hash
-      // Hash might be stale, but binding can still exist
       const binding = await checkTelegramBinding(chatId, initData);
       
       if (binding && binding.bound && binding.uid) {
@@ -160,13 +163,16 @@ async function initMiniApp() {
     console.log('🔓 No session found, showing auth screen');
     showAuthScreen('login');
     
+    // ✅ Update page translations after showing auth screen
+    updatePageTranslations();
+    
   } catch (err) {
     console.error('❌ Error initializing Mini App:', err);
     showAuthScreen('login');
+    updatePageTranslations();
   }
 
   await claimHYC('app_login');
-
 }
 
 // ======================
@@ -181,6 +187,12 @@ window.addEventListener('DOMContentLoaded', () => {
   setupRegisterHandler(auth, db);
   setupResetHandler(auth);
   setupFormSwitching();
+  
+  // ✅ Listen for language changes
+  window.addEventListener('languageChanged', (e) => {
+    console.log('🌍 Language changed to:', e.detail.language);
+    updatePageTranslations();
+  });
   
   // Initialize app
   initMiniApp();

@@ -1,5 +1,7 @@
-/* /webapp/css/main.css v1.8.0 */
-/* CHANGELOG v1.8.0:
+/* /webapp/css/main.css v1.9.0 */
+/* CHANGELOG v1.9.0:
+ * - ADDED: ../js/utils/languageSwitcher.css (language switcher component)
+ * CHANGELOG v1.8.0:
  * - ADDED: buttons-3d-variables.css (3D button system variables)
  * - ADDED: buttons-3d.css (futuristic 3D buttons)
  * - NOTE: Old buttons.css kept for backward compatibility
@@ -13,7 +15,7 @@
 /* ==================== BASE ==================== */
 @import "./base/reset.css";
 @import "./base/variables.css";
-@import "./base/buttons-3d-variables.css";  /* 🆕 NEW: 3D button variables */
+@import "./base/buttons-3d-variables.css";
 @import "./base/typography.css";
 
 /* ==================== LAYOUT ==================== */
@@ -27,26 +29,27 @@
 
 /* ==================== COMPONENTS ==================== */
 @import "./components/spinner.css";
-@import "./components/buttons.css";          /* Old buttons (backward compat) */
-@import "./components/buttons-3d.css";       /* 🆕 NEW: 3D buttons v3.0 */
+@import "./components/buttons.css";
+@import "./components/buttons-3d.css";
 @import "./components/forms.css";
 @import "./components/cards.css";
 @import "./components/dropdown.css";
 @import "./components/modal.css";
+@import "./components/languageSwitcher.css";  /* ✅ NEW: Language switcher */
 
 /* ==================== SCREENS ==================== */
 @import "./screens/loading.css";
 
 /* ==================== MODULES (isolated) ==================== */
-@import "../auth/auth.css";                    /* Auth module */
-@import "../cabinet/cabinet.css";              /* Cabinet module */
-@import "../accountDashboard/dashboard.css";   /* Account Dashboard (7 steps) */
-@import "../finStatement/financial-report.css"; /* Financial Statement */
-@import "../offeringZone/offering-zone.css";   /* Offering Zone */
-@import "../investments/investments.css";      /* Investment Level 1 */
-@import "../businessTriangle/triangle.css";    /* Business Triangle */
-@import "../20L/20L.css";                      /* 20L System */
-@import "../HayatiCoin/hayatiCoin.css";        /* HayatiCoin (HYC) */
+@import "../auth/auth.css";
+@import "../cabinet/cabinet.css";
+@import "../accountDashboard/dashboard.css";
+@import "../finStatement/financial-report.css";
+@import "../offeringZone/offering-zone.css";
+@import "../investments/investments.css";
+@import "../businessTriangle/triangle.css";
+@import "../20L/20L.css";
+@import "../HayatiCoin/hayatiCoin.css";
 
 /* ==================== RESPONSIVE ==================== */
 @import "./responsive.css";

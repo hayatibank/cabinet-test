@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🏦 ФД «Хаяти» — Вход</title>
+  <title data-i18n="app.title">🏦 ФД «Хаяти» — Вход</title>
   
   <!-- 🆕 FAVICON: Official HYC Logo -->
   <link rel="icon" type="image/jpeg" href="https://hayati-coin.github.io/website/OfficialLogo.jpg">
@@ -11,7 +11,6 @@
   
   <link rel="stylesheet" href="css/main.css">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <script src="i18n.js"></script>
 </head>
 <body>
   <div class="container">
@@ -21,7 +20,7 @@
     <!-- ======================== -->
     <div id="loadingScreen" class="screen">
       <div class="spinner"></div>
-      <p>Загрузка...</p>
+      <p data-i18n="common.loading">Загрузка...</p>
     </div>
 
     <!-- ======================== -->
@@ -30,22 +29,22 @@
     <div id="authScreen" class="screen hidden">
       <div class="logo">
         <h1>🏦 ФД «Хаяти»</h1>
-        <p class="subtitle">Управление капиталом</p>
+        <p class="subtitle" data-i18n="app.subtitle">Управление капиталом</p>
       </div>
 
       <!-- Login Form -->
       <div id="loginForm" class="form-card">
-        <h2>Вход в систему</h2>
+        <h2 data-i18n="auth.login.title">Вход в систему</h2>
         
         <div class="input-group">
-          <label for="loginEmail">Email</label>
-          <input type="email" id="loginEmail" placeholder="your@email.com" autocomplete="email">
+          <label for="loginEmail" data-i18n="auth.login.email">Email</label>
+          <input type="email" id="loginEmail" data-i18n="auth.login.emailPlaceholder" placeholder="your@email.com" autocomplete="email">
         </div>
 
         <div class="input-group">
-          <label for="loginPassword">Пароль</label>
+          <label for="loginPassword" data-i18n="auth.login.password">Пароль</label>
           <div class="password-input-wrapper">
-            <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password">
+            <input type="password" id="loginPassword" data-i18n="auth.login.passwordPlaceholder" placeholder="••••••••" autocomplete="current-password">
             <button type="button" class="btn-toggle-password" onclick="togglePassword('loginPassword')">
               <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
@@ -59,16 +58,16 @@
           </div>
         </div>
 
-        <button id="loginBtn" class="btn btn-3d btn-3d-compact">
+        <button id="loginBtn" class="btn-3d btn-3d-compact">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
             <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
           </svg>
-          Войти
+          <span data-i18n="auth.login.submit">Войти</span>
         </button>
         
         <div class="links">
-          <a href="#" id="forgotPasswordLink">Забыли пароль?</a>
-          <a href="#" id="showRegisterLink">Регистрация</a>
+          <a href="#" id="forgotPasswordLink" data-i18n="auth.login.forgotPassword">Забыли пароль?</a>
+          <a href="#" id="showRegisterLink" data-i18n="auth.login.register">Регистрация</a>
         </div>
 
         <div id="loginError" class="error hidden"></div>
@@ -76,17 +75,17 @@
 
       <!-- Register Form -->
       <div id="registerForm" class="form-card hidden">
-        <h2>Регистрация</h2>
+        <h2 data-i18n="auth.register.title">Регистрация</h2>
         
         <div class="input-group">
-          <label for="registerEmail">Email</label>
-          <input type="email" id="registerEmail" placeholder="your@email.com" autocomplete="email">
+          <label for="registerEmail" data-i18n="auth.register.email">Email</label>
+          <input type="email" id="registerEmail" data-i18n="auth.register.emailPlaceholder" placeholder="your@email.com" autocomplete="email">
         </div>
 
         <div class="input-group">
-          <label for="registerPassword">Пароль</label>
+          <label for="registerPassword" data-i18n="auth.register.password">Пароль</label>
           <div class="password-input-wrapper">
-            <input type="password" id="registerPassword" placeholder="Минимум 6 символов" autocomplete="new-password">
+            <input type="password" id="registerPassword" data-i18n="auth.register.passwordPlaceholder" placeholder="Минимум 6 символов" autocomplete="new-password">
             <button type="button" class="btn-toggle-password" onclick="togglePassword('registerPassword')">
               <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
@@ -101,9 +100,9 @@
         </div>
 
         <div class="input-group">
-          <label for="registerPasswordConfirm">Подтвердите пароль</label>
+          <label for="registerPasswordConfirm" data-i18n="auth.register.passwordConfirm">Подтвердите пароль</label>
           <div class="password-input-wrapper">
-            <input type="password" id="registerPasswordConfirm" placeholder="••••••••" autocomplete="new-password">
+            <input type="password" id="registerPasswordConfirm" data-i18n="auth.register.passwordConfirmPlaceholder" placeholder="••••••••" autocomplete="new-password">
             <button type="button" class="btn-toggle-password" onclick="togglePassword('registerPasswordConfirm')">
               <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
@@ -117,15 +116,15 @@
           </div>
         </div>
 
-        <button id="registerBtn" class="btn btn-3d btn-3d-compact">
+        <button id="registerBtn" class="btn-3d btn-3d-compact">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/>
           </svg>
-          Создать аккаунт
+          <span data-i18n="auth.register.submit">Создать аккаунт</span>
         </button>
         
         <div class="links">
-          <a href="#" id="showLoginLink">Уже есть аккаунт? Войти</a>
+          <a href="#" id="showLoginLink" data-i18n="auth.register.haveAccount">Уже есть аккаунт? Войти</a>
         </div>
 
         <div id="registerError" class="error hidden"></div>
@@ -133,24 +132,24 @@
 
       <!-- Reset Password Form -->
       <div id="resetForm" class="form-card hidden">
-        <h2>Сброс пароля</h2>
+        <h2 data-i18n="auth.reset.title">Сброс пароля</h2>
         
-        <p class="info-text">Введите ваш email, и мы отправим ссылку для сброса пароля</p>
+        <p class="info-text" data-i18n="auth.reset.info">Введите ваш email, и мы отправим ссылку для сброса пароля</p>
         
         <div class="input-group">
-          <label for="resetEmail">Email</label>
-          <input type="email" id="resetEmail" placeholder="your@email.com" autocomplete="email">
+          <label for="resetEmail" data-i18n="auth.reset.email">Email</label>
+          <input type="email" id="resetEmail" data-i18n="auth.reset.emailPlaceholder" placeholder="your@email.com" autocomplete="email">
         </div>
 
-        <button id="resetBtn" class="btn btn-3d btn-3d-compact">
+        <button id="resetBtn" class="btn-3d btn-3d-compact">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
             <path d="M21.99 4c0-1.1-.89-2-1.99-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4-.01-18zM18 14H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/>
           </svg>
-          Отправить ссылку
+          <span data-i18n="auth.reset.submit">Отправить ссылку</span>
         </button>
         
         <div class="links">
-          <a href="#" id="backToLoginLink">Назад к входу</a>
+          <a href="#" id="backToLoginLink" data-i18n="auth.reset.backToLogin">Назад к входу</a>
         </div>
 
         <div id="resetError" class="error hidden"></div>
@@ -164,14 +163,14 @@
     <div id="cabinetScreen" class="screen hidden">
       <div class="cabinet-card">
         <div class="cabinet-header">
-          <h2>💼 Личный кабинет</h2>
+          <h2 data-i18n="cabinet.title">💼 Личный кабинет</h2>
           <p class="user-email">loading...</p>
           <!-- HYC balance will be rendered here by hycUI.js -->
         </div>
 
         <div class="cabinet-content">
-          <p>🎉 Добро пожаловать!</p>
-          <p>Здесь будет ваш кабинет с балансом, платежами и управлением капиталом.</p>
+          <p data-i18n="app.cabinetWelcome">🎉 Добро пожаловать!</p>
+          <p data-i18n="app.cabinetDescription">Здесь будет ваш кабинет с балансом, платежами и управлением капиталом.</p>
         </div>
 
         <div class="cabinet-actions">
@@ -179,14 +178,14 @@
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
               <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
             </svg>
-            Выйти
+            <span data-i18n="auth.logout.button">Выйти</span>
           </button>
           
           <button onclick="showProfileMenu()" class="btn btn-3d">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
               <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94L14.4 2.81c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
             </svg>
-            Настройки
+            <span data-i18n="cabinet.settings">Настройки</span>
           </button>
         </div>
       </div>
@@ -199,7 +198,7 @@
       <div class="modal-overlay" onclick="closeProfileMenu()"></div>
       <div class="modal-content">
         <div class="modal-header">
-          <h3>⚙️ Настройки профиля</h3>
+          <h3 data-i18n="cabinet.settings">⚙️ Настройки профиля</h3>
           <button onclick="closeProfileMenu()" class="btn-close">×</button>
         </div>
         <div class="modal-body">
@@ -225,7 +224,7 @@
               Удаление учетной записи безвозвратно удалит все ваши данные из системы ФД «Хаяти»
             </p>
             <button onclick="deleteAccount()" class="btn btn-danger btn-small">
-              🗑️ Удалиться из ФД «Хаяти»
+              <span data-i18n="auth.delete.button">🗑️ Удалиться из ФД «Хаяти»</span>
             </button>
           </div>
         </div>
