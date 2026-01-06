@@ -1,4 +1,7 @@
-/* /webapp/offeringZone/offeringZone.js v1.2.0 */
+/* /webapp/offeringZone/offeringZone.js v1.3.0 */
+// CHANGELOG v1.3.0:
+// - FIXED: Import t() from local ./i18n.js (not core)
+// - Module i18n auto-registers on import
 // CHANGELOG v1.2.0:
 // - UPDATED: Now uses fetchMarketSnapshot() instead of fetchAvailableUnits()
 // - ADDED: Snapshot metadata logging
@@ -6,7 +9,7 @@
 // - MOVED: From /js/cabinet/reports/ to /offeringZone/ (modular)
 // - FIXED: Import paths
 
-import { t } from './i18n.js';
+import { t } from './i18n.js'; // ✅ Import from local module
 import { calculateAvailableBudget, fetchMarketSnapshot, filterUnitsByBudget, getTopOffers } from './offeringService.js';
 
 /**

@@ -12,37 +12,6 @@
 import { t } from './i18n.js';
 
 /**
- * Translate category label by code
- * Maps Firestore category codes to translation keys
- */
-function translateCategoryLabel(code) {
-  // Map category code to translation key
-  const key = code.replace('.', '.');
-  
-  // Try specific translation (e.g., "income.A.1")
-  const categoryKey = code.startsWith('A') || code.startsWith('C') || code.startsWith('E') 
-    ? `income.${key}`
-    : code.startsWith('0') || code.startsWith('1')
-    ? `expenses.${key}`
-    : code.startsWith('N') || code.startsWith('P')
-    ? `assets.${key}`
-    : code.startsWith('T')
-    ? `liabilities.${key}`
-    : null;
-  
-  if (categoryKey) {
-    const translated = t(categoryKey);
-    // If translation exists (not just returning the key), use it
-    if (translated !== categoryKey) {
-      return translated;
-    }
-  }
-  
-  // Fallback to original label from Firestore
-  return null;
-}
-
-/**
  * Format currency
  */
 export function formatCurrency(amount, currency = null) {
@@ -119,14 +88,11 @@ export function formatIncomeSection(incomeData) {
     
     // Subcategories
     group.items.forEach(item => {
-      // Try to translate label, fallback to Firestore label
-      const translatedLabel = translateCategoryLabel(item.code) || item.label;
-      
       html += `
         <div class="report-row subcategory-row editable-row" 
              onclick="window.reportManager.showEditModal('income', '${item.code}')"
              title="${t('common.clickToEdit')}">
-          <div class="report-cell subcategory-cell">${translatedLabel}</div>
+          <div class="report-cell subcategory-cell">${item.label}</div>
           <div class="report-cell amount-cell">${formatCurrency(item.amount || 0)}</div>
         </div>
       `;
@@ -200,14 +166,11 @@ export function formatExpensesSection(expensesData, totalIncome = 0) {
     
     // Subcategories
     group.items.forEach(item => {
-      // Try to translate label, fallback to Firestore label
-      const translatedLabel = translateCategoryLabel(item.code) || item.label;
-      
       html += `
         <div class="report-row subcategory-row editable-row"
              onclick="window.reportManager.showEditModal('expenses', '${item.code}')"
              title="${t('common.clickToEdit')}">
-          <div class="report-cell subcategory-cell">${translatedLabel}</div>
+          <div class="report-cell subcategory-cell">${item.label}</div>
           <div class="report-cell amount-cell">${formatCurrency(item.amount || 0)}</div>
         </div>
       `;
@@ -290,14 +253,11 @@ export function formatAssetsSection(assetsData) {
   `;
   
   groups['N'].items.forEach(item => {
-    // Try to translate label, fallback to Firestore label
-    const translatedLabel = translateCategoryLabel(item.code) || item.label;
-    
     html += `
       <div class="report-row subcategory-row editable-row"
            onclick="window.reportManager.showEditModal('assets', '${item.code}')"
            title="${t('common.clickToEdit')}">
-        <div class="report-cell subcategory-cell">${translatedLabel}</div>
+        <div class="report-cell subcategory-cell">${item.label}</div>
         <div class="report-cell amount-cell">${formatCurrency(item.amount || 0)}</div>
       </div>
     `;
@@ -319,14 +279,11 @@ export function formatAssetsSection(assetsData) {
   `;
   
   groups['P'].items.forEach(item => {
-    // Try to translate label, fallback to Firestore label
-    const translatedLabel = translateCategoryLabel(item.code) || item.label;
-    
     html += `
       <div class="report-row subcategory-row editable-row"
            onclick="window.reportManager.showEditModal('assets', '${item.code}')"
            title="${t('common.clickToEdit')}">
-        <div class="report-cell subcategory-cell">${translatedLabel}</div>
+        <div class="report-cell subcategory-cell">${item.label}</div>
         <div class="report-cell amount-cell">${formatCurrency(item.amount || 0)}</div>
       </div>
     `;
@@ -388,14 +345,11 @@ export function formatLiabilitiesSection(liabilitiesData, assetsByBanker = 0, as
   `;
   
   liabilitiesData.forEach(item => {
-    // Try to translate label, fallback to Firestore label
-    const translatedLabel = translateCategoryLabel(item.code) || item.label;
-    
     html += `
       <div class="report-row subcategory-row editable-row"
            onclick="window.reportManager.showEditModal('liabilities', '${item.code}')"
            title="${t('common.clickToEdit')}">
-        <div class="report-cell subcategory-cell">${translatedLabel}</div>
+        <div class="report-cell subcategory-cell">${item.label}</div>
         <div class="report-cell amount-cell">${formatCurrency(item.amount || 0)}</div>
       </div>
     `;
