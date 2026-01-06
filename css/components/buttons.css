@@ -1,4 +1,9 @@
-/* /webapp/css/components/buttons.css v3.0.0 */
+/* /webapp/css/components/buttons.css v3.0.1 */
+/* CHANGELOG v3.0.1:
+ * - FIXED: White spot on three-dot menu icon
+ * - ADDED: btn-menu-toggle styles with pseudo-element removal
+ * - ADDED: Explicit z-index for icon buttons
+ */
 /* CHANGELOG v3.0.0:
  * - UNIFIED: Single cyberpunk gradient style (blue → pink)
  * - REMOVED: Ferrari red (too many colors)
@@ -206,17 +211,63 @@
   border-radius: 8px;
 }
 
+/* ==================== ICON BUTTONS ==================== */
+
 .btn-icon {
   min-width: auto;
   width: 40px;
   height: 40px;
   padding: 0;
   border-radius: 10px;
+  position: relative;
+  z-index: 10;
 }
 
 .btn-icon svg {
   width: 20px;
   height: 20px;
+}
+
+/* 🆕 FIXED: Remove pseudo-elements from icon buttons */
+.btn-icon::before,
+.btn-icon::after {
+  display: none !important;
+}
+
+/* ==================== MENU TOGGLE BUTTON ==================== */
+
+.btn-menu-toggle {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+  border-radius: 6px;
+  position: relative;
+  z-index: 11;
+}
+
+.btn-menu-toggle:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text);
+}
+
+/* 🆕 CRITICAL FIX: Remove ALL pseudo-elements from menu button */
+.btn-menu-toggle::before,
+.btn-menu-toggle::after {
+  display: none !important;
+  content: none !important;
+}
+
+.btn-menu-toggle svg {
+  width: 20px;
+  height: 20px;
+  pointer-events: none;
 }
 
 /* ==================== BUTTON GROUPS ==================== */

@@ -1,5 +1,24 @@
+/* /webapp/css/components/dropdown.css v1.1.0 */
+/* CHANGELOG v1.1.0:
+ * - FIXED: White spot on three-dot menu icon
+ * - ADDED: z-index to menu button
+ * - REMOVED: pseudo-elements that cause overlay
+ */
+
 .account-menu {
   position: relative;
+  z-index: 10; /* Above card decorations */
+}
+
+.btn-menu-toggle {
+  position: relative;
+  z-index: 11; /* Above everything */
+}
+
+/* 🆕 FIXED: Remove any pseudo-elements causing white spot */
+.btn-menu-toggle::before,
+.btn-menu-toggle::after {
+  display: none !important;
 }
 
 .dropdown-menu {

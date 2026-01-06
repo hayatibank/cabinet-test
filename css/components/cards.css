@@ -1,3 +1,9 @@
+/* /webapp/css/components/cards.css v1.1.0 */
+/* CHANGELOG v1.1.0:
+ * - FIXED: account-card::before now properly positioned below menu button
+ * - ADDED: z-index management
+ */
+
 .form-card {
   background: var(--glass-bg);
   backdrop-filter: blur(10px);
@@ -38,6 +44,7 @@
   transition: all 0.3s;
   position: relative;
   overflow: hidden;
+  z-index: 1; /* 🆕 ADDED: Base z-index */
 }
 
 .account-card::before {
@@ -50,6 +57,8 @@
   background: linear-gradient(90deg, var(--neon-blue), var(--neon-pink));
   opacity: 0;
   transition: opacity 0.3s;
+  z-index: 0; /* 🆕 FIXED: Below content */
+  pointer-events: none; /* 🆕 ADDED: Don't block clicks */
 }
 
 .account-card:hover {
