@@ -1,27 +1,20 @@
-/* /webapp/finStatement/reportFormatters.js v1.2.0 */
-// CHANGELOG v1.2.0:
-// - ADDED: Import t() from local i18n module
-// - FIXED: All hardcoded strings now use translations
-// - Category labels remain as-is (they are dynamic from Firestore)
+/* /webapp/js/cabinet/reports/reportFormatters.js v1.1.0 */
 // CHANGELOG v1.1.0:
 // - Added category/subcategory hierarchy
 // - Added visual indentation
 // - Added color coding (green totals, red expenses)
 // - Show all categories even if amount = 0
 
-import { t } from './i18n.js';
-
 /**
  * Format currency
  */
-export function formatCurrency(amount, currency = null) {
-  const currencySymbol = currency || t('common.currency');
+export function formatCurrency(amount, currency = '₽') {
   const formatted = new Intl.NumberFormat('ru-RU', {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0
   }).format(amount || 0);
   
-  return `${formatted} ${currencySymbol}`;
+  return `${formatted} ${currency}`;
 }
 
 /**
@@ -36,7 +29,7 @@ export function formatPercent(value) {
  */
 export function formatMonths(value) {
   const months = Math.floor(value);
-  return `${months} ${t('common.months')}`;
+  return `${months} мес.`;
 }
 
 /**
@@ -45,9 +38,9 @@ export function formatMonths(value) {
 export function formatIncomeSection(incomeData) {
   // Group by parent category
   const groups = [
-    { key: 'A', label: t('income.A').replace('A. ', ''), items: [] },
-    { key: 'C', label: t('income.C').replace('C. ', ''), items: [] },
-    { key: 'E', label: t('income.E').replace('E. ', ''), items: [] }
+    { key: 'A', label: 'Найм', items: [] },
+    { key: 'C', label: 'Активы', items: [] },
+    { key: 'E', label: 'Портфолио', items: [] }
   ];
   
   let grandTotal = 0;
@@ -63,7 +56,7 @@ export function formatIncomeSection(incomeData) {
   
   let html = `
     <div class="report-section income-section">
-      <h3>${t('report.income')}</h3>
+      <h3>💰 Доходы</h3>
       <div class="report-table">
   `;
   
@@ -91,7 +84,7 @@ export function formatIncomeSection(incomeData) {
       html += `
         <div class="report-row subcategory-row editable-row" 
              onclick="window.reportManager.showEditModal('income', '${item.code}')"
-             title="${t('common.clickToEdit')}">
+             title="Нажмите для редактирования">
           <div class="report-cell subcategory-cell">${item.label}</div>
           <div class="report-cell amount-cell">${formatCurrency(item.amount || 0)}</div>
         </div>
@@ -101,7 +94,7 @@ export function formatIncomeSection(incomeData) {
     // Group total
     html += `
       <div class="report-row group-total-row">
-        <div class="report-cell">${letters.total}. ${group.label} ${t('report.total.income').includes('итого') ? 'итого' : 'total'}</div>
+        <div class="report-cell">${letters.total}. ${group.label} итого</div>
         <div class="report-cell amount-cell group-total-amount">${formatCurrency(groupTotal)}</div>
       </div>
     `;
@@ -110,7 +103,7 @@ export function formatIncomeSection(incomeData) {
   // Grand total
   html += `
     <div class="report-row grand-total-row income-total">
-      <div class="report-cell">${t('report.total.income')}</div>
+      <div class="report-cell">G. ДОХОДЫ ИТОГО</div>
       <div class="report-cell amount-cell grand-total-amount">${formatCurrency(grandTotal)}</div>
     </div>
   `;
@@ -129,8 +122,8 @@ export function formatIncomeSection(incomeData) {
 export function formatExpensesSection(expensesData, totalIncome = 0) {
   // Group by parent category
   const groups = {
-    '0': { label: t('expenses.0'), items: [], letter: 'H' },
-    '1': { label: t('expenses.1'), items: [], letter: 'J' }
+    '0': { label: 'Предварительные', items: [], letter: 'H' },
+    '1': { label: 'Основные', items: [], letter: 'J' }
   };
   
   let grandTotal = 0;
@@ -148,7 +141,7 @@ export function formatExpensesSection(expensesData, totalIncome = 0) {
   
   let html = `
     <div class="report-section expenses-section">
-      <h3>${t('report.expenses')}</h3>
+      <h3>💸 Расходы</h3>
       <div class="report-table">
   `;
   
@@ -169,7 +162,7 @@ export function formatExpensesSection(expensesData, totalIncome = 0) {
       html += `
         <div class="report-row subcategory-row editable-row"
              onclick="window.reportManager.showEditModal('expenses', '${item.code}')"
-             title="${t('common.clickToEdit')}">
+             title="Нажмите для редактирования">
           <div class="report-cell subcategory-cell">${item.label}</div>
           <div class="report-cell amount-cell">${formatCurrency(item.amount || 0)}</div>
         </div>
@@ -180,7 +173,7 @@ export function formatExpensesSection(expensesData, totalIncome = 0) {
     const nextLetter = String.fromCharCode(group.letter.charCodeAt(0) + 1);
     html += `
       <div class="report-row group-total-row">
-        <div class="report-cell">${nextLetter}. ${group.label} ${t('report.total.income').includes('итого') ? 'итого' : 'total'}</div>
+        <div class="report-cell">${nextLetter}. ${group.label} итого</div>
         <div class="report-cell amount-cell group-total-amount">${formatCurrency(groupTotal)}</div>
       </div>
     `;
@@ -189,7 +182,7 @@ export function formatExpensesSection(expensesData, totalIncome = 0) {
   // L. Grand total (expenses)
   html += `
     <div class="report-row grand-total-row expenses-total">
-      <div class="report-cell">${t('report.total.expenses')}</div>
+      <div class="report-cell">L. РАСХОДЫ ИТОГО</div>
       <div class="report-cell amount-cell grand-total-amount">${formatCurrency(grandTotal)}</div>
     </div>
   `;
@@ -197,7 +190,7 @@ export function formatExpensesSection(expensesData, totalIncome = 0) {
   // M. Cash Flow (inside same section)
   html += `
     <div class="report-row grand-total-row cash-flow-row ${isPositive ? 'positive-flow' : 'negative-flow'}">
-      <div class="report-cell">${t('report.cashFlow')}</div>
+      <div class="report-cell">M. ЧИСТЫЙ ДЕНЕЖНЫЙ ПОТОК</div>
       <div class="report-cell amount-cell grand-total-amount">${formatCurrency(cashFlow)}</div>
     </div>
   `;
@@ -216,8 +209,8 @@ export function formatExpensesSection(expensesData, totalIncome = 0) {
 export function formatAssetsSection(assetsData) {
   // Group by parent category
   const groups = {
-    'N': { label: t('assets.N').replace('N. ', ''), items: [] },
-    'P': { label: t('assets.P').replace('P. ', ''), items: [] }
+    'N': { label: 'Активы', items: [] },
+    'P': { label: 'Роскошь', items: [] }
   };
   
   let activesTotal = 0;
@@ -240,14 +233,14 @@ export function formatAssetsSection(assetsData) {
   
   let html = `
     <div class="report-section assets-section">
-      <h3>${t('report.assets')}</h3>
+      <h3>📊 Активы</h3>
       <div class="report-table">
   `;
   
   // N. Активы group
   html += `
     <div class="report-row group-header-row">
-      <div class="report-cell">${t('assets.N')}</div>
+      <div class="report-cell">N. Активы</div>
       <div class="report-cell amount-cell"></div>
     </div>
   `;
@@ -256,7 +249,7 @@ export function formatAssetsSection(assetsData) {
     html += `
       <div class="report-row subcategory-row editable-row"
            onclick="window.reportManager.showEditModal('assets', '${item.code}')"
-           title="${t('common.clickToEdit')}">
+           title="Нажмите для редактирования">
         <div class="report-cell subcategory-cell">${item.label}</div>
         <div class="report-cell amount-cell">${formatCurrency(item.amount || 0)}</div>
       </div>
@@ -265,7 +258,7 @@ export function formatAssetsSection(assetsData) {
   
   html += `
     <div class="report-row group-total-row">
-      <div class="report-cell">${t('assets.O')}</div>
+      <div class="report-cell">O. Активы подытог</div>
       <div class="report-cell amount-cell group-total-amount">${formatCurrency(activesTotal)}</div>
     </div>
   `;
@@ -273,7 +266,7 @@ export function formatAssetsSection(assetsData) {
   // P. Роскошь group
   html += `
     <div class="report-row group-header-row">
-      <div class="report-cell">${t('assets.P')}</div>
+      <div class="report-cell">P. Роскошь</div>
       <div class="report-cell amount-cell"></div>
     </div>
   `;
@@ -282,7 +275,7 @@ export function formatAssetsSection(assetsData) {
     html += `
       <div class="report-row subcategory-row editable-row"
            onclick="window.reportManager.showEditModal('assets', '${item.code}')"
-           title="${t('common.clickToEdit')}">
+           title="Нажмите для редактирования">
         <div class="report-cell subcategory-cell">${item.label}</div>
         <div class="report-cell amount-cell">${formatCurrency(item.amount || 0)}</div>
       </div>
@@ -291,7 +284,7 @@ export function formatAssetsSection(assetsData) {
   
   html += `
     <div class="report-row group-total-row">
-      <div class="report-cell">${t('assets.Q')}</div>
+      <div class="report-cell">Q. Роскошь итого</div>
       <div class="report-cell amount-cell group-total-amount">${formatCurrency(luxuryTotal)}</div>
     </div>
   `;
@@ -299,7 +292,7 @@ export function formatAssetsSection(assetsData) {
   // R. АКТИВЫ ИТОГО по банкиру
   html += `
     <div class="report-row grand-total-row assets-total">
-      <div class="report-cell">${t('report.total.assets.banker')}</div>
+      <div class="report-cell">R. АКТИВЫ ИТОГО по банкиру</div>
       <div class="report-cell amount-cell grand-total-amount">${formatCurrency(assetsByBanker)}</div>
     </div>
   `;
@@ -307,7 +300,7 @@ export function formatAssetsSection(assetsData) {
   // S. АКТИВЫ ИТОГО факт
   html += `
     <div class="report-row grand-total-row assets-factual">
-      <div class="report-cell">${t('report.total.assets.factual')}</div>
+      <div class="report-cell">S. АКТИВЫ ИТОГО факт</div>
       <div class="report-cell amount-cell grand-total-amount">${formatCurrency(assetsFactual)}</div>
     </div>
   `;
@@ -336,10 +329,10 @@ export function formatLiabilitiesSection(liabilitiesData, assetsByBanker = 0, as
   
   let html = `
     <div class="report-section liabilities-section">
-      <h3>${t('report.liabilities')}</h3>
+      <h3>📉 Пассивы</h3>
       <div class="report-table">
         <div class="report-row group-header-row">
-          <div class="report-cell">${t('liabilities.T')}</div>
+          <div class="report-cell">T. Пассивы</div>
           <div class="report-cell amount-cell"></div>
         </div>
   `;
@@ -348,7 +341,7 @@ export function formatLiabilitiesSection(liabilitiesData, assetsByBanker = 0, as
     html += `
       <div class="report-row subcategory-row editable-row"
            onclick="window.reportManager.showEditModal('liabilities', '${item.code}')"
-           title="${t('common.clickToEdit')}">
+           title="Нажмите для редактирования">
         <div class="report-cell subcategory-cell">${item.label}</div>
         <div class="report-cell amount-cell">${formatCurrency(item.amount || 0)}</div>
       </div>
@@ -358,7 +351,7 @@ export function formatLiabilitiesSection(liabilitiesData, assetsByBanker = 0, as
   // U. ПАССИВЫ ИТОГО
   html += `
     <div class="report-row grand-total-row liabilities-total">
-      <div class="report-cell">${t('report.total.liabilities')}</div>
+      <div class="report-cell">U. ПАССИВЫ ИТОГО</div>
       <div class="report-cell amount-cell grand-total-amount">${formatCurrency(total)}</div>
     </div>
   `;
@@ -367,7 +360,7 @@ export function formatLiabilitiesSection(liabilitiesData, assetsByBanker = 0, as
   const vPositive = netWorthByBanker >= 0;
   html += `
     <div class="report-row grand-total-row net-worth-row ${vPositive ? 'positive-net-worth' : 'negative-net-worth'}">
-      <div class="report-cell">${t('report.netWorth.banker')}</div>
+      <div class="report-cell">V. СОСТОЯНИЕ по банкиру (R - U)</div>
       <div class="report-cell amount-cell grand-total-amount">${formatCurrency(netWorthByBanker)}</div>
     </div>
   `;
@@ -376,7 +369,7 @@ export function formatLiabilitiesSection(liabilitiesData, assetsByBanker = 0, as
   const wPositive = netWorthFactual >= 0;
   html += `
     <div class="report-row grand-total-row net-worth-row ${wPositive ? 'positive-net-worth' : 'negative-net-worth'}">
-      <div class="report-cell">${t('report.netWorth.factual')}</div>
+      <div class="report-cell">W. СОСТОЯНИЕ факт (S - U)</div>
       <div class="report-cell amount-cell grand-total-amount">${formatCurrency(netWorthFactual)}</div>
     </div>
   `;
@@ -395,7 +388,7 @@ export function formatLiabilitiesSection(liabilitiesData, assetsByBanker = 0, as
 export function formatAnalysisSection(analysis) {
   return `
     <div class="report-section analysis-section">
-      <h3>${t('report.analysis')}</h3>
+      <h3>📈 Анализ</h3>
       <div class="report-table analysis-table">
         <div class="report-row header-row">
           <div class="report-cell metric-cell">📊 Метрика</div>
@@ -404,8 +397,8 @@ export function formatAnalysisSection(analysis) {
         </div>
         
         <div class="report-row">
-          <div class="report-cell">${t('analysis.saving')}</div>
-          <div class="report-cell formula">${t('analysis.formula.saving')}<br><span class="formula-note">${t('analysis.note.shouldGrow')}</span></div>
+          <div class="report-cell">Сколько вы сохраняете?</div>
+          <div class="report-cell formula">Денежный поток / Общий доход<br><span class="formula-note">***должен расти</span></div>
           <div class="report-cell value-cell ${analysis.cashFlowGrowth ? 'positive' : 'negative'}">
             ${formatCurrency(analysis.cashFlow)}
             ${analysis.cashFlowGrowth ? '↑' : '↓'}
@@ -413,8 +406,8 @@ export function formatAnalysisSection(analysis) {
         </div>
         
         <div class="report-row">
-          <div class="report-cell">${t('analysis.moneyWorking')}</div>
-          <div class="report-cell formula">${t('analysis.formula.moneyWorking')}<br><span class="formula-note">${t('analysis.note.shouldGrow')}</span></div>
+          <div class="report-cell">Работают ли ваши деньги на вас?</div>
+          <div class="report-cell formula">Активы итого + портфолио итого / Общий доход<br><span class="formula-note">***должен расти</span></div>
           <div class="report-cell value-cell ${analysis.moneyWorkingGrowth ? 'positive' : 'negative'}">
             ${analysis.moneyWorking.toFixed(2)}x
             ${analysis.moneyWorkingGrowth ? '↑' : '↓'}
@@ -422,16 +415,16 @@ export function formatAnalysisSection(analysis) {
         </div>
         
         <div class="report-row">
-          <div class="report-cell">${t('analysis.taxes')}</div>
-          <div class="report-cell formula">${t('analysis.formula.taxes')}</div>
+          <div class="report-cell">Сколько вы платите налогов?</div>
+          <div class="report-cell formula">Налоги / Общий доход</div>
           <div class="report-cell value-cell">
             ${formatPercent(analysis.taxRate)}
           </div>
         </div>
         
         <div class="report-row">
-          <div class="report-cell">${t('analysis.housing')}</div>
-          <div class="report-cell formula">${t('analysis.formula.housing')}<br><span class="formula-note">${t('analysis.note.max33')}</span></div>
+          <div class="report-cell">Сколько уходит на жильё?</div>
+          <div class="report-cell formula">Расходы на жильё / Доход<br><span class="formula-note">***не более 33%</span></div>
           <div class="report-cell value-cell ${analysis.housingOk ? 'positive' : 'warning'}">
             ${formatPercent(analysis.housingRate)}
             ${analysis.housingOk ? '✓' : '⚠'}
@@ -439,8 +432,8 @@ export function formatAnalysisSection(analysis) {
         </div>
         
         <div class="report-row">
-          <div class="report-cell">${t('analysis.luxury')}</div>
-          <div class="report-cell formula">${t('analysis.formula.luxury')}<br><span class="formula-note">${t('analysis.note.max33')}</span></div>
+          <div class="report-cell">Сколько вы тратите на роскошь?</div>
+          <div class="report-cell formula">Роскошь итого / Активы по банкиру<br><span class="formula-note">***не более 33%</span></div>
           <div class="report-cell value-cell ${analysis.luxuryOk ? 'positive' : 'warning'}">
             ${formatPercent(analysis.luxuryRate)}
             ${analysis.luxuryOk ? '✓' : '⚠'}
@@ -448,24 +441,24 @@ export function formatAnalysisSection(analysis) {
         </div>
         
         <div class="report-row">
-          <div class="report-cell">${t('analysis.assetYield')}</div>
-          <div class="report-cell formula">${t('analysis.formula.assetYield')}</div>
+          <div class="report-cell">Какова ваша доходность от активов?</div>
+          <div class="report-cell formula">Активы итого + портфолио итого / Активы итого факт</div>
           <div class="report-cell value-cell">
             ${analysis.assetYield.toFixed(2)}x
           </div>
         </div>
         
         <div class="report-row">
-          <div class="report-cell">${t('analysis.security')}</div>
-          <div class="report-cell formula">${t('analysis.formula.security')}<br><span class="formula-note">${t('analysis.note.months')}</span></div>
+          <div class="report-cell">Насколько вы обеспечены?</div>
+          <div class="report-cell formula">Активы итого факт / Расходы<br><span class="formula-note">***измеряется в месяцах</span></div>
           <div class="report-cell value-cell">
             ${formatMonths(analysis.security)}
           </div>
         </div>
         
         <div class="report-row">
-          <div class="report-cell">${t('analysis.expensesCovered')}</div>
-          <div class="report-cell formula">${t('analysis.formula.expensesCovered')}<br><span class="formula-note">${t('analysis.note.target200')}</span></div>
+          <div class="report-cell">Насколько ваши расходы покрыты пассивным доходом?</div>
+          <div class="report-cell formula">Активы итого + портфолио итого / Расходы итого<br><span class="formula-note">***должен расти к 200%</span></div>
           <div class="report-cell value-cell ${analysis.expensesCoveredTarget ? 'positive' : 'negative'}">
             ${formatPercent(analysis.expensesCovered)}
             ${analysis.expensesCoveredTarget ? '✓' : '↓'}
