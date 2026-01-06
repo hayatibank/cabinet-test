@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🌍 i18n System Test</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #f1f5f9;
+      padding: 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    h1 { color: #00f0ff; text-shadow: 0 0 20px rgba(0, 240, 255, 0.5); }
+    h2 { color: #ff006e; margin-top: 40px; }
+    
+    .test-section {
+      background: rgba(30, 41, 59, 0.8);
+      border: 1px solid rgba(0, 240, 255, 0.3);
+      border-radius: 12px;
+      padding: 24px;
+      margin: 20px 0;
+    }
+    
+    .key-value {
+      display: flex;
+      gap: 20px;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .key { 
+      font-family: monospace; 
+      color: #00ff9f;
+      min-width: 300px;
+    }
+    
+    .value { 
+      color: #f1f5f9; 
+      font-weight: 600;
+    }
+    
+    button {
+      background: linear-gradient(135deg, #00f0ff, #ff006e);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      margin: 10px 5px;
+      transition: transform 0.2s;
+    }
+    
+    button:hover {
+      transform: translateY(-2px);
+    }
+    
+    .module-list {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    
+    .module-badge {
+      background: rgba(0, 240, 255, 0.2);
+      border: 1px solid rgba(0, 240, 255, 0.5);
+      padding: 6px 12px;
+      border-radius: 16px;
+      font-size: 14px;
+      color: #00f0ff;
+    }
+    
+    .success { color: #00ff9f; }
+    .warning { color: #ffd700; }
+    
+    #output {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(0, 240, 255, 0.3);
+      border-radius: 8px;
+      padding: 20px;
+      margin-top: 20px;
+      font-family: monospace;
+      white-space: pre-wrap;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>🌍 Modular i18n System Test</h1>
+  
+  <div class="test-section">
+    <h2>📋 System Status</h2>
+    <div class="key-value">
+      <span class="key">Current Language:</span>
+      <span class="value" id="currentLang">Loading...</span>
+    </div>
+    <div class="key-value">
+      <span class="key">Supported Languages:</span>
+      <span class="value" id="supportedLangs">Loading...</span>
+    </div>
+    <div class="key-value">
+      <span class="key">Registered Modules:</span>
+      <div class="module-list" id="registeredModules">Loading...</div>
+    </div>
+  </div>
+  
+  <div class="test-section">
+    <h2>🔄 Language Switching</h2>
+    <button onclick="switchToRussian()">🇷🇺 Русский</button>
+    <button onclick="switchToEnglish()">🇬🇧 English</button>
+    <button onclick="toggleLang()">🔄 Toggle</button>
+  </div>
+  
+  <div class="test-section">
+    <h2>🧪 Translation Tests</h2>
+    
+    <h3>Core Translations (Auth):</h3>
+    <div class="key-value">
+      <span class="key">auth.login.title</span>
+      <span class="value" data-i18n="auth.login.title">-</span>
+    </div>
+    <div class="key-value">
+      <span class="key">auth.login.submit</span>
+      <span class="value" data-i18n="auth.login.submit">-</span>
+    </div>
+    
+    <h3>Cabinet Translations:</h3>
+    <div class="key-value">
+      <span class="key">cabinet.title</span>
+      <span class="value" data-i18n="cabinet.title">-</span>
+    </div>
+    <div class="key-value">
+      <span class="key">cabinet.createAccount</span>
+      <span class="value" data-i18n="cabinet.createAccount">-</span>
+    </div>
+    
+    <h3>Investment Module Translations:</h3>
+    <div class="key-value">
+      <span class="key">investment.level1.title</span>
+      <span class="value" data-i18n="investment.level1.title">-</span>
+    </div>
+    <div class="key-value">
+      <span class="key">investment.portfolio.title</span>
+      <span class="value" data-i18n="investment.portfolio.title">-</span>
+    </div>
+    
+    <h3>Offering Zone Module Translations:</h3>
+    <div class="key-value">
+      <span class="key">offering.title</span>
+      <span class="value" data-i18n="offering.title">-</span>
+    </div>
+    <div class="key-value">
+      <span class="key">offering.budget</span>
+      <span class="value" data-i18n="offering.budget">-</span>
+    </div>
+    
+    <h3>Dashboard Module Translations:</h3>
+    <div class="key-value">
+      <span class="key">dashboard.step1.title</span>
+      <span class="value" data-i18n="dashboard.step1.title">-</span>
+    </div>
+    <div class="key-value">
+      <span class="key">dashboard.step4</span>
+      <span class="value" data-i18n="dashboard.step4">-</span>
+    </div>
+  </div>
+  
+  <div class="test-section">
+    <h2>📊 Console Output</h2>
+    <button onclick="runTests()">▶️ Run All Tests</button>
+    <button onclick="clearOutput()">🗑️ Clear Output</button>
+    <div id="output"></div>
+  </div>
+  
+  <script type="module">
+    // Import i18n system
+    import { 
+      t, 
+      setLanguage, 
+      getCurrentLanguage, 
+      getSupportedLanguages,
+      toggleLanguage,
+      updatePageTranslations,
+      getRegisteredModules
+    } from './js/utils/i18n.js';
+    
+    // Import all module i18n (auto-registers)
+    import './auth/i18n.js';
+    import './cabinet/i18n.js';
+    import './offeringZone/i18n.js';
+    import './accountDashboard/i18n.js';
+    import './investments/i18n.js';
+    
+    // Make functions global
+    window.t = t;
+    window.setLanguage = setLanguage;
+    window.getCurrentLanguage = getCurrentLanguage;
+    window.getSupportedLanguages = getSupportedLanguages;
+    window.toggleLanguage = toggleLanguage;
+    window.updatePageTranslations = updatePageTranslations;
+    window.getRegisteredModules = getRegisteredModules;
+    
+    // Initialize display
+    function updateStatus() {
+      document.getElementById('currentLang').textContent = getCurrentLanguage().toUpperCase();
+      document.getElementById('supportedLangs').textContent = getSupportedLanguages().join(', ').toUpperCase();
+      
+      const modulesContainer = document.getElementById('registeredModules');
+      modulesContainer.innerHTML = '';
+      getRegisteredModules().forEach(mod => {
+        const badge = document.createElement('span');
+        badge.className = 'module-badge';
+        badge.textContent = mod;
+        modulesContainer.appendChild(badge);
+      });
+    }
+    
+    // Switch functions
+    window.switchToRussian = function() {
+      setLanguage('ru');
+      updatePageTranslations();
+      updateStatus();
+      log('✅ Switched to Russian');
+    };
+    
+    window.switchToEnglish = function() {
+      setLanguage('en');
+      updatePageTranslations();
+      updateStatus();
+      log('✅ Switched to English');
+    };
+    
+    window.toggleLang = function() {
+      const newLang = toggleLanguage();
+      updatePageTranslations();
+      updateStatus();
+      log(`✅ Toggled to ${newLang.toUpperCase()}`);
+    };
+    
+    // Test runner
+    window.runTests = function() {
+      clearOutput();
+      
+      log('🧪 Running i18n System Tests...\n');
+      
+      // Test 1: Core translations
+      log('Test 1: Core Translations (Auth)');
+      log(`  ✅ auth.login.title: "${t('auth.login.title')}"`);
+      log(`  ✅ auth.register.submit: "${t('auth.register.submit')}"`);
+      log('');
+      
+      // Test 2: Cabinet translations
+      log('Test 2: Cabinet Translations');
+      log(`  ✅ cabinet.title: "${t('cabinet.title')}"`);
+      log(`  ✅ cabinet.createAccount: "${t('cabinet.createAccount')}"`);
+      log('');
+      
+      // Test 3: Investment module
+      log('Test 3: Investment Module');
+      log(`  ✅ investment.level1.title: "${t('investment.level1.title')}"`);
+      log(`  ✅ investment.portfolio.empty: "${t('investment.portfolio.empty')}"`);
+      log('');
+      
+      // Test 4: Offering Zone module
+      log('Test 4: Offering Zone Module');
+      log(`  ✅ offering.title: "${t('offering.title')}"`);
+      log(`  ✅ offering.budget: "${t('offering.budget')}"`);
+      log('');
+      
+      // Test 5: Dashboard module
+      log('Test 5: Dashboard Module');
+      log(`  ✅ dashboard.step1.title: "${t('dashboard.step1.title')}"`);
+      log(`  ✅ dashboard.step4: "${t('dashboard.step4')}"`);
+      log('');
+      
+      // Test 6: Language switching
+      log('Test 6: Language Switching');
+      const originalLang = getCurrentLanguage();
+      setLanguage('en');
+      log(`  Switched to EN: "${t('auth.login.title')}"`);
+      setLanguage('ru');
+      log(`  Switched to RU: "${t('auth.login.title')}"`);
+      setLanguage(originalLang);
+      log('  ✅ Restored original language');
+      log('');
+      
+      // Test 7: Module registration
+      log('Test 7: Module Registration');
+      const modules = getRegisteredModules();
+      log(`  ✅ ${modules.length} modules registered:`);
+      modules.forEach(mod => log(`    • ${mod}`));
+      log('');
+      
+      log('✅ All tests passed!');
+    };
+    
+    window.clearOutput = function() {
+      document.getElementById('output').textContent = '';
+    };
+    
+    function log(message) {
+      const output = document.getElementById('output');
+      output.textContent += message + '\n';
+    }
+    
+    // Initial update
+    updateStatus();
+    updatePageTranslations();
+    
+    log('🌍 i18n System loaded successfully!');
+    log(`Current language: ${getCurrentLanguage().toUpperCase()}`);
+    log(`Registered modules: ${getRegisteredModules().length}`);
+  </script>
+</body>
+</html>
