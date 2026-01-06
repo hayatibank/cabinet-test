@@ -65,6 +65,55 @@ const translations = {
     'cabinet.title': '💼 Личный кабинет',
     'cabinet.welcome': 'Добро пожаловать',
     'cabinet.settings': '⚙️ Настройки',
+    'cabinet.userEmail': 'Email пользователя',
+    
+    // Account List
+    'cabinet.accounts': 'Аккаунты',
+    'cabinet.noAccounts': 'У вас пока нет аккаунтов',
+    'cabinet.noAccountsSubtitle': 'Создайте первый аккаунт для начала работы',
+    'cabinet.createAccount': '➕ Создать аккаунт',
+    'cabinet.accountCreated': '✅ Аккаунт успешно создан!',
+    'cabinet.accountDeleted': '✅ Аккаунт успешно удалён',
+    'cabinet.loadingAccounts': 'Загрузка аккаунтов...',
+    'cabinet.errorLoadingAccounts': '❌ Ошибка загрузки аккаунтов',
+    'cabinet.backToList': 'Назад к списку',
+    'cabinet.refresh': 'Обновить',
+    
+    // Account Types
+    'cabinet.accountType.individual': '👤 Физическое лицо',
+    'cabinet.accountType.business': '🏢 Юридическое лицо',
+    'cabinet.accountType.government': '🏛️ Госорганизация',
+    'cabinet.accountType.selectType': 'Выберите тип аккаунта',
+    
+    // Create Account Form
+    'cabinet.createAccount.title': '➕ Создание аккаунта',
+    'cabinet.createAccount.individual': '👤 Физическое лицо',
+    'cabinet.createAccount.individualDesc': 'Для личных финансов',
+    'cabinet.createAccount.business': '🏢 ЮЛ / ИП',
+    'cabinet.createAccount.businessDesc': 'Скоро...',
+    'cabinet.createAccount.government': '🏛️ Госорганы',
+    'cabinet.createAccount.governmentDesc': 'Скоро...',
+    'cabinet.createAccount.firstName': 'Имя',
+    'cabinet.createAccount.firstNamePlaceholder': 'Иван',
+    'cabinet.createAccount.lastName': 'Фамилия',
+    'cabinet.createAccount.lastNamePlaceholder': 'Петров',
+    'cabinet.createAccount.birthDate': 'Дата рождения',
+    'cabinet.createAccount.required': '*',
+    'cabinet.createAccount.submit': 'Создать аккаунт',
+    'cabinet.createAccount.cancel': 'Отмена',
+    'cabinet.createAccount.creating': 'Создание...',
+    'cabinet.createAccount.fillRequired': 'Заполните имя и фамилию',
+    'cabinet.createAccount.error': 'Ошибка создания аккаунта',
+    'cabinet.createAccount.inDevelopment': 'В разработке...',
+    
+    // Account Card
+    'cabinet.account.balance': 'Баланс',
+    'cabinet.account.enter': 'Войти',
+    'cabinet.account.edit': 'Редактировать',
+    'cabinet.account.delete': 'Удалить',
+    'cabinet.account.deleteConfirm': '⚠️ ВНИМАНИЕ!\n\nВы действительно хотите удалить этот аккаунт?\n\nЭто действие нельзя отменить.',
+    'cabinet.account.noName': 'Без имени',
+    'cabinet.account.editPlaceholder': '🚧 Редактирование аккаунта будет доступно в следующей версии',
     
     // ==================== COMMON ====================
     'common.loading': 'Загрузка...',
@@ -155,6 +204,55 @@ const translations = {
     'cabinet.title': '💼 Personal Cabinet',
     'cabinet.welcome': 'Welcome',
     'cabinet.settings': '⚙️ Settings',
+    'cabinet.userEmail': 'User email',
+    
+    // Account List
+    'cabinet.accounts': 'Accounts',
+    'cabinet.noAccounts': 'You have no accounts yet',
+    'cabinet.noAccountsSubtitle': 'Create your first account to get started',
+    'cabinet.createAccount': '➕ Create Account',
+    'cabinet.accountCreated': '✅ Account created successfully!',
+    'cabinet.accountDeleted': '✅ Account deleted successfully',
+    'cabinet.loadingAccounts': 'Loading accounts...',
+    'cabinet.errorLoadingAccounts': '❌ Error loading accounts',
+    'cabinet.backToList': 'Back to list',
+    'cabinet.refresh': 'Refresh',
+    
+    // Account Types
+    'cabinet.accountType.individual': '👤 Individual',
+    'cabinet.accountType.business': '🏢 Business',
+    'cabinet.accountType.government': '🏛️ Government',
+    'cabinet.accountType.selectType': 'Select account type',
+    
+    // Create Account Form
+    'cabinet.createAccount.title': '➕ Create Account',
+    'cabinet.createAccount.individual': '👤 Individual',
+    'cabinet.createAccount.individualDesc': 'For personal finances',
+    'cabinet.createAccount.business': '🏢 Business',
+    'cabinet.createAccount.businessDesc': 'Coming soon...',
+    'cabinet.createAccount.government': '🏛️ Government',
+    'cabinet.createAccount.governmentDesc': 'Coming soon...',
+    'cabinet.createAccount.firstName': 'First Name',
+    'cabinet.createAccount.firstNamePlaceholder': 'John',
+    'cabinet.createAccount.lastName': 'Last Name',
+    'cabinet.createAccount.lastNamePlaceholder': 'Smith',
+    'cabinet.createAccount.birthDate': 'Birth Date',
+    'cabinet.createAccount.required': '*',
+    'cabinet.createAccount.submit': 'Create Account',
+    'cabinet.createAccount.cancel': 'Cancel',
+    'cabinet.createAccount.creating': 'Creating...',
+    'cabinet.createAccount.fillRequired': 'Please fill in first and last name',
+    'cabinet.createAccount.error': 'Error creating account',
+    'cabinet.createAccount.inDevelopment': 'In development...',
+    
+    // Account Card
+    'cabinet.account.balance': 'Balance',
+    'cabinet.account.enter': 'Enter',
+    'cabinet.account.edit': 'Edit',
+    'cabinet.account.delete': 'Delete',
+    'cabinet.account.deleteConfirm': '⚠️ WARNING!\n\nAre you sure you want to delete this account?\n\nThis action cannot be undone.',
+    'cabinet.account.noName': 'No name',
+    'cabinet.account.editPlaceholder': '🚧 Account editing will be available in the next version',
     
     // ==================== COMMON ====================
     'common.loading': 'Loading...',
