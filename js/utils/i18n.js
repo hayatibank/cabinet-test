@@ -115,6 +115,19 @@ const translations = {
     'cabinet.account.noName': 'Без имени',
     'cabinet.account.editPlaceholder': '🚧 Редактирование аккаунта будет доступно в следующей версии',
     
+    // ==================== SETTINGS ====================
+    'settings.title': '⚙️ Настройки профиля',
+    'settings.profile.title': '👤 Профиль',
+    'settings.profile.description': 'Управление профилем и персональными данными',
+    'settings.profile.edit': 'Редактировать профиль',
+    'settings.notifications.title': '🔔 Уведомления',
+    'settings.notifications.description': 'Настройки уведомлений и оповещений',
+    'settings.notifications.configure': 'Настроить',
+    'settings.dangerZone.title': '⚠️ Опасная зона',
+    'settings.dangerZone.warning': 'Удаление учетной записи безвозвратно удалит все ваши данные из системы ФД «Хаяти»',
+    'settings.dangerZone.deleteButton': '🗑️ Удалиться из ФД «Хаяти»',
+    'settings.inDevelopment': '🚧 В разработке',
+    
     // ==================== COMMON ====================
     'common.loading': 'Загрузка...',
     'common.save': 'Сохранить',
@@ -253,6 +266,19 @@ const translations = {
     'cabinet.account.deleteConfirm': '⚠️ WARNING!\n\nAre you sure you want to delete this account?\n\nThis action cannot be undone.',
     'cabinet.account.noName': 'No name',
     'cabinet.account.editPlaceholder': '🚧 Account editing will be available in the next version',
+    
+    // ==================== SETTINGS ====================
+    'settings.title': '⚙️ Profile Settings',
+    'settings.profile.title': '👤 Profile',
+    'settings.profile.description': 'Manage profile and personal data',
+    'settings.profile.edit': 'Edit Profile',
+    'settings.notifications.title': '🔔 Notifications',
+    'settings.notifications.description': 'Configure notifications and alerts',
+    'settings.notifications.configure': 'Configure',
+    'settings.dangerZone.title': '⚠️ Danger Zone',
+    'settings.dangerZone.warning': 'Deleting your account will permanently remove all your data from FD "Hayati" system',
+    'settings.dangerZone.deleteButton': '🗑️ Delete from FD "Hayati"',
+    'settings.inDevelopment': '🚧 In Development',
     
     // ==================== COMMON ====================
     'common.loading': 'Loading...',

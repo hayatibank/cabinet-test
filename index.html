@@ -198,33 +198,33 @@
       <div class="modal-overlay" onclick="closeProfileMenu()"></div>
       <div class="modal-content">
         <div class="modal-header">
-          <h3 data-i18n="cabinet.settings">⚙️ Настройки профиля</h3>
+          <h3 data-i18n="settings.title">⚙️ Настройки профиля</h3>
           <button onclick="closeProfileMenu()" class="btn-close">×</button>
         </div>
         <div class="modal-body">
           <div class="setting-item">
-            <h4>👤 Профиль</h4>
-            <p class="setting-description">Управление профилем и персональными данными</p>
-            <button class="btn btn-secondary btn-small" onclick="alert('🚧 В разработке')">
-              Редактировать профиль
+            <h4 data-i18n="settings.profile.title">👤 Профиль</h4>
+            <p class="setting-description" data-i18n="settings.profile.description">Управление профилем и персональными данными</p>
+            <button class="btn btn-secondary btn-small" onclick="alert(t('settings.inDevelopment'))">
+              <span data-i18n="settings.profile.edit">Редактировать профиль</span>
             </button>
           </div>
           
           <div class="setting-item">
-            <h4>🔔 Уведомления</h4>
-            <p class="setting-description">Настройки уведомлений и оповещений</p>
-            <button class="btn btn-secondary btn-small" onclick="alert('🚧 В разработке')">
-              Настроить
+            <h4 data-i18n="settings.notifications.title">🔔 Уведомления</h4>
+            <p class="setting-description" data-i18n="settings.notifications.description">Настройки уведомлений и оповещений</p>
+            <button class="btn btn-secondary btn-small" onclick="alert(t('settings.inDevelopment'))">
+              <span data-i18n="settings.notifications.configure">Настроить</span>
             </button>
           </div>
           
           <div class="setting-item danger-zone">
-            <h4>⚠️ Опасная зона</h4>
-            <p class="setting-description warning-text">
+            <h4 data-i18n="settings.dangerZone.title">⚠️ Опасная зона</h4>
+            <p class="setting-description warning-text" data-i18n="settings.dangerZone.warning">
               Удаление учетной записи безвозвратно удалит все ваши данные из системы ФД «Хаяти»
             </p>
             <button onclick="deleteAccount()" class="btn btn-danger btn-small">
-              <span data-i18n="auth.delete.button">🗑️ Удалиться из ФД «Хаяти»</span>
+              <span data-i18n="settings.dangerZone.deleteButton">🗑️ Удалиться из ФД «Хаяти»</span>
             </button>
           </div>
         </div>
@@ -237,7 +237,12 @@
   <script type="module" src="app.js"></script>
   
   <!-- Profile Menu Functions -->
-  <script>
+  <script type="module">
+    import { t } from './js/utils/i18n.js';
+    
+    // Make t() available globally for onclick handlers
+    window.t = t;
+    
     function showProfileMenu() {
       document.getElementById('profileMenu').classList.remove('hidden');
       document.body.style.overflow = 'hidden';
@@ -247,6 +252,10 @@
       document.getElementById('profileMenu').classList.add('hidden');
       document.body.style.overflow = 'auto';
     }
+    
+    // Make functions global
+    window.showProfileMenu = showProfileMenu;
+    window.closeProfileMenu = closeProfileMenu;
     
     // Close on Escape key
     document.addEventListener('keydown', (e) => {
