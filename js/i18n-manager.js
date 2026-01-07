@@ -112,7 +112,8 @@ class I18nManager {
     try {
       console.log(`📦 [i18n] Loading ${lang}.json...`);
       
-      const response = await fetch(`/i18n/${lang}.json`);
+      // const response = await fetch(`/i18n/${lang}.json`);
+      const response = await fetch(`./i18n/${lang}.json`);
       
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
