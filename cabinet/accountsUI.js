@@ -1,27 +1,44 @@
-/* /webapp/cabinet/accountsUI.js v2.2.0 */
+/* /webapp/cabinet/accountsUI.js v2.2.1 */
+// CHANGELOG v2.2.1:
+// - FIXED: Wait for i18n initialization before using t()
+// - ADDED: waitForI18n() helper function
 // CHANGELOG v2.2.0:
 // - MIGRATED: From modular i18n to global window.i18n
-// - REMOVED: import { t } (Android freeze fix)
-// CHANGELOG v2.1.0:
-// - ADDED: Use centralized i18n from /js/utils/i18n.js
-// - REMOVED: Hardcoded Russian strings
-// - IMPROVED: All user-facing strings use t()
-// CHANGELOG v2.0.0:
-// - UPDATED: All buttons use new unified system
-// - REMOVED: Full-width buttons
-// - ADDED: Proper button hierarchy (Primary > Secondary > Ghost)
-// CHANGELOG v1.5.0:
-// - REMOVED: RUB balance from account cards
-// - Account cards now show only name and type
-// UI rendering for accounts list and management
 
 import { getUserAccounts, deleteAccount } from './accounts.js';
 import { showCreateAccountForm } from './createAccount.js';
 
 /**
+ * Wait for i18n to be initialized
+ */
+async function waitForI18n() {
+  if (window.i18n && window.i18n.initialized) {
+    return true;
+  }
+  
+  console.log('⏳ [accountsUI] Waiting for i18n...');
+  
+  return new Promise((resolve) => {
+    window.addEventListener('i18nReady', () => {
+      console.log('✅ [accountsUI] i18n ready');
+      resolve(true);
+    }, { once: true });
+    
+    // Timeout fallback (5 seconds)
+    setTimeout(() => {
+      console.warn('⚠️ [accountsUI] i18n timeout, proceeding anyway');
+      resolve(false);
+    }, 5000);
+  });
+}
+
+/**
  * Render accounts list in cabinet
  */
 export async function renderAccountsList() {
+  // ✅ Wait for i18n
+  await waitForI18n();
+  
   const t = window.i18n.t.bind(window.i18n);
   
   try {
@@ -64,6 +81,7 @@ export async function renderAccountsList() {
     
     const container = document.querySelector('.cabinet-content');
     if (container) {
+      const t = window.i18n.t.bind(window.i18n);
       container.innerHTML = `
         <div class="error-message">
           <p data-i18n="cabinet.errorLoadingAccounts">${t('cabinet.errorLoadingAccounts')}</p>
@@ -263,7 +281,10 @@ function handleEnterAccount(accountId) {
 /**
  * Show create account button
  */
-export function showCreateAccountButton() {
+export async function showCreateAccountButton() {
+  // ✅ Wait for i18n
+  await waitForI18n();
+  
   const t = window.i18n.t.bind(window.i18n);
   
   const actionsContainer = document.querySelector('.cabinet-actions');
@@ -305,6 +326,9 @@ export function showCreateAccountButton() {
 if (typeof window !== 'undefined') {
   window.addEventListener('cabinetReady', async (event) => {
     console.log('📋 Cabinet ready event received:', event.detail);
+    
+    // ✅ Wait for i18n before initializing
+    await waitForI18n();
     
     // Initialize cabinet UI
     showCreateAccountButton();
