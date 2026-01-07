@@ -1,11 +1,9 @@
-/* /webapp/js/i18n-manager.js v1.0.0 */
+/* /webapp/js/i18n-manager.js v1.0.1 */
+// CHANGELOG v1.0.1:
+// - FIXED: updatePage() now updates placeholders for inputs
+// - FIXED: Better handling of different element types
 // CHANGELOG v1.0.0:
 // - Initial release
-// - Global singleton i18n manager
-// - Auto-detection: localStorage → Telegram → Browser → Default
-// - JSON-based translations (no ES6 imports)
-// - Instant language switching
-// - Fallback to Russian
 
 /**
  * Global i18n Manager
@@ -214,24 +212,47 @@ class I18nManager {
   
   /**
    * Update all translatable elements on page
+   * 🆕 FIXED: Now properly handles inputs, textareas, and buttons
    */
   updatePage() {
     console.log('🔄 [i18n] Updating page translations...');
+    
+    let updated = 0;
     
     // Update elements with data-i18n attribute
     document.querySelectorAll('[data-i18n]').forEach(element => {
       const key = element.getAttribute('data-i18n');
       const translation = this.t(key);
       
+      // Skip if translation is the same as key (not found)
+      if (translation === key) {
+        console.warn(`⚠️ [i18n] Skipping element with missing key: ${key}`);
+        return;
+      }
+      
       // Update based on element type
-      if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
-        // Update placeholder
+      const tagName = element.tagName.toLowerCase();
+      
+      if (tagName === 'input' || tagName === 'textarea') {
+        // For inputs/textareas: update placeholder
         if (element.hasAttribute('placeholder')) {
           element.placeholder = translation;
+          updated++;
         }
+      } else if (tagName === 'button') {
+        // For buttons: update textContent (preserves inner HTML like icons)
+        // But we need to preserve SVG icons, so we find the <span> inside
+        const span = element.querySelector('span');
+        if (span) {
+          span.textContent = translation;
+        } else {
+          element.textContent = translation;
+        }
+        updated++;
       } else {
-        // Update text content
+        // For other elements: update textContent
         element.textContent = translation;
+        updated++;
       }
     });
     
@@ -239,11 +260,13 @@ class I18nManager {
     const titleKey = document.querySelector('title')?.getAttribute('data-i18n');
     if (titleKey) {
       document.title = this.t(titleKey);
+      updated++;
     } else {
       document.title = this.t('app.title');
+      updated++;
     }
     
-    console.log('✅ [i18n] Page updated');
+    console.log(`✅ [i18n] Updated ${updated} elements`);
   }
   
   /**
