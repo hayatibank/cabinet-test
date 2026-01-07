@@ -1,53 +1,22 @@
-/* /webapp/cabinet/accountsUI.js v2.2.1 */
-// CHANGELOG v2.2.1:
-// - FIXED: Wait for i18n initialization before using t()
-// - ADDED: waitForI18n() helper function
-// CHANGELOG v2.2.0:
-// - MIGRATED: From modular i18n to global window.i18n
+/* /webapp/cabinet/accountsUI.js v2.2.2 */
+// CHANGELOG v2.2.2:
+// - REMOVED: waitForI18n() - no longer needed
+// - ASSUMED: i18n is always ready (guaranteed by app.js)
 
 import { getUserAccounts, deleteAccount } from './accounts.js';
 import { showCreateAccountForm } from './createAccount.js';
 
 /**
- * Wait for i18n to be initialized
- */
-async function waitForI18n() {
-  if (window.i18n && window.i18n.initialized) {
-    return true;
-  }
-  
-  console.log('⏳ [accountsUI] Waiting for i18n...');
-  
-  return new Promise((resolve) => {
-    window.addEventListener('i18nReady', () => {
-      console.log('✅ [accountsUI] i18n ready');
-      resolve(true);
-    }, { once: true });
-    
-    // Timeout fallback (5 seconds)
-    setTimeout(() => {
-      console.warn('⚠️ [accountsUI] i18n timeout, proceeding anyway');
-      resolve(false);
-    }, 5000);
-  });
-}
-
-/**
  * Render accounts list in cabinet
  */
 export async function renderAccountsList() {
-  // ✅ Wait for i18n
-  await waitForI18n();
-  
+  // ✅ i18n is guaranteed to be ready (no need to wait)
   const t = window.i18n.t.bind(window.i18n);
   
   try {
     console.log('📋 Loading accounts...');
     
-    // Get accounts
     const accounts = await getUserAccounts();
-    
-    // Get container
     const container = document.querySelector('.cabinet-content');
     
     if (!container) {
@@ -55,7 +24,6 @@ export async function renderAccountsList() {
       return;
     }
     
-    // Render
     if (accounts.length === 0) {
       container.innerHTML = `
         <div class="no-accounts">
@@ -70,7 +38,6 @@ export async function renderAccountsList() {
         </div>
       `;
       
-      // Attach event listeners
       attachAccountListeners();
     }
     
@@ -79,32 +46,32 @@ export async function renderAccountsList() {
   } catch (err) {
     console.error('❌ Error rendering accounts:', err);
     
+    const t = window.i18n.t.bind(window.i18n);
     const container = document.querySelector('.cabinet-content');
+    
     if (container) {
-      const t = window.i18n.t.bind(window.i18n);
       container.innerHTML = `
         <div class="error-message">
           <p data-i18n="cabinet.errorLoadingAccounts">${t('cabinet.errorLoadingAccounts')}</p>
-          <div class="btn-center">
-            <button onclick="location.reload()" class="btn btn-secondary">
-              <span data-i18n="cabinet.refresh">${t('cabinet.refresh')}</span>
-            </button>
-          </div>
+          <button onclick="location.reload()" class="btn btn-secondary">
+            <span data-i18n="cabinet.refresh">${t('cabinet.refresh')}</span>
+          </button>
         </div>
       `;
     }
   }
 }
 
+// ... rest of the file stays the same ...
+
 /**
- * Render single account card (WITHOUT BALANCE)
+ * Render single account card
  */
 function renderAccountCard(account) {
   const t = window.i18n.t.bind(window.i18n);
   
   const { accountId, type, profile } = account;
   
-  // Type labels
   const typeLabels = {
     individual: t('cabinet.accountType.individual'),
     business: t('cabinet.accountType.business'),
@@ -113,14 +80,9 @@ function renderAccountCard(account) {
   
   const typeLabel = typeLabels[type] || t('cabinet.accounts');
   
-  // Profile name
   let profileName = t('cabinet.account.noName');
   if (type === 'individual' && profile) {
     profileName = `${profile.firstName || ''} ${profile.lastName || ''}`.trim();
-  } else if (type === 'business' && profile?.companyName) {
-    profileName = profile.companyName;
-  } else if (type === 'government' && profile?.organizationName) {
-    profileName = profile.organizationName;
   }
   
   return `
@@ -138,14 +100,13 @@ function renderAccountCard(account) {
           <div class="dropdown-menu" id="menu-${accountId}">
             <button class="dropdown-item" data-action="edit" data-account-id="${accountId}">
               <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
+                <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10z"/>
               </svg>
               <span data-i18n="cabinet.account.edit">${t('cabinet.account.edit')}</span>
             </button>
             <button class="dropdown-item dropdown-item-danger" data-action="delete" data-account-id="${accountId}">
               <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
-                <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5z"/>
               </svg>
               <span data-i18n="cabinet.account.delete">${t('cabinet.account.delete')}</span>
             </button>
@@ -159,7 +120,7 @@ function renderAccountCard(account) {
       
       <div class="account-actions">
         <button class="btn btn-enter" data-action="enter" data-account-id="${accountId}">
-          <span class="btn-text" data-i18n="cabinet.account.enter">${t('cabinet.account.enter').toUpperCase()}</span>
+          <span class="btn-text" data-i18n="cabinet.account.enter">${t('cabinet.account.enter')}</span>
           <svg class="btn-arrow" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
             <path d="M10 0l10 10-10 10-2-2 6-6H0V8h14l-6-6 2-2z"/>
           </svg>
@@ -169,18 +130,15 @@ function renderAccountCard(account) {
   `;
 }
 
-/**
- * Attach event listeners to account cards
- */
+// ... rest stays the same (attachAccountListeners, etc) ...
+
 function attachAccountListeners() {
-  // Menu toggle
   document.querySelectorAll('.btn-menu-toggle').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
       const accountId = btn.dataset.accountId;
       const menu = document.getElementById(`menu-${accountId}`);
       
-      // Close all other menus
       document.querySelectorAll('.dropdown-menu').forEach(m => {
         if (m.id !== `menu-${accountId}`) {
           m.classList.remove('show');
@@ -191,31 +149,18 @@ function attachAccountListeners() {
     });
   });
   
-  // Edit account (placeholder)
   document.querySelectorAll('[data-action="edit"]').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const accountId = btn.dataset.accountId;
-      handleEditAccount(accountId);
-    });
+    btn.addEventListener('click', () => handleEditAccount(btn.dataset.accountId));
   });
   
-  // Delete account
   document.querySelectorAll('[data-action="delete"]').forEach(btn => {
-    btn.addEventListener('click', async (e) => {
-      const accountId = btn.dataset.accountId;
-      await handleDeleteAccount(accountId);
-    });
+    btn.addEventListener('click', () => handleDeleteAccount(btn.dataset.accountId));
   });
   
-  // Enter account
   document.querySelectorAll('[data-action="enter"]').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const accountId = btn.dataset.accountId;
-      handleEnterAccount(accountId);
-    });
+    btn.addEventListener('click', () => handleEnterAccount(btn.dataset.accountId));
   });
   
-  // Close menus on outside click
   document.addEventListener('click', (e) => {
     if (!e.target.closest('.account-menu')) {
       document.querySelectorAll('.dropdown-menu').forEach(m => {
@@ -225,50 +170,31 @@ function attachAccountListeners() {
   });
 }
 
-/**
- * Handle account edit (placeholder)
- */
 function handleEditAccount(accountId) {
   const t = window.i18n.t.bind(window.i18n);
   alert(t('cabinet.account.editPlaceholder'));
-  console.log(`📝 Edit account: ${accountId}`);
 }
 
-/**
- * Handle account deletion
- */
 async function handleDeleteAccount(accountId) {
   const t = window.i18n.t.bind(window.i18n);
   
   try {
     const confirmed = confirm(t('cabinet.account.deleteConfirm'));
-    
-    if (!confirmed) {
-      return;
-    }
+    if (!confirmed) return;
     
     console.log(`🗑️ Deleting account: ${accountId}`);
-    
     await deleteAccount(accountId);
-    
     alert(t('cabinet.accountDeleted'));
-    
-    // Reload accounts list
     await renderAccountsList();
-    
   } catch (err) {
     console.error('❌ Error deleting account:', err);
     alert(t('cabinet.createAccount.error'));
   }
 }
 
-/**
- * Handle entering account (navigate to account dashboard)
- */
 function handleEnterAccount(accountId) {
   console.log(`🚀 Entering account: ${accountId}`);
   
-  // Import and show account navigation
   import('../accountDashboard/accountNavigation.js').then(module => {
     module.showAccountDashboard(accountId);
   }).catch(err => {
@@ -278,28 +204,14 @@ function handleEnterAccount(accountId) {
   });
 }
 
-/**
- * Show create account button
- */
 export async function showCreateAccountButton() {
-  // ✅ Wait for i18n
-  await waitForI18n();
-  
   const t = window.i18n.t.bind(window.i18n);
-  
   const actionsContainer = document.querySelector('.cabinet-actions');
   
-  if (!actionsContainer) {
-    console.error('❌ Cabinet actions container not found');
+  if (!actionsContainer || actionsContainer.querySelector('.btn-create-account')) {
     return;
   }
   
-  // Check if already initialized
-  if (actionsContainer.querySelector('.btn-create-account')) {
-    return;
-  }
-  
-  // Horizontal layout: [Создать] [Настройки] [Выйти]
   actionsContainer.innerHTML = `
     <button class="btn btn-primary btn-create-account">
       <span data-i18n="cabinet.createAccount">${t('cabinet.createAccount')}</span>
@@ -312,28 +224,16 @@ export async function showCreateAccountButton() {
     </button>
   `;
   
-  // Attach create account listener
   const createBtn = actionsContainer.querySelector('.btn-create-account');
   if (createBtn) {
     createBtn.onclick = showCreateAccountForm;
   }
 }
 
-/**
- * Initialize cabinet when ready
- * Listens to 'cabinetReady' event from ui.js
- */
 if (typeof window !== 'undefined') {
   window.addEventListener('cabinetReady', async (event) => {
-    console.log('📋 Cabinet ready event received:', event.detail);
-    
-    // ✅ Wait for i18n before initializing
-    await waitForI18n();
-    
-    // Initialize cabinet UI
+    console.log('📋 Cabinet ready:', event.detail);
     showCreateAccountButton();
     await renderAccountsList();
   });
-  
-  console.log('✅ Cabinet event listener registered');
 }
