@@ -15,11 +15,12 @@ import {
   formatAnalysisSection 
 } from './reportFormatters.js';
 import { renderOfferingZone } from '../offeringZone/offeringZone.js';
-import { API_URL } from '../js/config.js';
-
 /**
  * Render financial report
  */
+
+
+
 export async function renderFinancialReport(accountId, year = new Date().getFullYear()) {
   try {
     console.log(`📊 Rendering financial report: ${accountId}, ${year}`);

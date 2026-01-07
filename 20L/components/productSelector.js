@@ -11,12 +11,15 @@
 // - Create first product form
 
 import { getProducts, createProduct, updateProduct, deleteProduct } from '../services/productService.js';
-import { t } from '../i18n.js';
+// import { t } from '../i18n.js';
 
 /**
  * Render product selector
  */
 export async function renderProductSelector(accountId) {
+
+  const t = window.i18n.t.bind(window.i18n);
+
   try {
     console.log('📦 Rendering product selector...');
     

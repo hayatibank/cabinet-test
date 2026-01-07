@@ -13,7 +13,7 @@
 
 import { getCounterparties, createCounterparty } from '../services/counterpartyService.js';
 import { getDashboardStats, getLeadsProgress } from '../services/dashboardService.js';
-import { t } from '../i18n.js';
+// import { t } from '../i18n.js';
 import './counterpartyModal.js'; // ✅ Import to expose global functions
 
 // Pagination state
@@ -25,6 +25,9 @@ let currentFilters = {};
  * Render dashboard
  */
 export async function renderDashboard(accountId, productId) {
+
+  const t = window.i18n.t.bind(window.i18n);
+
   try {
     console.log('📊 Rendering 20L dashboard...');
     

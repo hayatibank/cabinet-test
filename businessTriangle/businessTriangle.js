@@ -9,7 +9,7 @@
 // - Removed broken i18n dynamic import
 // Business Management Triangle Component
 
-import { t } from './i18n.js';
+// import { t } from './i18n.js';
 
 /**
  * Show Business Management screen with product selector
@@ -17,6 +17,9 @@ import { t } from './i18n.js';
  * @param {string} containerId - Container selector
  */
 export async function showBusinessManagement(accountId, containerId = '#dashboardContent') {
+
+  const t = window.i18n.t.bind(window.i18n);
+
   try {
     if (!accountId) {
       console.error('❌ accountId is required for Business Management');

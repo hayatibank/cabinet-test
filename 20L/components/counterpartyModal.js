@@ -12,7 +12,9 @@
 
 import { getCounterparties, createCounterparty, updateCounterparty, deleteCounterparty, moveToNextStage } from '../services/counterpartyService.js';
 import { renderDashboard } from './dashboard.js';
-import { t } from '../i18n.js';
+// import { t } from '../i18n.js';
+
+const t = window.i18n.t.bind(window.i18n);
 
 /**
  * Show create counterparty modal

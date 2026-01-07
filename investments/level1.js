@@ -7,13 +7,16 @@
 // - Initial release
 // - Level 1 investment dashboard
 
-import { t } from './i18n.js';
+// import { t } from './i18n.js';
 
 /**
  * Render Level 1 Investment Dashboard
  * @param {string} accountId - Account ID
  */
 export async function renderLevel1(accountId) {
+
+  const t = window.i18n.t.bind(window.i18n);
+
   try {
     console.log(`📊 [Investments] Rendering Level 1 dashboard for: ${accountId}`);
     
