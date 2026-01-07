@@ -2,16 +2,6 @@
 // CHANGELOG v1.7.0:
 // - MIGRATED: From modular i18n to global window.i18n
 // - REMOVED: import { t } (Android freeze fix)
-// CHANGELOG v1.6.0:
-// - ADDED: Use centralized i18n from /js/utils/i18n.js
-// - REMOVED: Hardcoded Russian strings
-// - IMPROVED: All user-facing strings use t()
-// CHANGELOG v1.5.0:
-// - UPGRADED: All buttons to 3D system
-// - Ferrari "Создать аккаунт" button
-// - Glass "Отмена" button
-// CHANGELOG v1.4.1:
-// - Silent HYC rewards
 
 import { createAccount } from './accounts.js';
 import { renderAccountsList } from './accountsUI.js';

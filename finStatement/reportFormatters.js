@@ -3,11 +3,6 @@
 // - MIGRATED: From modular i18n to global window.i18n
 // - REMOVED: import { t } (Android freeze fix)
 // - ADDED: Inline t() helper for cleaner code
-// CHANGELOG v1.1.0:
-// - Added category/subcategory hierarchy
-// - Added visual indentation
-// - Added color coding (green totals, red expenses)
-// - Show all categories even if amount = 0
 
 /**
  * Format currency
@@ -40,7 +35,6 @@ export function formatMonths(value) {
  * Format income section with hierarchy
  */
 export function formatIncomeSection(incomeData) {
-  // ✅ Inline helper - no import needed
   const t = window.i18n.t.bind(window.i18n);
   
   // Group by parent category

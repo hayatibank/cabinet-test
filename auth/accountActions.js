@@ -9,13 +9,13 @@ import { getAuth } from 'https://www.gstatic.com/firebasejs/12.7.0/firebase-auth
 import { clearSession, getSession, getCurrentChatId } from '../js/session.js';
 import { showAuthScreen, showLoadingScreen } from '../js/ui.js';
 import { deleteUserAccount, deleteTelegramSession } from '../js/api.js';
-import { t } from './i18n.js';
 
 /**
  * Logout user (clear current chatId session only)
  */
 export async function logout() {
   try {
+    const t = window.i18n.t.bind(window.i18n);
     console.log('👋 Logging out...');
     
     const chatId = getCurrentChatId();
@@ -69,6 +69,8 @@ export async function logout() {
  */
 export async function deleteAccount() {
   try {
+    const t = window.i18n.t.bind(window.i18n);
+    
     // Confirm with user
     const confirmed = confirm(
       `${t('auth.delete.confirm.title')}\n\n` +
@@ -144,6 +146,7 @@ export async function deleteAccount() {
     return true;
     
   } catch (err) {
+    const t = window.i18n.t.bind(window.i18n);
     console.error('❌ Error deleting account:', err);
     
     // Show error
