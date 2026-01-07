@@ -1,47 +1,27 @@
-/* /webapp/js/i18n-manager.js v1.0.3 */
-// CHANGELOG v1.0.3:
-// - FIXED: Removed updatePage() from init() to prevent race conditions
-// - ADDED: 100ms delay before updatePage() in setLanguage()
-// - ADDED: requestAnimationFrame for smoother DOM updates
-// CHANGELOG v1.0.2:
-// - FIXED: updatePage() now called INSIDE init() automatically
-// - FIXED: Guaranteed translations loaded before page update
+/* /webapp/js/i18n-manager.js v1.0.4 */
+// CHANGELOG v1.0.4:
+// - PERFORMANCE: Incremental page updates (batch of 50 elements)
+// - FIXED: Android freeze when switching languages on complex pages
 
-/**
- * Global i18n Manager
- * 
- * Usage:
- *   await window.i18n.init();
- *   const text = window.i18n.t('auth.login.title');
- *   await window.i18n.setLanguage('en');
- */
 class I18nManager {
   constructor() {
     this.currentLang = 'ru';
     this.translations = {};
-    this.fallback = {}; // Russian as fallback
+    this.fallback = {};
     this.initialized = false;
     this.supportedLanguages = ['ru', 'en', 'ar'];
   }
   
-  /**
-   * Initialize i18n system
-   * Call this FIRST in app.js
-   */
   async init() {
     console.log('🌍 [i18n] Initializing...');
     
-    // Detect language
     this.currentLang = this.detectLanguage();
     console.log(`🎯 [i18n] Detected language: ${this.currentLang}`);
     
-    // Load translations
     try {
-      // Always load Russian as fallback
       await this.loadLanguage('ru');
       this.fallback = { ...this.translations };
       
-      // Load detected language if not Russian
       if (this.currentLang !== 'ru') {
         await this.loadLanguage(this.currentLang);
       }
@@ -49,10 +29,6 @@ class I18nManager {
       this.initialized = true;
       console.log(`✅ [i18n] Ready (${Object.keys(this.translations).length} keys)`);
       
-      // ✅ REMOVED: updatePage() call from here
-      // Will be called explicitly from app.js after full DOM ready
-      
-      // Dispatch event
       window.dispatchEvent(new CustomEvent('i18nReady', {
         detail: { lang: this.currentLang }
       }));
@@ -63,12 +39,7 @@ class I18nManager {
     }
   }
   
-  /**
-   * Detect user's preferred language
-   * Priority: localStorage → Telegram → Browser → Default
-   */
   detectLanguage() {
-    // 1. User preference (localStorage)
     try {
       const saved = localStorage.getItem('hayati_lang');
       if (saved && this.supportedLanguages.includes(saved)) {
@@ -79,7 +50,6 @@ class I18nManager {
       console.warn('⚠️ [i18n] localStorage not available');
     }
     
-    // 2. Telegram user language
     if (typeof window !== 'undefined' && window.Telegram?.WebApp) {
       const tgUser = window.Telegram.WebApp.initDataUnsafe?.user;
       if (tgUser?.language_code) {
@@ -91,7 +61,6 @@ class I18nManager {
       }
     }
     
-    // 3. Browser language
     if (typeof navigator !== 'undefined' && navigator.language) {
       const lang = navigator.language.toLowerCase().split('-')[0];
       if (this.supportedLanguages.includes(lang)) {
@@ -100,14 +69,10 @@ class I18nManager {
       }
     }
     
-    // 4. Default
     console.log('🏁 [i18n] Using default language: ru');
     return 'ru';
   }
   
-  /**
-   * Load translation file
-   */
   async loadLanguage(lang) {
     try {
       console.log(`📦 [i18n] Loading ${lang}.json...`);
@@ -133,43 +98,31 @@ class I18nManager {
     } catch (err) {
       console.error(`❌ [i18n] Failed to load ${lang}.json:`, err);
       
-      // If loading failed and we don't have fallback, throw
       if (Object.keys(this.fallback).length === 0) {
         throw new Error('Failed to load any translations');
       }
     }
   }
   
-  /**
-   * Get translation for key
-   * Falls back to Russian if key not found in current language
-   * Falls back to key itself if not found anywhere
-   */
   t(key) {
     if (!this.initialized) {
       console.warn(`⚠️ [i18n] Not initialized, returning key: ${key}`);
       return key;
     }
     
-    // Try current language
     if (this.translations[key] !== undefined) {
       return this.translations[key];
     }
     
-    // Try fallback (Russian)
     if (this.fallback[key] !== undefined) {
       console.warn(`⚠️ [i18n] Key "${key}" not found in ${this.currentLang}, using fallback`);
       return this.fallback[key];
     }
     
-    // Return key itself
     console.warn(`⚠️ [i18n] Key "${key}" not found in any language`);
     return key;
   }
   
-  /**
-   * Switch to different language
-   */
   async setLanguage(lang) {
     if (!this.supportedLanguages.includes(lang)) {
       console.error(`❌ [i18n] Language "${lang}" not supported`);
@@ -184,13 +137,9 @@ class I18nManager {
     console.log(`🔄 [i18n] Switching to ${lang}...`);
     
     try {
-      // Load new language
       await this.loadLanguage(lang);
-      
-      // Update current language
       this.currentLang = lang;
       
-      // Save preference
       try {
         localStorage.setItem('hayati_lang', lang);
       } catch (e) {
@@ -199,16 +148,12 @@ class I18nManager {
       
       console.log(`✅ [i18n] Switched to ${lang}`);
       
-      // Dispatch event for UI updates
       window.dispatchEvent(new CustomEvent('languageChanged', {
         detail: { lang }
       }));
       
-      // ✅ ADD DELAY: Wait for event handlers to complete
-      await new Promise(resolve => setTimeout(resolve, 100));
-      
-      // Update page
-      this.updatePage();
+      // ✅ CRITICAL FIX: Use incremental update
+      await this.updatePageIncremental();
       
       return true;
       
@@ -219,43 +164,42 @@ class I18nManager {
   }
   
   /**
-   * Update all translatable elements on page
-   * ✅ OPTIMIZED: Uses requestAnimationFrame for smoother updates
+   * ✅ NEW: Incremental page update (prevents Android freeze)
+   * Updates in batches of 50 elements with delays
    */
-  updatePage() {
-    console.log('🔄 [i18n] Updating page translations...');
+  async updatePageIncremental() {
+    console.log('🔄 [i18n] Starting incremental page update...');
     
-    // ✅ Use requestAnimationFrame for smoother DOM updates
-    requestAnimationFrame(() => {
-      let updated = 0;
-      let skipped = 0;
+    const BATCH_SIZE = 50;
+    let updated = 0;
+    let skipped = 0;
+    
+    // Get all elements
+    const elements = Array.from(document.querySelectorAll('[data-i18n]'));
+    console.log(`📊 Found ${elements.length} translatable elements`);
+    
+    // Process in batches
+    for (let i = 0; i < elements.length; i += BATCH_SIZE) {
+      const batch = elements.slice(i, i + BATCH_SIZE);
       
-      // Update elements with data-i18n attribute
-      const elements = document.querySelectorAll('[data-i18n]');
-      
-      elements.forEach(element => {
+      // Update batch
+      batch.forEach(element => {
         const key = element.getAttribute('data-i18n');
         const translation = this.t(key);
         
-        // Skip if translation is the same as key (not found)
         if (translation === key) {
-          console.warn(`⚠️ [i18n] Missing translation key: ${key}`);
           skipped++;
           return;
         }
         
-        // Update based on element type
         const tagName = element.tagName.toLowerCase();
         
         if (tagName === 'input' || tagName === 'textarea') {
-          // For inputs/textareas: update placeholder
           if (element.hasAttribute('placeholder')) {
             element.placeholder = translation;
             updated++;
           }
         } else if (tagName === 'button') {
-          // For buttons: update textContent (preserves inner HTML like icons)
-          // But we need to preserve SVG icons, so we find the <span> inside
           const span = element.querySelector('span');
           if (span) {
             span.textContent = translation;
@@ -264,13 +208,73 @@ class I18nManager {
           }
           updated++;
         } else {
-          // For other elements: update textContent
           element.textContent = translation;
           updated++;
         }
       });
       
-      // Update page title
+      // ✅ YIELD TO UI: Let browser breathe between batches
+      if (i + BATCH_SIZE < elements.length) {
+        await new Promise(resolve => setTimeout(resolve, 10));
+        console.log(`⏳ Updated ${Math.min(i + BATCH_SIZE, elements.length)}/${elements.length} elements...`);
+      }
+    }
+    
+    // Update title
+    const titleKey = document.querySelector('title')?.getAttribute('data-i18n');
+    if (titleKey) {
+      const titleTranslation = this.t(titleKey);
+      if (titleTranslation !== titleKey) {
+        document.title = titleTranslation;
+        updated++;
+      }
+    }
+    
+    console.log(`✅ [i18n] Update complete: ${updated} updated, ${skipped} skipped`);
+  }
+  
+  /**
+   * Legacy update method (kept for initial page load)
+   */
+  updatePage() {
+    console.log('🔄 [i18n] Updating page translations...');
+    
+    requestAnimationFrame(() => {
+      let updated = 0;
+      let skipped = 0;
+      
+      const elements = document.querySelectorAll('[data-i18n]');
+      
+      elements.forEach(element => {
+        const key = element.getAttribute('data-i18n');
+        const translation = this.t(key);
+        
+        if (translation === key) {
+          skipped++;
+          return;
+        }
+        
+        const tagName = element.tagName.toLowerCase();
+        
+        if (tagName === 'input' || tagName === 'textarea') {
+          if (element.hasAttribute('placeholder')) {
+            element.placeholder = translation;
+            updated++;
+          }
+        } else if (tagName === 'button') {
+          const span = element.querySelector('span');
+          if (span) {
+            span.textContent = translation;
+          } else {
+            element.textContent = translation;
+          }
+          updated++;
+        } else {
+          element.textContent = translation;
+          updated++;
+        }
+      });
+      
       const titleKey = document.querySelector('title')?.getAttribute('data-i18n');
       if (titleKey) {
         const titleTranslation = this.t(titleKey);
@@ -284,35 +288,24 @@ class I18nManager {
     });
   }
   
-  /**
-   * Get current language
-   */
   getCurrentLanguage() {
     return this.currentLang;
   }
   
-  /**
-   * Get supported languages
-   */
   getSupportedLanguages() {
     return [...this.supportedLanguages];
   }
   
-  /**
-   * Check if language is supported
-   */
   isSupported(lang) {
     return this.supportedLanguages.includes(lang);
   }
 }
 
-// Create global singleton
 if (typeof window !== 'undefined') {
   window.i18n = new I18nManager();
   console.log('✅ [i18n] Global manager created: window.i18n');
 }
 
-// Export for Node.js/testing environments
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = I18nManager;
 }
