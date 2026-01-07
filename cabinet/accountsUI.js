@@ -1,4 +1,7 @@
-/* /webapp/cabinet/accountsUI.js v2.1.0 */
+/* /webapp/cabinet/accountsUI.js v2.2.0 */
+// CHANGELOG v2.2.0:
+// - MIGRATED: From modular i18n to global window.i18n
+// - REMOVED: import { t } (Android freeze fix)
 // CHANGELOG v2.1.0:
 // - ADDED: Use centralized i18n from /js/utils/i18n.js
 // - REMOVED: Hardcoded Russian strings
@@ -14,12 +17,13 @@
 
 import { getUserAccounts, deleteAccount } from './accounts.js';
 import { showCreateAccountForm } from './createAccount.js';
-import { t } from '../js/utils/i18n.js';
 
 /**
  * Render accounts list in cabinet
  */
 export async function renderAccountsList() {
+  const t = window.i18n.t.bind(window.i18n);
+  
   try {
     console.log('📋 Loading accounts...');
     
@@ -78,6 +82,8 @@ export async function renderAccountsList() {
  * Render single account card (WITHOUT BALANCE)
  */
 function renderAccountCard(account) {
+  const t = window.i18n.t.bind(window.i18n);
+  
   const { accountId, type, profile } = account;
   
   // Type labels
@@ -205,6 +211,7 @@ function attachAccountListeners() {
  * Handle account edit (placeholder)
  */
 function handleEditAccount(accountId) {
+  const t = window.i18n.t.bind(window.i18n);
   alert(t('cabinet.account.editPlaceholder'));
   console.log(`📝 Edit account: ${accountId}`);
 }
@@ -213,6 +220,8 @@ function handleEditAccount(accountId) {
  * Handle account deletion
  */
 async function handleDeleteAccount(accountId) {
+  const t = window.i18n.t.bind(window.i18n);
+  
   try {
     const confirmed = confirm(t('cabinet.account.deleteConfirm'));
     
@@ -245,6 +254,7 @@ function handleEnterAccount(accountId) {
   import('../accountDashboard/accountNavigation.js').then(module => {
     module.showAccountDashboard(accountId);
   }).catch(err => {
+    const t = window.i18n.t.bind(window.i18n);
     console.error('❌ Error loading account navigation:', err);
     alert(t('cabinet.errorLoadingAccounts'));
   });
@@ -254,6 +264,8 @@ function handleEnterAccount(accountId) {
  * Show create account button
  */
 export function showCreateAccountButton() {
+  const t = window.i18n.t.bind(window.i18n);
+  
   const actionsContainer = document.querySelector('.cabinet-actions');
   
   if (!actionsContainer) {

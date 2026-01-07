@@ -1,4 +1,7 @@
-/* /webapp/cabinet/createAccount.js v1.6.0 */
+/* /webapp/cabinet/createAccount.js v1.7.0 */
+// CHANGELOG v1.7.0:
+// - MIGRATED: From modular i18n to global window.i18n
+// - REMOVED: import { t } (Android freeze fix)
 // CHANGELOG v1.6.0:
 // - ADDED: Use centralized i18n from /js/utils/i18n.js
 // - REMOVED: Hardcoded Russian strings
@@ -14,12 +17,13 @@ import { createAccount } from './accounts.js';
 import { renderAccountsList } from './accountsUI.js';
 import { refreshHYCBalance } from '../HayatiCoin/hycUI.js';
 import { formatHYC } from '../HayatiCoin/hycService.js';
-import { t } from '../js/utils/i18n.js';
 
 /**
  * Show create account form
  */
 export function showCreateAccountForm() {
+  const t = window.i18n.t.bind(window.i18n);
+  
   console.log('📝 Showing create account form');
   
   const container = document.querySelector('.cabinet-content');
@@ -167,6 +171,8 @@ function selectAccountType(type) {
  * Handle create individual account (with 3D loading state)
  */
 async function handleCreateIndividual() {
+  const t = window.i18n.t.bind(window.i18n);
+  
   try {
     const firstName = document.getElementById('firstName')?.value.trim();
     const lastName = document.getElementById('lastName')?.value.trim();

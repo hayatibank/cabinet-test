@@ -1,4 +1,8 @@
-/* /webapp/offeringZone/offeringZone.js v1.2.0 */
+/* /webapp/offeringZone/offeringZone.js v1.3.0 */
+// CHANGELOG v1.3.0:
+// - MIGRATED: From modular i18n to global window.i18n
+// - REMOVED: import { t } (Android freeze fix)
+// - ADDED: Inline t() helper
 // CHANGELOG v1.2.0:
 // - UPDATED: Now uses fetchMarketSnapshot() instead of fetchAvailableUnits()
 // - ADDED: Snapshot metadata logging
@@ -6,13 +10,14 @@
 // - MOVED: From /js/cabinet/reports/ to /offeringZone/ (modular)
 // - FIXED: Import paths
 
-import { t } from './i18n.js';
 import { calculateAvailableBudget, fetchMarketSnapshot, filterUnitsByBudget, getTopOffers } from './offeringService.js';
 
 /**
  * Render offering zone
  */
 export async function renderOfferingZone(accountId, year, financialData, rates) {
+  const t = window.i18n.t.bind(window.i18n);
+  
   try {
     console.log('🎁 Rendering offering zone...');
     
@@ -30,7 +35,7 @@ export async function renderOfferingZone(accountId, year, financialData, rates) 
     const offeringContainer = createOfferingContainer(budgetInfo, 'loading');
     reportContainer.appendChild(offeringContainer);
     
-    // 🆕 NEW: Fetch from market pool
+    // Fetch from market pool
     const allUnits = await fetchMarketSnapshot();
     
     if (allUnits.length === 0) {
@@ -54,12 +59,12 @@ export async function renderOfferingZone(accountId, year, financialData, rates) 
   }
 }
 
-
-
 /**
  * Create offering container (initial state)
  */
 function createOfferingContainer(budgetInfo, state = 'loading') {
+  const t = window.i18n.t.bind(window.i18n);
+  
   const container = document.createElement('div');
   container.className = 'offering-zone';
   container.id = 'offeringZone';
@@ -90,6 +95,8 @@ function createOfferingContainer(budgetInfo, state = 'loading') {
  * Update offering container with offers
  */
 function updateOfferingContainer(container, budgetInfo, offers, rates) {
+  const t = window.i18n.t.bind(window.i18n);
+  
   // Clear container
   container.innerHTML = '';
   
@@ -150,6 +157,8 @@ function updateOfferingContainer(container, budgetInfo, offers, rates) {
  * Create offer card
  */
 function createOfferCard(unit, rates) {
+  const t = window.i18n.t.bind(window.i18n);
+  
   const card = document.createElement('div');
   card.className = 'offer-card';
   
@@ -242,6 +251,6 @@ function formatCurrency(amount) {
  * Open unit details (placeholder)
  */
 window.openUnitDetails = function(projectId, unitId) {
-  console.log('🏢 Opening unit details:', projectId, unitId);
+  const t = window.i18n.t.bind(window.i18n);
   alert(`${t('message.comingSoon')}\n\n${t('message.projectLabel')}: ${projectId}\n${t('message.unitLabel')}: ${unitId}`);
 };

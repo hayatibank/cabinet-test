@@ -1,4 +1,7 @@
-/* /webapp/auth/authForms.js v2.1.0 */
+/* /webapp/auth/authForms.js v2.2.0 */
+// CHANGELOG v2.2.0:
+// - MIGRATED: From modular i18n to global window.i18n
+// - REMOVED: import { t } (Android freeze fix)
 // CHANGELOG v2.1.0:
 // - ADDED: Use centralized i18n from /js/utils/i18n.js
 // - REMOVED: Local error messages (now use t() function)
@@ -19,7 +22,6 @@ import {
 import { linkTelegramAccount, createUserDocument } from '../js/api.js';
 import { saveSession, getCurrentChatId } from '../js/session.js';
 import { showLoadingScreen, showAuthScreen, showCabinet, showError, showSuccess, clearErrors } from '../js/ui.js';
-import { t } from '../js/utils/i18n.js';
 import { requestRegistrationReward } from '../HayatiCoin/hycService.js';
 
 // Get Telegram WebApp
@@ -30,6 +32,8 @@ const tg = window.Telegram?.WebApp;
  */
 export function setupLoginHandler(auth) {
   document.getElementById('loginBtn')?.addEventListener('click', async () => {
+    const t = window.i18n.t.bind(window.i18n);
+    
     const email = document.getElementById('loginEmail')?.value.trim();
     const password = document.getElementById('loginPassword')?.value;
     
@@ -100,6 +104,8 @@ export function setupLoginHandler(auth) {
  */
 export function setupRegisterHandler(auth, db) {
   document.getElementById('registerBtn')?.addEventListener('click', async () => {
+    const t = window.i18n.t.bind(window.i18n);
+    
     const email = document.getElementById('registerEmail')?.value.trim();
     const password = document.getElementById('registerPassword')?.value;
     const passwordConfirm = document.getElementById('registerPasswordConfirm')?.value;
@@ -238,6 +244,8 @@ export function setupRegisterHandler(auth, db) {
  */
 export function setupResetHandler(auth) {
   document.getElementById('resetBtn')?.addEventListener('click', async () => {
+    const t = window.i18n.t.bind(window.i18n);
+    
     const email = document.getElementById('resetEmail')?.value.trim();
     
     clearErrors();
