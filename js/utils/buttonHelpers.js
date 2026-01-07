@@ -5,7 +5,7 @@
 // - Loading/Success/Error animations
 // - i18n support
 
-import { t } from './i18n.js';
+// import { t } from './i18n.js';
 
 /**
  * Set button to loading state
