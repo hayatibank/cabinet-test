@@ -1,8 +1,7 @@
-/* /webapp/app.js v3.0.2 */
-// CHANGELOG v3.0.2:
-// - FIXED: i18n now initializes BEFORE any UI code
-// - WRAPPED: Everything in DOMContentLoaded
-// - GUARANTEED: Synchronous initialization order
+/* /webapp/app.js v3.0.3 */
+// CHANGELOG v3.0.3:
+// - FIXED: Explicit updatePage() call after i18n init with 50ms delay
+// - ADDED: Wait for DOM to be fully ready before first translation update
 
 // ==================== STEP 1: LOAD I18N FIRST ====================
 import './js/i18n-manager.js';
@@ -23,33 +22,29 @@ import './auth/accountActions.js';
 import './cabinet/accountsUI.js';
 import { claimHYC } from './HayatiCoin/hycService.js';
 
-
-/* /webapp/app.js v3.0.3 */
-// CHANGELOG v3.0.3:
-// - ADDED: Explicit updatePage() call after i18n init
-
-
 // ==================== INITIALIZATION ====================
 window.addEventListener('DOMContentLoaded', async () => {
   console.log('🚀 [app.js] DOMContentLoaded - Starting initialization...');
   
   try {
-
     // ==================== STEP 1: I18N (CRITICAL FIRST) ====================
     console.log('🌍 [app.js] Step 1/7: Initializing i18n...');
-    // Step 1: i18n
+    
     if (!window.i18n) {
       throw new Error('i18n manager not found');
     }
     
     await window.i18n.init();
     console.log('✅ [app.js] i18n ready:', window.i18n.getCurrentLanguage());
+    console.log(`📚 [app.js] Loaded ${Object.keys(window.i18n.translations).length} translation keys`);
     
-    // ✅ ADD THIS:
-    // Wait for DOM to be fully ready
+    // ✅ CRITICAL FIX: Wait for DOM to be fully ready before first update
+    console.log('⏳ [app.js] Waiting for DOM to be fully ready...');
     await new Promise(resolve => setTimeout(resolve, 50));
+    
+    // ✅ NOW update page translations
     window.i18n.updatePage();
-    console.log('✅ [app.js] Initial translations applied');
+    console.log('✅ [app.js] Initial translations applied to page');
     
     // ==================== STEP 2: TELEGRAM SETUP ====================
     console.log('📱 [app.js] Step 2/7: Setting up Telegram...');

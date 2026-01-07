@@ -1,10 +1,11 @@
-/* /webapp/js/i18n-manager.js v1.0.2 */
+/* /webapp/js/i18n-manager.js v1.0.3 */
+// CHANGELOG v1.0.3:
+// - FIXED: Removed updatePage() from init() to prevent race conditions
+// - ADDED: 100ms delay before updatePage() in setLanguage()
+// - ADDED: requestAnimationFrame for smoother DOM updates
 // CHANGELOG v1.0.2:
 // - FIXED: updatePage() now called INSIDE init() automatically
 // - FIXED: Guaranteed translations loaded before page update
-// CHANGELOG v1.0.1:
-// - FIXED: updatePage() now updates placeholders for inputs
-// - FIXED: Better handling of different element types
 
 /**
  * Global i18n Manager
@@ -48,9 +49,8 @@ class I18nManager {
       this.initialized = true;
       console.log(`✅ [i18n] Ready (${Object.keys(this.translations).length} keys)`);
       
-      // 🆕 CRITICAL: Update page INSIDE init() to guarantee translations are loaded
-      this.updatePage();
-      console.log('✅ [i18n] Initial page update completed');
+      // ✅ REMOVED: updatePage() call from here
+      // Will be called explicitly from app.js after full DOM ready
       
       // Dispatch event
       window.dispatchEvent(new CustomEvent('i18nReady', {
@@ -112,7 +112,6 @@ class I18nManager {
     try {
       console.log(`📦 [i18n] Loading ${lang}.json...`);
       
-      // const response = await fetch(`/i18n/${lang}.json`);
       const response = await fetch(`./i18n/${lang}.json`);
       
       if (!response.ok) {
@@ -205,6 +204,9 @@ class I18nManager {
         detail: { lang }
       }));
       
+      // ✅ ADD DELAY: Wait for event handlers to complete
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
       // Update page
       this.updatePage();
       
@@ -218,62 +220,68 @@ class I18nManager {
   
   /**
    * Update all translatable elements on page
+   * ✅ OPTIMIZED: Uses requestAnimationFrame for smoother updates
    */
   updatePage() {
     console.log('🔄 [i18n] Updating page translations...');
     
-    let updated = 0;
-    let skipped = 0;
-    
-    // Update elements with data-i18n attribute
-    document.querySelectorAll('[data-i18n]').forEach(element => {
-      const key = element.getAttribute('data-i18n');
-      const translation = this.t(key);
+    // ✅ Use requestAnimationFrame for smoother DOM updates
+    requestAnimationFrame(() => {
+      let updated = 0;
+      let skipped = 0;
       
-      // Skip if translation is the same as key (not found)
-      if (translation === key) {
-        console.warn(`⚠️ [i18n] Missing translation key: ${key}`);
-        skipped++;
-        return;
-      }
+      // Update elements with data-i18n attribute
+      const elements = document.querySelectorAll('[data-i18n]');
       
-      // Update based on element type
-      const tagName = element.tagName.toLowerCase();
-      
-      if (tagName === 'input' || tagName === 'textarea') {
-        // For inputs/textareas: update placeholder
-        if (element.hasAttribute('placeholder')) {
-          element.placeholder = translation;
+      elements.forEach(element => {
+        const key = element.getAttribute('data-i18n');
+        const translation = this.t(key);
+        
+        // Skip if translation is the same as key (not found)
+        if (translation === key) {
+          console.warn(`⚠️ [i18n] Missing translation key: ${key}`);
+          skipped++;
+          return;
+        }
+        
+        // Update based on element type
+        const tagName = element.tagName.toLowerCase();
+        
+        if (tagName === 'input' || tagName === 'textarea') {
+          // For inputs/textareas: update placeholder
+          if (element.hasAttribute('placeholder')) {
+            element.placeholder = translation;
+            updated++;
+          }
+        } else if (tagName === 'button') {
+          // For buttons: update textContent (preserves inner HTML like icons)
+          // But we need to preserve SVG icons, so we find the <span> inside
+          const span = element.querySelector('span');
+          if (span) {
+            span.textContent = translation;
+          } else {
+            element.textContent = translation;
+          }
+          updated++;
+        } else {
+          // For other elements: update textContent
+          element.textContent = translation;
           updated++;
         }
-      } else if (tagName === 'button') {
-        // For buttons: update textContent (preserves inner HTML like icons)
-        // But we need to preserve SVG icons, so we find the <span> inside
-        const span = element.querySelector('span');
-        if (span) {
-          span.textContent = translation;
-        } else {
-          element.textContent = translation;
+      });
+      
+      // Update page title
+      const titleKey = document.querySelector('title')?.getAttribute('data-i18n');
+      if (titleKey) {
+        const titleTranslation = this.t(titleKey);
+        if (titleTranslation !== titleKey) {
+          document.title = titleTranslation;
+          updated++;
         }
-        updated++;
-      } else {
-        // For other elements: update textContent
-        element.textContent = translation;
-        updated++;
       }
+      
+      console.log(`✅ [i18n] Updated ${updated} elements, skipped ${skipped} missing keys`);
     });
-    
-    // Update page title
-    const titleKey = document.querySelector('title')?.getAttribute('data-i18n');
-    if (titleKey) {
-      const titleTranslation = this.t(titleKey);
-      if (titleTranslation !== titleKey) {
-        document.title = titleTranslation;
-        updated++;
-      }
-    }
-    
-    console.log(`✅ [i18n] Updated ${updated} elements, skipped ${skipped} missing keys`);
   }
   
   /**
