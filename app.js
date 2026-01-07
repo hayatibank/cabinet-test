@@ -1,209 +1,239 @@
-/* /webapp/app.js v3.0.1 - i18n UPDATE FIX */
-// CHANGELOG v3.0.1:
-// - FIXED: Added window.i18n.updatePage() after init
-// - Now all data-i18n attributes work on page load
+/* /webapp/cabinet/accountsUI.js v2.2.2 */
+// CHANGELOG v2.2.2:
+// - REMOVED: waitForI18n() - no longer needed
+// - ASSUMED: i18n is always ready (guaranteed by app.js)
 
-// ==================== STEP 1: LOAD I18N FIRST ====================
-// Import i18n manager (global singleton)
-import './js/i18n-manager.js';
+import { getUserAccounts, deleteAccount } from './accounts.js';
+import { showCreateAccountForm } from './createAccount.js';
 
-// Import language switcher (auto-creates UI)
-import './js/components/languageSwitcher.js';
-
-// ==================== STEP 2: INITIALIZE I18N ====================
-async function initializeI18n() {
-  console.log('🌍 [App] Initializing i18n system...');
+/**
+ * Render accounts list in cabinet
+ */
+export async function renderAccountsList() {
+  // ✅ i18n is guaranteed to be ready (no need to wait)
+  const t = window.i18n.t.bind(window.i18n);
   
   try {
-    await window.i18n.init();
-    console.log('✅ [App] i18n ready:', window.i18n.getCurrentLanguage());
+    console.log('📋 Loading accounts...');
     
-    // 🆕 CRITICAL FIX: Update all [data-i18n] on page load
-    window.i18n.updatePage();
-    console.log('✅ [App] Page translations updated');
+    const accounts = await getUserAccounts();
+    const container = document.querySelector('.cabinet-content');
     
-    return true;
+    if (!container) {
+      console.error('❌ Cabinet content container not found');
+      return;
+    }
+    
+    if (accounts.length === 0) {
+      container.innerHTML = `
+        <div class="no-accounts">
+          <p data-i18n="cabinet.noAccounts">${t('cabinet.noAccounts')}</p>
+          <p class="subtitle" data-i18n="cabinet.noAccountsSubtitle">${t('cabinet.noAccountsSubtitle')}</p>
+        </div>
+      `;
+    } else {
+      container.innerHTML = `
+        <div class="accounts-list">
+          ${accounts.map(acc => renderAccountCard(acc)).join('')}
+        </div>
+      `;
+      
+      attachAccountListeners();
+    }
+    
+    console.log(`✅ Rendered ${accounts.length} accounts`);
+    
   } catch (err) {
-    console.error('❌ [App] i18n initialization failed:', err);
-    return false;
+    console.error('❌ Error rendering accounts:', err);
+    
+    const t = window.i18n.t.bind(window.i18n);
+    const container = document.querySelector('.cabinet-content');
+    
+    if (container) {
+      container.innerHTML = `
+        <div class="error-message">
+          <p data-i18n="cabinet.errorLoadingAccounts">${t('cabinet.errorLoadingAccounts')}</p>
+          <button onclick="location.reload()" class="btn btn-secondary">
+            <span data-i18n="cabinet.refresh">${t('cabinet.refresh')}</span>
+          </button>
+        </div>
+      `;
+    }
   }
 }
 
-// ==================== STEP 3: FIREBASE & REST ====================
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js';
-import { getAuth, signInWithCustomToken } from 'https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js';
-import { initializeFirestore, CACHE_SIZE_UNLIMITED } from 'https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js';
+// ... rest of the file stays the same ...
 
-import { FIREBASE_CONFIG } from './js/config.js';
-import { checkTelegramBinding, silentLogin, validateToken } from './js/api.js';
-import { setupLoginHandler, setupRegisterHandler, setupResetHandler, setupFormSwitching } from './auth/authForms.js';
-import { getSession, saveSession, getCurrentChatId, listAllSessions } from './js/session.js';
-import { showLoadingScreen, showAuthScreen, showCabinet } from './js/ui.js';
-import { setupTokenInterceptor, setupPeriodicTokenCheck, setupBackgroundTokenRefresh, ensureFreshToken } from './js/tokenManager.js';
-import './auth/accountActions.js';
-import './cabinet/accountsUI.js';
-import { claimHYC } from './HayatiCoin/hycService.js';
-
-// Initialize Firebase
-const app = initializeApp(FIREBASE_CONFIG);
-const auth = getAuth(app);
-
-// Initialize Firestore with Long Polling (no WebSocket)
-const db = initializeFirestore(app, {
-  experimentalForceLongPolling: true,
-  cacheSizeBytes: CACHE_SIZE_UNLIMITED
-});
-
-console.log('✅ Firebase initialized');
-console.log('🔌 Firestore: Long Polling mode (WebSocket disabled)');
-
-// Setup token management system
-setupTokenInterceptor();
-setupPeriodicTokenCheck();
-setupBackgroundTokenRefresh();
-console.log('🔒 Token auto-refresh system enabled');
-
-// Get Telegram WebApp
-const tg = window.Telegram?.WebApp;
-if (tg) {
-  tg.ready();
-  tg.expand();
-  console.log('✅ Telegram WebApp initialized');
-  console.log('📱 Telegram User:', tg.initDataUnsafe?.user);
+/**
+ * Render single account card
+ */
+function renderAccountCard(account) {
+  const t = window.i18n.t.bind(window.i18n);
+  
+  const { accountId, type, profile } = account;
+  
+  const typeLabels = {
+    individual: t('cabinet.accountType.individual'),
+    business: t('cabinet.accountType.business'),
+    government: t('cabinet.accountType.government')
+  };
+  
+  const typeLabel = typeLabels[type] || t('cabinet.accounts');
+  
+  let profileName = t('cabinet.account.noName');
+  if (type === 'individual' && profile) {
+    profileName = `${profile.firstName || ''} ${profile.lastName || ''}`.trim();
+  }
+  
+  return `
+    <div class="account-card" data-account-id="${accountId}">
+      <div class="account-header">
+        <div class="account-type">${typeLabel}</div>
+        <div class="account-menu">
+          <button class="btn-icon btn-menu-toggle" data-action="menu" data-account-id="${accountId}">
+            <svg width="4" height="16" viewBox="0 0 4 16" fill="currentColor">
+              <circle cx="2" cy="2" r="2"/>
+              <circle cx="2" cy="8" r="2"/>
+              <circle cx="2" cy="14" r="2"/>
+            </svg>
+          </button>
+          <div class="dropdown-menu" id="menu-${accountId}">
+            <button class="dropdown-item" data-action="edit" data-account-id="${accountId}">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10z"/>
+              </svg>
+              <span data-i18n="cabinet.account.edit">${t('cabinet.account.edit')}</span>
+            </button>
+            <button class="dropdown-item dropdown-item-danger" data-action="delete" data-account-id="${accountId}">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5z"/>
+              </svg>
+              <span data-i18n="cabinet.account.delete">${t('cabinet.account.delete')}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="account-body">
+        <h3 class="account-name">${profileName}</h3>
+      </div>
+      
+      <div class="account-actions">
+        <button class="btn btn-enter" data-action="enter" data-account-id="${accountId}">
+          <span class="btn-text" data-i18n="cabinet.account.enter">${t('cabinet.account.enter')}</span>
+          <svg class="btn-arrow" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M10 0l10 10-10 10-2-2 6-6H0V8h14l-6-6 2-2z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  `;
 }
 
-// ==================== MAIN INITIALIZATION ====================
+// ... rest stays the same (attachAccountListeners, etc) ...
 
-async function initMiniApp() {
-  try {
-    // STEP 1: Initialize i18n FIRST
-    const i18nReady = await initializeI18n();
-    if (!i18nReady) {
-      throw new Error('i18n initialization failed');
-    }
-    
-    // STEP 2: Now show loading screen with translated text
-    showLoadingScreen(window.i18n.t('common.loading'));
-    
-    const chatId = getCurrentChatId();
-    const initData = tg?.initData;
-    
-    console.log('📱 Mini App started');
-    if (chatId) {
-      console.log('👤 Chat ID:', chatId);
+function attachAccountListeners() {
+  document.querySelectorAll('.btn-menu-toggle').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const accountId = btn.dataset.accountId;
+      const menu = document.getElementById(`menu-${accountId}`);
       
-      // Debug: list all sessions
-      const allSessions = listAllSessions();
-      if (allSessions.length > 0) {
-        console.log('📋 Available sessions:', allSessions.map(s => `${s.chatId} (${s.email})`).join(', '));
-      }
-    }
-    
-    // STEP 3: Check localStorage for existing session (current chatId)
-    let session = getSession(chatId);
-    
-    if (session) {
-      console.log('🔍 Found session, validating...');
-      
-      // Ensure token is fresh before validation
-      const freshToken = await ensureFreshToken(chatId);
-      
-      if (freshToken) {
-        session.authToken = freshToken;
-      }
-      
-      const isValid = await validateToken(session.authToken, session.uid);
-      
-      if (isValid) {
-        console.log('✅ Token valid, showing cabinet');
-        return showCabinet({ uid: session.uid, email: session.email });
-      } else {
-        console.log('⚠️ Token invalid, will try silent login');
-      }
-    }
-    
-    // STEP 4: Check Telegram binding (if opened from Telegram)
-    if (chatId && initData) {
-      console.log('🔍 Checking Telegram binding...');
-      
-      const binding = await checkTelegramBinding(chatId, initData);
-      
-      if (binding && binding.bound && binding.uid) {
-        console.log('✅ Found Telegram binding, attempting silent login...');
-        
-        const loginResult = await silentLogin(binding.uid, chatId, initData);
-        
-        if (loginResult && loginResult.success) {
-          console.log('✅ Silent login successful');
-          
-          // Exchange Custom Token for ID Token
-          try {
-            console.log('🔄 Exchanging custom token for ID token...');
-            
-            const userCredential = await signInWithCustomToken(auth, loginResult.authToken);
-            const idToken = await userCredential.user.getIdToken(true);
-            
-            console.log('✅ ID Token obtained');
-            
-            // Save session with ID Token
-            saveSession({
-              authToken: idToken,
-              tokenExpiry: Date.now() + (60 * 60 * 1000),
-              uid: loginResult.uid,
-              email: loginResult.email
-            }, chatId);
-            
-            return showCabinet({
-              uid: loginResult.uid,
-              email: loginResult.email
-            });
-          } catch (tokenError) {
-            console.error('❌ Error exchanging custom token:', tokenError);
-            
-            // Fallback: try to use as-is
-            saveSession({
-              authToken: loginResult.authToken,
-              tokenExpiry: loginResult.tokenExpiry,
-              uid: loginResult.uid,
-              email: loginResult.email
-            }, chatId);
-            
-            return showCabinet({
-              uid: loginResult.uid,
-              email: loginResult.email
-            });
-          }
-        } else {
-          console.log('⚠️ Silent login failed');
+      document.querySelectorAll('.dropdown-menu').forEach(m => {
+        if (m.id !== `menu-${accountId}`) {
+          m.classList.remove('show');
         }
-      } else {
-        console.log('ℹ️ No Telegram binding found');
-      }
+      });
+      
+      menu.classList.toggle('show');
+    });
+  });
+  
+  document.querySelectorAll('[data-action="edit"]').forEach(btn => {
+    btn.addEventListener('click', () => handleEditAccount(btn.dataset.accountId));
+  });
+  
+  document.querySelectorAll('[data-action="delete"]').forEach(btn => {
+    btn.addEventListener('click', () => handleDeleteAccount(btn.dataset.accountId));
+  });
+  
+  document.querySelectorAll('[data-action="enter"]').forEach(btn => {
+    btn.addEventListener('click', () => handleEnterAccount(btn.dataset.accountId));
+  });
+  
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.account-menu')) {
+      document.querySelectorAll('.dropdown-menu').forEach(m => {
+        m.classList.remove('show');
+      });
     }
-    
-    // STEP 5: No session and no binding - show auth screen
-    console.log('🔓 No session found, showing auth screen');
-    showAuthScreen('login');
-    
-  } catch (err) {
-    console.error('❌ Error initializing Mini App:', err);
-    showAuthScreen('login');
-  }
-
-  await claimHYC('app_login');
+  });
 }
 
-// ==================== SETUP EVENT HANDLERS ====================
+function handleEditAccount(accountId) {
+  const t = window.i18n.t.bind(window.i18n);
+  alert(t('cabinet.account.editPlaceholder'));
+}
 
-window.addEventListener('DOMContentLoaded', () => {
-  console.log('🚀 Mini App DOM loaded');
+async function handleDeleteAccount(accountId) {
+  const t = window.i18n.t.bind(window.i18n);
   
-  // Setup auth form handlers
-  setupLoginHandler(auth);
-  setupRegisterHandler(auth, db);
-  setupResetHandler(auth);
-  setupFormSwitching();
+  try {
+    const confirmed = confirm(t('cabinet.account.deleteConfirm'));
+    if (!confirmed) return;
+    
+    console.log(`🗑️ Deleting account: ${accountId}`);
+    await deleteAccount(accountId);
+    alert(t('cabinet.accountDeleted'));
+    await renderAccountsList();
+  } catch (err) {
+    console.error('❌ Error deleting account:', err);
+    alert(t('cabinet.createAccount.error'));
+  }
+}
+
+function handleEnterAccount(accountId) {
+  console.log(`🚀 Entering account: ${accountId}`);
   
-  // Initialize app
-  initMiniApp();
-});
+  import('../accountDashboard/accountNavigation.js').then(module => {
+    module.showAccountDashboard(accountId);
+  }).catch(err => {
+    const t = window.i18n.t.bind(window.i18n);
+    console.error('❌ Error loading account navigation:', err);
+    alert(t('cabinet.errorLoadingAccounts'));
+  });
+}
+
+export async function showCreateAccountButton() {
+  const t = window.i18n.t.bind(window.i18n);
+  const actionsContainer = document.querySelector('.cabinet-actions');
+  
+  if (!actionsContainer || actionsContainer.querySelector('.btn-create-account')) {
+    return;
+  }
+  
+  actionsContainer.innerHTML = `
+    <button class="btn btn-primary btn-create-account">
+      <span data-i18n="cabinet.createAccount">${t('cabinet.createAccount')}</span>
+    </button>
+    <button onclick="showProfileMenu()" class="btn btn-secondary">
+      <span data-i18n="cabinet.settings">${t('cabinet.settings')}</span>
+    </button>
+    <button onclick="logout()" class="btn btn-ghost">
+      <span data-i18n="auth.logout.button">${t('auth.logout.button')}</span>
+    </button>
+  `;
+  
+  const createBtn = actionsContainer.querySelector('.btn-create-account');
+  if (createBtn) {
+    createBtn.onclick = showCreateAccountForm;
+  }
+}
+
+if (typeof window !== 'undefined') {
+  window.addEventListener('cabinetReady', async (event) => {
+    console.log('📋 Cabinet ready:', event.detail);
+    showCreateAccountButton();
+    await renderAccountsList();
+  });
+}
