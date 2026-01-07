@@ -416,7 +416,9 @@
   
   <!-- Profile Menu Functions -->
   <script type="module">
-    import { t } from './js/utils/i18n.js';
+    // import { t } from './js/utils/i18n.js';
+
+    const t = window.i18n.t.bind(window.i18n);
     
     // Make t() available globally for onclick handlers
     window.t = t;
