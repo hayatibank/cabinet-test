@@ -194,235 +194,99 @@
     <!-- ======================== -->
     <!-- PROFILE MENU MODAL -->
     <!-- ======================== -->
-<!-- /webapp/index.html - SETTINGS MENU UPDATE -->
-<!-- Replace the existing #profileMenu modal with this version -->
-
-<!-- ======================== -->
-<!-- PROFILE MENU MODAL (UPDATED) -->
-<!-- ======================== -->
-<div id="profileMenu" class="modal hidden">
-  <div class="modal-overlay" onclick="closeProfileMenu()"></div>
-  <div class="modal-content">
-    <div class="modal-header">
-      <h3 id="settingsTitle">⚙️ Настройки профиля</h3>
-      <button onclick="closeProfileMenu()" class="btn-close">×</button>
+    <div id="profileMenu" class="modal hidden">
+      <div class="modal-overlay" onclick="closeProfileMenu()"></div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 data-i18n="settings.title">⚙️ Настройки профиля</h3>
+          <button onclick="closeProfileMenu()" class="btn-close">×</button>
+        </div>
+        <div class="modal-body">
+          
+          <!-- Profile Section -->
+          <div class="setting-item">
+            <h4 data-i18n="settings.profile.title">👤 Профиль</h4>
+            <p class="setting-description" data-i18n="settings.profile.description">
+              Управление профилем и персональными данными
+            </p>
+            <button class="btn btn-secondary btn-small" onclick="alert(window.i18n.t('settings.inDevelopment'))">
+              <span data-i18n="settings.profile.edit">Редактировать профиль</span>
+            </button>
+          </div>
+          
+          <!-- Language & Region Section -->
+          <div class="setting-item">
+            <h4 data-i18n="settings.language.title">🌍 Язык и регион</h4>
+            <p class="setting-description" data-i18n="settings.language.description">
+              Настройки языка, валюты и формата
+            </p>
+            
+            <div class="setting-group">
+              <label for="languageSelect" data-i18n="settings.language.language">Язык:</label>
+              <select id="languageSelect" class="setting-select" onchange="handleLanguageChange(this.value)">
+                <option value="ru">🇷🇺 Русский</option>
+                <option value="en">🇬🇧 English</option>
+              </select>
+            </div>
+            
+            <div class="setting-group">
+              <label for="currencySelect" data-i18n="settings.language.currency">Валюта:</label>
+              <select id="currencySelect" class="setting-select" disabled>
+                <option value="rub">₽ Рубль (RUB)</option>
+                <option value="usd">$ Доллар (USD)</option>
+                <option value="aed">د.إ Дирхам (AED)</option>
+              </select>
+              <p class="setting-note" data-i18n="settings.inDevelopment">
+                🚧 Скоро будет доступно
+              </p>
+            </div>
+            
+            <div class="setting-group">
+              <label for="timezoneSelect" data-i18n="settings.language.timezone">Часовой пояс:</label>
+              <select id="timezoneSelect" class="setting-select" disabled>
+                <option value="europe/moscow">Europe/Moscow (MSK)</option>
+                <option value="asia/dubai">Asia/Dubai (GST)</option>
+                <option value="utc">UTC</option>
+              </select>
+              <p class="setting-note" data-i18n="settings.inDevelopment">
+                🚧 Скоро будет доступно
+              </p>
+            </div>
+          </div>
+          
+          <!-- Notifications Section -->
+          <div class="setting-item">
+            <h4 data-i18n="settings.notifications.title">🔔 Уведомления</h4>
+            <p class="setting-description" data-i18n="settings.notifications.description">
+              Настройки уведомлений и оповещений
+            </p>
+            <button class="btn btn-secondary btn-small" onclick="alert(window.i18n.t('settings.inDevelopment'))">
+              <span data-i18n="settings.notifications.configure">Настроить</span>
+            </button>
+          </div>
+          
+          <!-- Danger Zone -->
+          <div class="setting-item danger-zone">
+            <h4 data-i18n="settings.dangerZone.title">⚠️ Опасная зона</h4>
+            <p class="setting-description warning-text" data-i18n="settings.dangerZone.warning">
+              Удаление учетной записи безвозвратно удалит все ваши данные из системы ФД «Хаяти»
+            </p>
+            <button onclick="deleteAccount()" class="btn btn-danger btn-small">
+              <span data-i18n="settings.dangerZone.deleteButton">🗑️ Удалиться из ФД «Хаяти»</span>
+            </button>
+          </div>
+          
+        </div>
+      </div>
     </div>
-    <div class="modal-body">
-      
-      <!-- Profile Section -->
-      <div class="setting-item">
-        <h4 id="settingsProfileTitle">👤 Профиль</h4>
-        <p class="setting-description" id="settingsProfileDesc">
-          Управление профилем и персональными данными
-        </p>
-        <button class="btn btn-secondary btn-small" onclick="alert(window.i18n.t('settings.inDevelopment'))">
-          <span id="settingsProfileEdit">Редактировать профиль</span>
-        </button>
-      </div>
-      
-      <!-- Language & Region Section (NEW) -->
-      <div class="setting-item">
-        <h4 id="settingsLanguageTitle">🌍 Язык и регион</h4>
-        <p class="setting-description" id="settingsLanguageDesc">
-          Настройки языка, валюты и формата
-        </p>
-        
-        <div class="setting-group">
-          <label for="languageSelect" id="settingsLanguageLabel">Язык:</label>
-          <select id="languageSelect" class="setting-select" onchange="handleLanguageChange(this.value)">
-            <option value="ru">🇷🇺 Русский</option>
-            <option value="en">🇬🇧 English</option>
-          </select>
-        </div>
-        
-        <div class="setting-group">
-          <label for="currencySelect" id="settingsCurrencyLabel">Валюта:</label>
-          <select id="currencySelect" class="setting-select" disabled>
-            <option value="rub">₽ Рубль (RUB)</option>
-            <option value="usd">$ Доллар (USD)</option>
-            <option value="aed">د.إ Дирхам (AED)</option>
-          </select>
-          <p class="setting-note" id="settingsCurrencyNote">
-            🚧 Скоро будет доступно
-          </p>
-        </div>
-        
-        <div class="setting-group">
-          <label for="timezoneSelect" id="settingsTimezoneLabel">Часовой пояс:</label>
-          <select id="timezoneSelect" class="setting-select" disabled>
-            <option value="europe/moscow">Europe/Moscow (MSK)</option>
-            <option value="asia/dubai">Asia/Dubai (GST)</option>
-            <option value="utc">UTC</option>
-          </select>
-          <p class="setting-note" id="settingsTimezoneNote">
-            🚧 Скоро будет доступно
-          </p>
-        </div>
-      </div>
-      
-      <!-- Notifications Section -->
-      <div class="setting-item">
-        <h4 id="settingsNotificationsTitle">🔔 Уведомления</h4>
-        <p class="setting-description" id="settingsNotificationsDesc">
-          Настройки уведомлений и оповещений
-        </p>
-        <button class="btn btn-secondary btn-small" onclick="alert(window.i18n.t('settings.inDevelopment'))">
-          <span id="settingsNotificationsConfigure">Настроить</span>
-        </button>
-      </div>
-      
-      <!-- Danger Zone -->
-      <div class="setting-item danger-zone">
-        <h4 id="settingsDangerTitle">⚠️ Опасная зона</h4>
-        <p class="setting-description warning-text" id="settingsDangerWarning">
-          Удаление учетной записи безвозвратно удалит все ваши данные из системы ФД «Хаяти»
-        </p>
-        <button onclick="deleteAccount()" class="btn btn-danger btn-small">
-          <span id="settingsDangerButton">🗑️ Удалиться из ФД «Хаяти»</span>
-        </button>
-      </div>
-      
-    </div>
-  </div>
-</div>
-
-<!-- Language change handler -->
-<script type="module">
-  // Handle language change from settings dropdown
-  async function handleLanguageChange(lang) {
-    if (!window.i18n) {
-      console.error('❌ i18n not initialized');
-      return;
-    }
-    
-    console.log(`🌍 Settings: Changing language to ${lang}...`);
-    
-    // Update dropdown (disable during switch)
-    const select = document.getElementById('languageSelect');
-    select.disabled = true;
-    
-    try {
-      await window.i18n.setLanguage(lang);
-      
-      // Update settings menu translations
-      updateSettingsMenuTranslations();
-      
-      console.log('✅ Settings: Language changed');
-      
-    } catch (err) {
-      console.error('❌ Settings: Language change failed:', err);
-    } finally {
-      select.disabled = false;
-    }
-  }
-  
-  // Update settings menu element translations
-  function updateSettingsMenuTranslations() {
-    const t = window.i18n.t.bind(window.i18n);
-    
-    // Header
-    document.getElementById('settingsTitle').textContent = t('settings.title');
-    
-    // Profile
-    document.getElementById('settingsProfileTitle').textContent = t('settings.profile.title');
-    document.getElementById('settingsProfileDesc').textContent = t('settings.profile.description');
-    document.getElementById('settingsProfileEdit').textContent = t('settings.profile.edit');
-    
-    // Language & Region
-    document.getElementById('settingsLanguageTitle').textContent = t('settings.language.title');
-    document.getElementById('settingsLanguageDesc').textContent = t('settings.language.description');
-    document.getElementById('settingsLanguageLabel').textContent = t('settings.language.language') + ':';
-    document.getElementById('settingsCurrencyLabel').textContent = t('settings.language.currency') + ':';
-    document.getElementById('settingsTimezoneLabel').textContent = t('settings.language.timezone') + ':';
-    
-    // Notifications
-    document.getElementById('settingsNotificationsTitle').textContent = t('settings.notifications.title');
-    document.getElementById('settingsNotificationsDesc').textContent = t('settings.notifications.description');
-    document.getElementById('settingsNotificationsConfigure').textContent = t('settings.notifications.configure');
-    
-    // Danger Zone
-    document.getElementById('settingsDangerTitle').textContent = t('settings.dangerZone.title');
-    document.getElementById('settingsDangerWarning').textContent = t('settings.dangerZone.warning');
-    document.getElementById('settingsDangerButton').textContent = t('settings.dangerZone.deleteButton');
-  }
-  
-  // Listen for language changes to update dropdown
-  window.addEventListener('languageChanged', (e) => {
-    const select = document.getElementById('languageSelect');
-    if (select) {
-      select.value = e.detail.lang;
-    }
-    updateSettingsMenuTranslations();
-  });
-  
-  // Expose functions globally
-  window.handleLanguageChange = handleLanguageChange;
-  window.updateSettingsMenuTranslations = updateSettingsMenuTranslations;
-</script>
-
-<!-- Additional CSS for settings -->
-<style>
-.setting-group {
-  margin-top: 16px;
-}
-
-.setting-group label {
-  display: block;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text);
-  margin-bottom: 8px;
-}
-
-.setting-select {
-  width: 100%;
-  padding: 10px 14px;
-  background: rgba(15, 23, 42, 0.8);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  color: var(--text);
-  font-size: 14px;
-  transition: all 0.2s;
-  cursor: pointer;
-}
-
-.setting-select:hover:not(:disabled) {
-  border-color: var(--neon-blue);
-}
-
-.setting-select:focus {
-  outline: none;
-  border-color: var(--neon-blue);
-  box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
-}
-
-.setting-select:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.setting-note {
-  font-size: 12px;
-  color: var(--text-muted);
-  margin-top: 8px;
-  font-style: italic;
-}
-</style>
 
   </div>
 
   <!-- Firebase & App -->
   <script type="module" src="app.js"></script>
   
-  <!-- Profile Menu Functions -->
+  <!-- Profile Menu & Password Toggle Functions -->
   <script type="module">
-    // import { t } from './js/utils/i18n.js';
-
-    const t = window.i18n.t.bind(window.i18n);
-    
-    // Make t() available globally for onclick handlers
-    window.t = t;
-    
     function showProfileMenu() {
       document.getElementById('profileMenu').classList.remove('hidden');
       document.body.style.overflow = 'hidden';
@@ -433,16 +297,27 @@
       document.body.style.overflow = 'auto';
     }
     
-    // Make functions global
-    window.showProfileMenu = showProfileMenu;
-    window.closeProfileMenu = closeProfileMenu;
-    
-    // Close on Escape key
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        closeProfileMenu();
+    // Language change handler
+    async function handleLanguageChange(lang) {
+      if (!window.i18n) {
+        console.error('❌ i18n not initialized');
+        return;
       }
-    });
+      
+      console.log(`🌍 Settings: Changing language to ${lang}...`);
+      
+      const select = document.getElementById('languageSelect');
+      select.disabled = true;
+      
+      try {
+        await window.i18n.setLanguage(lang);
+        console.log('✅ Settings: Language changed');
+      } catch (err) {
+        console.error('❌ Settings: Language change failed:', err);
+      } finally {
+        select.disabled = false;
+      }
+    }
     
     // Password toggle function
     function togglePassword(inputId) {
@@ -461,6 +336,76 @@
         eyeOffIcon.classList.add('hidden');
       }
     }
+    
+    // Make functions global
+    window.showProfileMenu = showProfileMenu;
+    window.closeProfileMenu = closeProfileMenu;
+    window.handleLanguageChange = handleLanguageChange;
+    window.togglePassword = togglePassword;
+    
+    // Listen for language changes
+    window.addEventListener('languageChanged', (e) => {
+      const select = document.getElementById('languageSelect');
+      if (select) {
+        select.value = e.detail.lang;
+      }
+    });
+    
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeProfileMenu();
+      }
+    });
   </script>
+  
+  <!-- Additional CSS for settings -->
+  <style>
+    .setting-group {
+      margin-top: 16px;
+    }
+
+    .setting-group label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .setting-select {
+      width: 100%;
+      padding: 10px 14px;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 14px;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .setting-select:hover:not(:disabled) {
+      border-color: var(--neon-blue);
+    }
+
+    .setting-select:focus {
+      outline: none;
+      border-color: var(--neon-blue);
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+    }
+
+    .setting-select:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .setting-note {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 8px;
+      font-style: italic;
+    }
+  </style>
 </body>
 </html>
