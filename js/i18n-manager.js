@@ -1,9 +1,10 @@
-/* /webapp/js/i18n-manager.js v1.0.1 */
+/* /webapp/js/i18n-manager.js v1.0.2 */
+// CHANGELOG v1.0.2:
+// - FIXED: updatePage() now called INSIDE init() automatically
+// - FIXED: Guaranteed translations loaded before page update
 // CHANGELOG v1.0.1:
 // - FIXED: updatePage() now updates placeholders for inputs
 // - FIXED: Better handling of different element types
-// CHANGELOG v1.0.0:
-// - Initial release
 
 /**
  * Global i18n Manager
@@ -46,6 +47,10 @@ class I18nManager {
       
       this.initialized = true;
       console.log(`✅ [i18n] Ready (${Object.keys(this.translations).length} keys)`);
+      
+      // 🆕 CRITICAL: Update page INSIDE init() to guarantee translations are loaded
+      this.updatePage();
+      console.log('✅ [i18n] Initial page update completed');
       
       // Dispatch event
       window.dispatchEvent(new CustomEvent('i18nReady', {
@@ -212,12 +217,12 @@ class I18nManager {
   
   /**
    * Update all translatable elements on page
-   * 🆕 FIXED: Now properly handles inputs, textareas, and buttons
    */
   updatePage() {
     console.log('🔄 [i18n] Updating page translations...');
     
     let updated = 0;
+    let skipped = 0;
     
     // Update elements with data-i18n attribute
     document.querySelectorAll('[data-i18n]').forEach(element => {
@@ -226,7 +231,8 @@ class I18nManager {
       
       // Skip if translation is the same as key (not found)
       if (translation === key) {
-        console.warn(`⚠️ [i18n] Skipping element with missing key: ${key}`);
+        console.warn(`⚠️ [i18n] Missing translation key: ${key}`);
+        skipped++;
         return;
       }
       
@@ -259,14 +265,14 @@ class I18nManager {
     // Update page title
     const titleKey = document.querySelector('title')?.getAttribute('data-i18n');
     if (titleKey) {
-      document.title = this.t(titleKey);
-      updated++;
-    } else {
-      document.title = this.t('app.title');
-      updated++;
+      const titleTranslation = this.t(titleKey);
+      if (titleTranslation !== titleKey) {
+        document.title = titleTranslation;
+        updated++;
+      }
     }
     
-    console.log(`✅ [i18n] Updated ${updated} elements`);
+    console.log(`✅ [i18n] Updated ${updated} elements, skipped ${skipped} missing keys`);
   }
   
   /**
