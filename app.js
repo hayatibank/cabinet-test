@@ -1,9 +1,7 @@
-/* /webapp/app.js v3.0.0 - i18n INTEGRATION */
-// CHANGELOG v3.0.0:
-// - BREAKING: i18n initialization FIRST (before Firebase)
-// - ADDED: Language switcher auto-load
-// - REMOVED: Old utils/i18n.js imports
-// - FIXED: Android freeze issue (no ES6 i18n imports in components)
+/* /webapp/app.js v3.0.1 - i18n UPDATE FIX */
+// CHANGELOG v3.0.1:
+// - FIXED: Added window.i18n.updatePage() after init
+// - Now all data-i18n attributes work on page load
 
 // ==================== STEP 1: LOAD I18N FIRST ====================
 // Import i18n manager (global singleton)
@@ -19,6 +17,11 @@ async function initializeI18n() {
   try {
     await window.i18n.init();
     console.log('✅ [App] i18n ready:', window.i18n.getCurrentLanguage());
+    
+    // 🆕 CRITICAL FIX: Update all [data-i18n] on page load
+    window.i18n.updatePage();
+    console.log('✅ [App] Page translations updated');
+    
     return true;
   } catch (err) {
     console.error('❌ [App] i18n initialization failed:', err);
@@ -182,17 +185,9 @@ async function initMiniApp() {
     console.log('🔓 No session found, showing auth screen');
     showAuthScreen('login');
     
-    // Update page translations
-    window.i18n.updatePage();
-    
   } catch (err) {
     console.error('❌ Error initializing Mini App:', err);
     showAuthScreen('login');
-    
-    // Try to update translations even on error
-    if (window.i18n && window.i18n.initialized) {
-      window.i18n.updatePage();
-    }
   }
 
   await claimHYC('app_login');
