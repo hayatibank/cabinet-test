@@ -4,6 +4,7 @@
  * - Fixed top-right position
  * - Cyberpunk gradient design
  * - Smooth animations
+ * - Mobile responsive
  */
 
 .language-switcher {
@@ -11,109 +12,163 @@
   top: 20px;
   right: 20px;
   z-index: 9999;
-  animation: fadeIn 0.5s ease-out;
-}
-
-.language-switcher-btn {
+  
   display: flex;
   align-items: center;
   gap: 8px;
   
   padding: 10px 16px;
   
-  background: rgba(30, 41, 59, 0.9);
+  background: rgba(30, 41, 59, 0.95);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(0, 240, 255, 0.3);
   border-radius: 20px;
   
-  color: var(--text);
-  font-size: 14px;
-  font-weight: 600;
-  
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  
   box-shadow: 
     0 4px 12px rgba(0, 0, 0, 0.3),
     0 0 20px rgba(0, 240, 255, 0.1);
+  
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: fadeIn 0.5s ease-out;
 }
 
-.language-switcher-btn:hover {
+.language-switcher:hover {
   background: rgba(30, 41, 59, 1);
   border-color: rgba(0, 240, 255, 0.6);
-  transform: translateY(-2px);
   box-shadow: 
     0 6px 20px rgba(0, 0, 0, 0.4),
     0 0 30px rgba(0, 240, 255, 0.3);
 }
 
-.language-switcher-btn:active {
+/* Language Button */
+.lang-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  
+  padding: 6px 10px;
+  background: none;
+  border: none;
+  border-radius: 12px;
+  
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  
+  cursor: pointer;
+  transition: all 0.2s;
+  
+  user-select: none;
+}
+
+.lang-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text);
+  transform: translateY(-1px);
+}
+
+.lang-btn.active {
+  background: linear-gradient(135deg, var(--neon-blue), var(--neon-pink));
+  color: white;
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+}
+
+.lang-btn.active:hover {
+  transform: translateY(-1px) scale(1.02);
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.6);
+}
+
+.lang-btn:active {
   transform: translateY(0) scale(0.95);
 }
 
-/* Flag emoji */
-.language-switcher-btn .flag {
+/* Flag Emoji */
+.lang-flag {
   font-size: 18px;
   line-height: 1;
 }
 
-/* Language text */
-.language-switcher-btn .lang-text {
-  font-size: 13px;
-  letter-spacing: 0.5px;
-  color: var(--neon-blue);
-  text-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
-  transition: all 0.2s;
-}
-
-.language-switcher-btn .lang-text.inactive {
-  color: var(--text-muted);
-  text-shadow: none;
-  opacity: 0.6;
+/* Language Text */
+.lang-text {
+  font-size: 12px;
+  text-transform: uppercase;
 }
 
 /* Divider */
-.language-switcher-btn .divider {
+.lang-divider {
   color: var(--border);
   font-weight: 300;
+  font-size: 16px;
+  opacity: 0.5;
+  user-select: none;
 }
 
-/* Hover effect on inactive */
-.language-switcher-btn:hover .lang-text.inactive {
-  opacity: 0.8;
-  color: var(--neon-pink);
-}
+/* ==================== RESPONSIVE ==================== */
 
-/* Mobile */
+/* Tablet */
 @media (max-width: 768px) {
   .language-switcher {
     top: 16px;
     right: 16px;
-  }
-  
-  .language-switcher-btn {
     padding: 8px 12px;
-    font-size: 13px;
     gap: 6px;
   }
   
-  .language-switcher-btn .flag {
+  .lang-btn {
+    padding: 5px 8px;
+    gap: 4px;
+  }
+  
+  .lang-flag {
     font-size: 16px;
   }
   
-  .language-switcher-btn .lang-text {
-    font-size: 12px;
+  .lang-text {
+    font-size: 11px;
+  }
+  
+  .lang-divider {
+    font-size: 14px;
   }
 }
 
+/* Mobile */
 @media (max-width: 480px) {
   .language-switcher {
     top: 12px;
     right: 12px;
-  }
-  
-  .language-switcher-btn {
     padding: 6px 10px;
     gap: 4px;
+  }
+  
+  .lang-btn {
+    padding: 4px 6px;
+    gap: 3px;
+  }
+  
+  .lang-flag {
+    font-size: 14px;
+  }
+  
+  .lang-text {
+    font-size: 10px;
+  }
+  
+  .lang-divider {
+    font-size: 12px;
+  }
+}
+
+/* ==================== ANIMATIONS ==================== */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

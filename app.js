@@ -1,66 +1,45 @@
-/* /webapp/app.js v2.0.2 */
-// CHANGELOG v2.0.2:
-// - ADDED: Auto-import module i18n files for registration
-// - All modules now self-register on import
-// CHANGELOG v2.0.1:
-// - ADDED: Language switcher import
-// - ADDED: Update page translations on load
-// CHANGELOG v2.0.0:
-// - BREAKING: Multi-session support
-// - ADDED: Custom Token → ID Token exchange in all flows
-// - ADDED: Background token refresh
-// - FIXED: initData hash validation bypass for existing sessions
-// Main entry point
+/* /webapp/app.js v3.0.0 - i18n INTEGRATION */
+// CHANGELOG v3.0.0:
+// - BREAKING: i18n initialization FIRST (before Firebase)
+// - ADDED: Language switcher auto-load
+// - REMOVED: Old utils/i18n.js imports
+// - FIXED: Android freeze issue (no ES6 i18n imports in components)
 
+// ==================== STEP 1: LOAD I18N FIRST ====================
+// Import i18n manager (global singleton)
+import './js/i18n-manager.js';
+
+// Import language switcher (auto-creates UI)
+import './js/components/languageSwitcher.js';
+
+// ==================== STEP 2: INITIALIZE I18N ====================
+async function initializeI18n() {
+  console.log('🌍 [App] Initializing i18n system...');
+  
+  try {
+    await window.i18n.init();
+    console.log('✅ [App] i18n ready:', window.i18n.getCurrentLanguage());
+    return true;
+  } catch (err) {
+    console.error('❌ [App] i18n initialization failed:', err);
+    return false;
+  }
+}
+
+// ==================== STEP 3: FIREBASE & REST ====================
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js';
 import { getAuth, signInWithCustomToken } from 'https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js';
 import { initializeFirestore, CACHE_SIZE_UNLIMITED } from 'https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js';
 
-// Import modules
 import { FIREBASE_CONFIG } from './js/config.js';
 import { checkTelegramBinding, silentLogin, validateToken } from './js/api.js';
 import { setupLoginHandler, setupRegisterHandler, setupResetHandler, setupFormSwitching } from './auth/authForms.js';
 import { getSession, saveSession, getCurrentChatId, listAllSessions } from './js/session.js';
 import { showLoadingScreen, showAuthScreen, showCabinet } from './js/ui.js';
 import { setupTokenInterceptor, setupPeriodicTokenCheck, setupBackgroundTokenRefresh, ensureFreshToken } from './js/tokenManager.js';
-import { updatePageTranslations } from './js/utils/i18n.js';
-import './js/utils/languageSwitcher.js'; // ✅ Auto-creates language switcher
-import './auth/accountActions.js'; // Imports logout & deleteAccount functions
-import './cabinet/accountsUI.js'; // Registers cabinetReady event listener
+import './auth/accountActions.js';
+import './cabinet/accountsUI.js';
 import { claimHYC } from './HayatiCoin/hycService.js';
-
-// ==================== 🌍 AUTO-REGISTER MODULE I18N ====================
-// Import all module i18n files to trigger auto-registration
-// Order doesn't matter - modules register themselves on import
-
-console.log('🌍 [App] Registering module i18n...');
-
-// Auth module (inherits from core)
-import './auth/i18n.js';
-
-// Cabinet module (inherits from core)
-import './cabinet/i18n.js';
-
-// Offering Zone module (registers translations)
-import './offeringZone/i18n.js';
-
-// Account Dashboard module (registers translations)
-import './accountDashboard/i18n.js';
-
-// Investments module (registers translations)
-import './investments/i18n.js';
-
-// Financial Statement module (registers translations)
-import './finStatement/i18n.js';
-
-// ✅ All modules are now registered!
-console.log('✅ [App] All module i18n registered');
-
-// Import registered modules count for debugging
-import { getRegisteredModules } from './js/utils/i18n.js';
-console.log(`📦 [App] Registered modules: ${getRegisteredModules().join(', ')}`);
-
-// ==================== FIREBASE INITIALIZATION ====================
 
 // Initialize Firebase
 const app = initializeApp(FIREBASE_CONFIG);
@@ -90,13 +69,18 @@ if (tg) {
   console.log('📱 Telegram User:', tg.initDataUnsafe?.user);
 }
 
-// ======================
-// MAIN INITIALIZATION
-// ======================
+// ==================== MAIN INITIALIZATION ====================
 
 async function initMiniApp() {
   try {
-    showLoadingScreen('Проверка авторизации...');
+    // STEP 1: Initialize i18n FIRST
+    const i18nReady = await initializeI18n();
+    if (!i18nReady) {
+      throw new Error('i18n initialization failed');
+    }
+    
+    // STEP 2: Now show loading screen with translated text
+    showLoadingScreen(window.i18n.t('common.loading'));
     
     const chatId = getCurrentChatId();
     const initData = tg?.initData;
@@ -112,13 +96,13 @@ async function initMiniApp() {
       }
     }
     
-    // STEP 1: Check localStorage for existing session (current chatId)
+    // STEP 3: Check localStorage for existing session (current chatId)
     let session = getSession(chatId);
     
     if (session) {
       console.log('🔍 Found session, validating...');
       
-      // ✅ Ensure token is fresh before validation
+      // Ensure token is fresh before validation
       const freshToken = await ensureFreshToken(chatId);
       
       if (freshToken) {
@@ -135,7 +119,7 @@ async function initMiniApp() {
       }
     }
     
-    // STEP 2: Check Telegram binding (if opened from Telegram)
+    // STEP 4: Check Telegram binding (if opened from Telegram)
     if (chatId && initData) {
       console.log('🔍 Checking Telegram binding...');
       
@@ -149,19 +133,19 @@ async function initMiniApp() {
         if (loginResult && loginResult.success) {
           console.log('✅ Silent login successful');
           
-          // ✅ CRITICAL: Exchange Custom Token for ID Token
+          // Exchange Custom Token for ID Token
           try {
             console.log('🔄 Exchanging custom token for ID token...');
             
             const userCredential = await signInWithCustomToken(auth, loginResult.authToken);
-            const idToken = await userCredential.user.getIdToken(true); // force fresh
+            const idToken = await userCredential.user.getIdToken(true);
             
             console.log('✅ ID Token obtained');
             
             // Save session with ID Token
             saveSession({
               authToken: idToken,
-              tokenExpiry: Date.now() + (60 * 60 * 1000), // 1 hour
+              tokenExpiry: Date.now() + (60 * 60 * 1000),
               uid: loginResult.uid,
               email: loginResult.email
             }, chatId);
@@ -173,7 +157,7 @@ async function initMiniApp() {
           } catch (tokenError) {
             console.error('❌ Error exchanging custom token:', tokenError);
             
-            // Fallback: try to use as-is (might fail)
+            // Fallback: try to use as-is
             saveSession({
               authToken: loginResult.authToken,
               tokenExpiry: loginResult.tokenExpiry,
@@ -181,7 +165,6 @@ async function initMiniApp() {
               email: loginResult.email
             }, chatId);
             
-            // Try to show cabinet anyway
             return showCabinet({
               uid: loginResult.uid,
               email: loginResult.email
@@ -195,25 +178,27 @@ async function initMiniApp() {
       }
     }
     
-    // STEP 3: No session and no binding - show auth screen
+    // STEP 5: No session and no binding - show auth screen
     console.log('🔓 No session found, showing auth screen');
     showAuthScreen('login');
     
-    // ✅ Update page translations after showing auth screen
-    updatePageTranslations();
+    // Update page translations
+    window.i18n.updatePage();
     
   } catch (err) {
     console.error('❌ Error initializing Mini App:', err);
     showAuthScreen('login');
-    updatePageTranslations();
+    
+    // Try to update translations even on error
+    if (window.i18n && window.i18n.initialized) {
+      window.i18n.updatePage();
+    }
   }
 
   await claimHYC('app_login');
 }
 
-// ======================
-// SETUP EVENT HANDLERS
-// ======================
+// ==================== SETUP EVENT HANDLERS ====================
 
 window.addEventListener('DOMContentLoaded', () => {
   console.log('🚀 Mini App DOM loaded');
@@ -223,12 +208,6 @@ window.addEventListener('DOMContentLoaded', () => {
   setupRegisterHandler(auth, db);
   setupResetHandler(auth);
   setupFormSwitching();
-  
-  // ✅ Listen for language changes
-  window.addEventListener('languageChanged', (e) => {
-    console.log('🌍 Language changed to:', e.detail.language);
-    updatePageTranslations();
-  });
   
   // Initialize app
   initMiniApp();
