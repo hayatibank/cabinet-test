@@ -218,24 +218,32 @@
   "analysis.metric": "Показатель",
   "analysis.formula": "Формула",
   "analysis.value": "Значение",
+
   "analysis.saving": "Сколько вы сохраняете?",
   "analysis.formula.saving": "Денежный поток / Доходы",
   "analysis.note.shouldGrow": "***должен расти",
+
   "analysis.moneyWorking": "Работают ли ваши деньги на вас?",
   "analysis.formula.moneyWorking": "(Пассивный + портфельный доходы) / Доходы",
+
   "analysis.taxes": "Сколько вы платите налогов?",
   "analysis.formula.taxes": "Налоги / Доходы",
+
   "analysis.housing": "Сколько уходит на жилье?",
   "analysis.formula.housing": "Жилье / Доходы",
   "analysis.note.max33": "***не более 33%",
+
   "analysis.luxury": "Сколько вы тратите на роскошь?",
   "analysis.formula.luxury": "Роскошь / Активы по банкиру",
+
   "analysis.assetYield": "Каков ваш возврат на активы?",
   "analysis.formula.assetYield": "(Пассивный + портфельный доходы) / Фактические активы",
+
   "analysis.security": "Насколько вы богаты?",
   "analysis.formula.security": "Фактические активы / Расходы",
   "analysis.note.months": "***измеряется в месяцах",
-  "analysis.expensesCoveredByPassiveIncome": "Насколько ваши асходы покрыты пассивным доходом?",
+
+  "analysis.expensesCoveredByPassiveIncome": "Насколько ваши расходы покрыты пассивным доходом?",
   "analysis.formula.expensesCoveredByPassiveIncome": "(Пассивный + портфельный доходы) / Расходы",
   "analysis.note.target200": "***должен расти к 200%",
 
