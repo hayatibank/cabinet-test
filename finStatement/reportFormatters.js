@@ -1,12 +1,8 @@
-/* /webapp/finStatement/reportFormatters.js v1.2.0 */
-// CHANGELOG v1.2.0:
-// - MIGRATED: From modular i18n to global window.i18n
-// - REMOVED: import { t } (Android freeze fix)
-// - ADDED: Inline t() helper for cleaner code
+/* /webapp/finStatement/reportFormatters.js v1.3.0 */
+// CHANGELOG v1.3.0:
+// - FIXED: Updated expensesCovered → expensesCoveredByPassiveIncomeRatio
+// - FORMULA: (Пассивный + Портфельный доходы) / Расходы
 
-/**
- * Format currency
- */
 export function formatCurrency(amount, currency = '₽') {
   const formatted = new Intl.NumberFormat('ru-RU', {
     minimumFractionDigits: 0,
@@ -16,28 +12,18 @@ export function formatCurrency(amount, currency = '₽') {
   return `${formatted} ${currency}`;
 }
 
-/**
- * Format percentage
- */
 export function formatPercent(value) {
   return `${(value * 100).toFixed(1)}%`;
 }
 
-/**
- * Format months
- */
 export function formatMonths(value) {
   const months = Math.floor(value);
   return `${months} мес.`;
 }
 
-/**
- * Format income section with hierarchy
- */
 export function formatIncomeSection(incomeData) {
   const t = window.i18n.t.bind(window.i18n);
   
-  // Group by parent category
   const groups = [
     { key: 'A', label: t('income.A') || 'Найм', items: [] },
     { key: 'C', label: t('income.C') || 'Активы', items: [] },
@@ -61,7 +47,6 @@ export function formatIncomeSection(incomeData) {
       <div class="report-table">
   `;
   
-  // Render each group with correct letters
   const letterMapping = {
     'A': { header: 'A', total: 'B' },
     'C': { header: 'C', total: 'D' },
@@ -72,7 +57,6 @@ export function formatIncomeSection(incomeData) {
     const letters = letterMapping[group.key];
     const groupTotal = group.items.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
     
-    // Group header
     html += `
       <div class="report-row group-header-row">
         <div class="report-cell">${letters.header}. ${group.label}</div>
@@ -80,7 +64,6 @@ export function formatIncomeSection(incomeData) {
       </div>
     `;
     
-    // Subcategories
     group.items.forEach(item => {
       html += `
         <div class="report-row subcategory-row editable-row" 
@@ -92,7 +75,6 @@ export function formatIncomeSection(incomeData) {
       `;
     });
     
-    // Group total
     html += `
       <div class="report-row group-total-row">
         <div class="report-cell">${letters.total}. ${group.label} ${t('report.total')}</div>
@@ -101,7 +83,6 @@ export function formatIncomeSection(incomeData) {
     `;
   });
   
-  // Grand total
   html += `
     <div class="report-row grand-total-row income-total">
       <div class="report-cell">${t('report.total.income')}</div>
@@ -117,13 +98,9 @@ export function formatIncomeSection(incomeData) {
   return html;
 }
 
-/**
- * Format expenses section with hierarchy + cash flow
- */
 export function formatExpensesSection(expensesData, totalIncome = 0) {
   const t = window.i18n.t.bind(window.i18n);
   
-  // Group by parent category
   const groups = {
     '0': { label: t('expenses.0') || 'Предварительные', items: [], letter: 'H' },
     '1': { label: t('expenses.1') || 'Основные', items: [], letter: 'J' }
@@ -148,11 +125,9 @@ export function formatExpensesSection(expensesData, totalIncome = 0) {
       <div class="report-table">
   `;
   
-  // Render each group
   Object.entries(groups).forEach(([key, group]) => {
     const groupTotal = group.items.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
     
-    // Group header
     html += `
       <div class="report-row group-header-row">
         <div class="report-cell">${group.letter}. ${group.label}</div>
@@ -160,7 +135,6 @@ export function formatExpensesSection(expensesData, totalIncome = 0) {
       </div>
     `;
     
-    // Subcategories
     group.items.forEach(item => {
       html += `
         <div class="report-row subcategory-row editable-row"
@@ -172,7 +146,6 @@ export function formatExpensesSection(expensesData, totalIncome = 0) {
       `;
     });
     
-    // Group total
     const nextLetter = String.fromCharCode(group.letter.charCodeAt(0) + 1);
     html += `
       <div class="report-row group-total-row">
@@ -182,7 +155,6 @@ export function formatExpensesSection(expensesData, totalIncome = 0) {
     `;
   });
   
-  // L. Grand total (expenses)
   html += `
     <div class="report-row grand-total-row expenses-total">
       <div class="report-cell">${t('report.total.expenses')}</div>
@@ -190,7 +162,6 @@ export function formatExpensesSection(expensesData, totalIncome = 0) {
     </div>
   `;
   
-  // M. Cash Flow (inside same section)
   html += `
     <div class="report-row grand-total-row cash-flow-row ${isPositive ? 'positive-flow' : 'negative-flow'}">
       <div class="report-cell">${t('report.cashFlow')}</div>
@@ -206,13 +177,9 @@ export function formatExpensesSection(expensesData, totalIncome = 0) {
   return html;
 }
 
-/**
- * Format assets section with hierarchy
- */
 export function formatAssetsSection(assetsData) {
   const t = window.i18n.t.bind(window.i18n);
   
-  // Group by parent category
   const groups = {
     'N': { label: t('assets.N') || 'Активы', items: [] },
     'P': { label: t('assets.P') || 'Роскошь', items: [] }
@@ -233,8 +200,8 @@ export function formatAssetsSection(assetsData) {
     }
   });
   
-  const assetsByBanker = activesTotal + luxuryTotal; // R
-  const assetsFactual = activesTotal; // S
+  const assetsByBanker = activesTotal + luxuryTotal;
+  const assetsFactual = activesTotal;
   
   let html = `
     <div class="report-section assets-section">
@@ -242,7 +209,6 @@ export function formatAssetsSection(assetsData) {
       <div class="report-table">
   `;
   
-  // N. Активы group
   html += `
     <div class="report-row group-header-row">
       <div class="report-cell">N. ${groups['N'].label}</div>
@@ -268,7 +234,6 @@ export function formatAssetsSection(assetsData) {
     </div>
   `;
   
-  // P. Роскошь group
   html += `
     <div class="report-row group-header-row">
       <div class="report-cell">P. ${groups['P'].label}</div>
@@ -294,7 +259,6 @@ export function formatAssetsSection(assetsData) {
     </div>
   `;
   
-  // R. АКТИВЫ ИТОГО по банкиру
   html += `
     <div class="report-row grand-total-row assets-total">
       <div class="report-cell">${t('report.total.assets.banker')}</div>
@@ -302,7 +266,6 @@ export function formatAssetsSection(assetsData) {
     </div>
   `;
   
-  // S. АКТИВЫ ИТОГО факт
   html += `
     <div class="report-row grand-total-row assets-factual">
       <div class="report-cell">${t('report.total.assets.factual')}</div>
@@ -318,9 +281,6 @@ export function formatAssetsSection(assetsData) {
   return html;
 }
 
-/**
- * Format liabilities section with hierarchy + net worth
- */
 export function formatLiabilitiesSection(liabilitiesData, assetsByBanker = 0, assetsFactual = 0) {
   const t = window.i18n.t.bind(window.i18n);
   
@@ -330,9 +290,8 @@ export function formatLiabilitiesSection(liabilitiesData, assetsByBanker = 0, as
     total += Number(item.amount) || 0;
   });
   
-  // Calculate net worth
-  const netWorthByBanker = assetsByBanker - total; // V = R - U
-  const netWorthFactual = assetsFactual - total;   // W = S - U
+  const netWorthByBanker = assetsByBanker - total;
+  const netWorthFactual = assetsFactual - total;
   
   let html = `
     <div class="report-section liabilities-section">
@@ -355,7 +314,6 @@ export function formatLiabilitiesSection(liabilitiesData, assetsByBanker = 0, as
     `;
   });
   
-  // U. ПАССИВЫ ИТОГО
   html += `
     <div class="report-row grand-total-row liabilities-total">
       <div class="report-cell">${t('report.total.liabilities')}</div>
@@ -363,7 +321,6 @@ export function formatLiabilitiesSection(liabilitiesData, assetsByBanker = 0, as
     </div>
   `;
   
-  // V. СОСТОЯНИЕ по банкиру (R - U)
   const vPositive = netWorthByBanker >= 0;
   html += `
     <div class="report-row grand-total-row net-worth-row ${vPositive ? 'positive-net-worth' : 'negative-net-worth'}">
@@ -372,7 +329,6 @@ export function formatLiabilitiesSection(liabilitiesData, assetsByBanker = 0, as
     </div>
   `;
   
-  // W. СОСТОЯНИЕ факт (S - U)
   const wPositive = netWorthFactual >= 0;
   html += `
     <div class="report-row grand-total-row net-worth-row ${wPositive ? 'positive-net-worth' : 'negative-net-worth'}">
@@ -389,9 +345,6 @@ export function formatLiabilitiesSection(liabilitiesData, assetsByBanker = 0, as
   return html;
 }
 
-/**
- * Format analysis section
- */
 export function formatAnalysisSection(analysis) {
   const t = window.i18n.t.bind(window.i18n);
   
@@ -466,10 +419,10 @@ export function formatAnalysisSection(analysis) {
         </div>
         
         <div class="report-row">
-          <div class="report-cell">${t('analysis.expensesCovered')}</div>
-          <div class="report-cell formula">${t('analysis.formula.expensesCovered')}<br><span class="formula-note">${t('analysis.note.target200')}</span></div>
+          <div class="report-cell">${t('analysis.expensesCoveredByPassiveIncome')}</div>
+          <div class="report-cell formula">${t('analysis.formula.expensesCoveredByPassiveIncome')}<br><span class="formula-note">${t('analysis.note.target200')}</span></div>
           <div class="report-cell value-cell ${analysis.expensesCoveredTarget ? 'positive' : 'negative'}">
-            ${formatPercent(analysis.expensesCovered)}
+            ${formatPercent(analysis.expensesCoveredByPassiveIncomeRatio)}
             ${analysis.expensesCoveredTarget ? '✓' : '↓'}
           </div>
         </div>

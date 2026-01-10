@@ -1,16 +1,13 @@
-/* /webapp/finStatement/reportService.js v1.2.0 */
-// CHANGELOG v1.2.0:
-// - FIXED: Removed hardcoded Russian labels from CATEGORIES_TEMPLATE
-// - ADDED: Dynamic label fetching via i18n
-// - PERFORMANCE: Labels generated on-demand, not stored in template
+/* /webapp/finStatement/reportService.js v1.3.0 */
+// CHANGELOG v1.3.0:
+// - FIXED: expensesCovered → expensesCoveredByPassiveIncomeRatio
+// - FORMULA: (Пассивный + Портфельный доходы) / Расходы
+// - ADDED: passiveIncomeTotal (group C)
+// - ADDED: portfolioIncomeTotal (group E)
 
 import { getSession } from '../js/session.js';
 import { API_URL } from '../js/config.js';
 
-/**
- * Categories structure (codes and hierarchy only)
- * Labels are fetched dynamically via i18n
- */
 const CATEGORIES_STRUCTURE = {
   income: [
     { idx: 1, code: "A.1", group: "A", labelKey: "income.A.1" },
@@ -73,17 +70,11 @@ const CATEGORIES_STRUCTURE = {
   ]
 };
 
-/**
- * Get localized label for category
- */
 function getLabel(labelKey) {
   const t = window.i18n.t.bind(window.i18n);
   return t(labelKey);
 }
 
-/**
- * Get financial report data for specific year
- */
 export async function getFinancialReport(accountId, year) {
   try {
     console.log(`📊 Fetching financial report: ${accountId}, year ${year}`);
@@ -93,7 +84,6 @@ export async function getFinancialReport(accountId, year) {
     
     const basePath = `accounts/${accountId}/fin_statements/${year}`;
     
-    // Fetch all categories in parallel
     const [incomeRaw, expensesRaw, assetsRaw, liabilitiesRaw] = await Promise.all([
       fetchCollection(basePath, 'system_income_categories', session.authToken),
       fetchCollection(basePath, 'system_exp_categories', session.authToken),
@@ -101,7 +91,6 @@ export async function getFinancialReport(accountId, year) {
       fetchCollection(basePath, 'system_liability_categories', session.authToken)
     ]);
     
-    // Merge with structure and add localized labels
     const income = mergeWithStructure(CATEGORIES_STRUCTURE.income, incomeRaw);
     const expenses = mergeWithStructure(CATEGORIES_STRUCTURE.expenses, expensesRaw);
     const assets = mergeWithStructure(CATEGORIES_STRUCTURE.assets, assetsRaw);
@@ -123,26 +112,19 @@ export async function getFinancialReport(accountId, year) {
   }
 }
 
-/**
- * Merge structure with Firestore data and add localized labels
- */
 function mergeWithStructure(structure, firestoreData) {
   return structure.map(item => {
-    // Find matching data from Firestore
     const match = firestoreData.find(d => d.code === item.code);
     
     return {
       ...item,
-      label: getLabel(item.labelKey), // ✅ Get localized label
+      label: getLabel(item.labelKey),
       amount: match ? (Number(match.amount) || 0) : 0,
       id: match?.id || null
     };
   });
 }
 
-/**
- * Fetch collection from Firestore via backend
- */
 async function fetchCollection(basePath, collection, authToken) {
   try {
     const response = await fetch(`${API_URL}/api/firestore/get`, {
@@ -171,9 +153,6 @@ async function fetchCollection(basePath, collection, authToken) {
   }
 }
 
-/**
- * Calculate analysis metrics
- */
 export function calculateAnalysis(reportData) {
   const { income, expenses, assets, liabilities } = reportData;
   
@@ -182,14 +161,20 @@ export function calculateAnalysis(reportData) {
   const totalExpenses = sumField(expenses, 'amount');
   const totalLiabilities = sumField(liabilities, 'amount');
   
-  // Calculate asset totals (needed for V and W)
-  const activesTotal = sumByGroup(assets, 'group', 'N'); // N group
-  const luxuryTotal = sumByGroup(assets, 'group', 'P'); // P group
-  const assetsByBanker = activesTotal + luxuryTotal; // R = O + Q
-  const assetsFactual = activesTotal; // S = O
-  const totalAssets = assetsByBanker; // For other calculations
+  // ✅ NEW: Calculate passive income (group C)
+  const passiveIncomeTotal = sumByGroup(income, 'group', 'C');
   
-  // Get specific values for formulas
+  // ✅ NEW: Calculate portfolio income (group E)
+  const portfolioIncomeTotal = sumByGroup(income, 'group', 'E');
+  
+  // Calculate asset totals
+  const activesTotal = sumByGroup(assets, 'group', 'N');
+  const luxuryTotal = sumByGroup(assets, 'group', 'P');
+  const assetsByBanker = activesTotal + luxuryTotal;
+  const assetsFactual = activesTotal;
+  const totalAssets = assetsByBanker;
+  
+  // Get specific values
   const taxes = findValue(expenses, 'code', '0.6') || 0;
   const housingExpenses = findValue(expenses, 'code', '1.3') || 0;
   
@@ -216,10 +201,11 @@ export function calculateAnalysis(reportData) {
   
   const security = totalExpenses > 0 ? (totalAssets / totalExpenses) : 0;
   
-  const expensesCovered = totalExpenses > 0 
-    ? ((totalAssets + totalIncome) / totalExpenses) 
+  // ✅ FIXED: Main formula - (Пассивный + Портфельный доходы) / Расходы
+  const expensesCoveredByPassiveIncomeRatio = totalExpenses > 0 
+    ? ((passiveIncomeTotal + portfolioIncomeTotal) / totalExpenses) 
     : 0;
-  const expensesCoveredTarget = expensesCovered >= 2;
+  const expensesCoveredTarget = expensesCoveredByPassiveIncomeRatio >= 2;
   
   return {
     // Values
@@ -229,6 +215,8 @@ export function calculateAnalysis(reportData) {
     totalLiabilities,
     assetsByBanker,
     assetsFactual,
+    passiveIncomeTotal,
+    portfolioIncomeTotal,
     cashFlow,
     moneyWorking,
     taxRate,
@@ -236,7 +224,7 @@ export function calculateAnalysis(reportData) {
     luxuryRate,
     assetYield,
     security,
-    expensesCovered,
+    expensesCoveredByPassiveIncomeRatio,
     
     // Status indicators
     cashFlowGrowth,
@@ -247,7 +235,6 @@ export function calculateAnalysis(reportData) {
   };
 }
 
-// Helper functions
 function sumField(array, field) {
   return array.reduce((sum, item) => sum + (Number(item[field]) || 0), 0);
 }

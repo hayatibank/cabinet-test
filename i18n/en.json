@@ -238,6 +238,9 @@
   "analysis.expensesCovered": "Expenses Covered",
   "analysis.formula.expensesCovered": "(Assets + Portfolio) / Expenses",
   "analysis.note.target200": "***should grow to 200%",
+  "analysis.expensesCoveredByPassiveIncome": "Expenses Covered by Passive Income",
+  "analysis.formula.expensesCoveredByPassiveIncome": "(Passive + Portfolio Income) / Expenses",
+
 
   "offering.title": "🎁 Personal Offers",
   "offering.subtitle": "Based on your financial position",
