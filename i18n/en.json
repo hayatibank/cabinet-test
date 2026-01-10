@@ -215,31 +215,41 @@
 
   "liabilities.T": "Liabilities",
 
+  
   "analysis.metric": "Metric",
   "analysis.formula": "Formula",
   "analysis.value": "Value",
-  "analysis.saving": "How much are you saving?",
-  "analysis.formula.saving": "Cash Flow / Total Income",
+
+  "analysis.saving": "How Much Do You Keep?",
+  "analysis.formula.saving": "Cash Flow / Income",
   "analysis.note.shouldGrow": "***should grow",
-  "analysis.moneyWorking": "How much is your money working?",
-  "analysis.formula.moneyWorking": "(Assets + Portfolio) / Income",
-  "analysis.taxes": "Tax Rate",
+  
+  "analysis.moneyWorking": "Does Your Money Work For You?",
+  "analysis.formula.moneyWorking": "(Passive + Portfolio Income) / Income",
+  
+  "analysis.taxes": "How Much Do You Pay In Taxes?",
   "analysis.formula.taxes": "Taxes / Income",
+  
   "analysis.housing": "Housing Rate",
   "analysis.formula.housing": "Housing / Income",
   "analysis.note.max33": "***max 33%",
-  "analysis.luxury": "Luxury Rate",
-  "analysis.formula.luxury": "Luxury / Assets",
-  "analysis.assetYield": "Asset Yield",
-  "analysis.formula.assetYield": "(Assets + Portfolio) / Factual Assets",
-  "analysis.security": "Security",
+ 
+  "analysis.luxury": "How Much Do You Spend on Doodads?",
+  "analysis.formula.luxury": "Doodads / Assets per banker",
+ 
+  "analysis.assetYield": "What Is Your Return On Assets?",
+  "analysis.formula.assetYield": "(Passive + Portfolio Income) / Factual Assets",
+  
+  "analysis.security": "How Wealthy Are You?",
   "analysis.formula.security": "Factual Assets / Expenses",
   "analysis.note.months": "***measured in months",
+  
   "analysis.expensesCovered": "Expenses Covered",
   "analysis.formula.expensesCovered": "(Assets + Portfolio) / Expenses",
-  "analysis.note.target200": "***should grow to 200%",
-  "analysis.expensesCoveredByPassiveIncome": "Expenses Covered by Passive Income",
+  
+  "analysis.expensesCoveredByPassiveIncome": "How much are your expenses covered by passive income?",
   "analysis.formula.expensesCoveredByPassiveIncome": "(Passive + Portfolio Income) / Expenses",
+  "analysis.note.target200": "***should grow to 200%",
 
 
   "offering.title": "🎁 Personal Offers",

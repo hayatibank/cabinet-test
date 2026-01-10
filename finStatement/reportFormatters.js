@@ -1,7 +1,7 @@
-/* /webapp/finStatement/reportFormatters.js v1.3.0 */
-// CHANGELOG v1.3.0:
-// - FIXED: Updated expensesCovered → expensesCoveredByPassiveIncomeRatio
-// - FORMULA: (Пассивный + Портфельный доходы) / Расходы
+/* /webapp/finStatement/reportFormatters.js v1.4.0 */
+// CHANGELOG v1.4.0:
+// - FIXED: All analysis display updated to match new formulas
+// - Updated all 8 metrics with correct values
 
 export function formatCurrency(amount, currency = '₽') {
   const formatted = new Intl.NumberFormat('ru-RU', {
@@ -362,7 +362,7 @@ export function formatAnalysisSection(analysis) {
           <div class="report-cell">${t('analysis.saving')}</div>
           <div class="report-cell formula">${t('analysis.formula.saving')}<br><span class="formula-note">${t('analysis.note.shouldGrow')}</span></div>
           <div class="report-cell value-cell ${analysis.cashFlowGrowth ? 'positive' : 'negative'}">
-            ${formatCurrency(analysis.cashFlow)}
+            ${formatPercent(analysis.savingRate)}
             ${analysis.cashFlowGrowth ? '↑' : '↓'}
           </div>
         </div>
@@ -371,7 +371,7 @@ export function formatAnalysisSection(analysis) {
           <div class="report-cell">${t('analysis.moneyWorking')}</div>
           <div class="report-cell formula">${t('analysis.formula.moneyWorking')}<br><span class="formula-note">${t('analysis.note.shouldGrow')}</span></div>
           <div class="report-cell value-cell ${analysis.moneyWorkingGrowth ? 'positive' : 'negative'}">
-            ${analysis.moneyWorking.toFixed(2)}x
+            ${formatPercent(analysis.moneyWorking)}
             ${analysis.moneyWorkingGrowth ? '↑' : '↓'}
           </div>
         </div>
@@ -406,7 +406,7 @@ export function formatAnalysisSection(analysis) {
           <div class="report-cell">${t('analysis.assetYield')}</div>
           <div class="report-cell formula">${t('analysis.formula.assetYield')}</div>
           <div class="report-cell value-cell">
-            ${analysis.assetYield.toFixed(2)}x
+            ${formatPercent(analysis.assetYield)}
           </div>
         </div>
         

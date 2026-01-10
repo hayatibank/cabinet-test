@@ -1,9 +1,7 @@
-/* /webapp/finStatement/reportService.js v1.3.0 */
-// CHANGELOG v1.3.0:
-// - FIXED: expensesCovered → expensesCoveredByPassiveIncomeRatio
-// - FORMULA: (Пассивный + Портфельный доходы) / Расходы
-// - ADDED: passiveIncomeTotal (group C)
-// - ADDED: portfolioIncomeTotal (group E)
+/* /webapp/finStatement/reportService.js v1.4.0 */
+// CHANGELOG v1.4.0:
+// - FIXED: All analysis formulas updated to match exact requirements
+// - M/G, (D+F)/G, H6/G, J3/G, Q/R, (D+F)/S, S/L, (D+F)/L
 
 import { getSession } from '../js/session.js';
 import { API_URL } from '../js/config.js';
@@ -156,52 +154,59 @@ async function fetchCollection(basePath, collection, authToken) {
 export function calculateAnalysis(reportData) {
   const { income, expenses, assets, liabilities } = reportData;
   
-  // Calculate totals
-  const totalIncome = sumField(income, 'amount');
-  const totalExpenses = sumField(expenses, 'amount');
-  const totalLiabilities = sumField(liabilities, 'amount');
+  // Calculate income totals by group
+  const employmentIncome = sumByGroup(income, 'group', 'A'); // A group (not used but kept for reference)
+  const passiveIncomeTotal = sumByGroup(income, 'group', 'C'); // D = C group total
+  const portfolioIncomeTotal = sumByGroup(income, 'group', 'E'); // F = E group total
+  const totalIncome = sumField(income, 'amount'); // G
   
-  // ✅ NEW: Calculate passive income (group C)
-  const passiveIncomeTotal = sumByGroup(income, 'group', 'C');
+  // Calculate expense totals
+  const totalExpenses = sumField(expenses, 'amount'); // L
   
-  // ✅ NEW: Calculate portfolio income (group E)
-  const portfolioIncomeTotal = sumByGroup(income, 'group', 'E');
+  // Get specific expense values
+  const taxes = findValue(expenses, 'code', '0.6') || 0; // H6 (but code is 0.6)
+  const housingExpenses = findValue(expenses, 'code', '1.3') || 0; // J3 (but code is 1.3)
   
   // Calculate asset totals
-  const activesTotal = sumByGroup(assets, 'group', 'N');
-  const luxuryTotal = sumByGroup(assets, 'group', 'P');
-  const assetsByBanker = activesTotal + luxuryTotal;
-  const assetsFactual = activesTotal;
-  const totalAssets = assetsByBanker;
+  const activesTotal = sumByGroup(assets, 'group', 'N'); // O
+  const luxuryTotal = sumByGroup(assets, 'group', 'P'); // Q
+  const assetsByBanker = activesTotal + luxuryTotal; // R
+  const assetsFactual = activesTotal; // S
   
-  // Get specific values
-  const taxes = findValue(expenses, 'code', '0.6') || 0;
-  const housingExpenses = findValue(expenses, 'code', '1.3') || 0;
+  // Calculate liabilities
+  const totalLiabilities = sumField(liabilities, 'amount'); // U
   
-  // Calculate metrics
-  const cashFlow = totalIncome - totalExpenses;
+  // ✅ FORMULA 1: Сколько вы сохраняете? M / G
+  const cashFlow = totalIncome - totalExpenses; // M
+  const savingRate = totalIncome > 0 ? (cashFlow / totalIncome) : 0;
   const cashFlowGrowth = cashFlow > 0;
   
-  const moneyWorking = (totalAssets + totalIncome > 0) 
-    ? ((totalAssets + totalIncome) / totalIncome) 
+  // ✅ FORMULA 2: Работают ли ваши деньги на вас? (D+F)/G
+  const moneyWorking = totalIncome > 0 
+    ? ((passiveIncomeTotal + portfolioIncomeTotal) / totalIncome) 
     : 0;
-  const moneyWorkingGrowth = moneyWorking > 1;
+  const moneyWorkingGrowth = moneyWorking > 0;
   
+  // ✅ FORMULA 3: Сколько вы платите налогов? H6/G (code 0.6)
   const taxRate = totalIncome > 0 ? (taxes / totalIncome) : 0;
   
+  // ✅ FORMULA 4: Сколько уходит на жилье? J3/G (code 1.3)
   const housingRate = totalIncome > 0 ? (housingExpenses / totalIncome) : 0;
   const housingOk = housingRate <= 0.33;
   
-  const luxuryRate = totalAssets > 0 ? (luxuryTotal / totalAssets) : 0;
+  // ✅ FORMULA 5: Сколько вы тратите на роскошь? Q/R
+  const luxuryRate = assetsByBanker > 0 ? (luxuryTotal / assetsByBanker) : 0;
   const luxuryOk = luxuryRate <= 0.33;
   
-  const assetYield = totalAssets > 0 
-    ? ((totalAssets + totalIncome) / totalAssets) 
+  // ✅ FORMULA 6: Каков ваш возврат на активы? (D+F)/S
+  const assetYield = assetsFactual > 0 
+    ? ((passiveIncomeTotal + portfolioIncomeTotal) / assetsFactual) 
     : 0;
   
-  const security = totalExpenses > 0 ? (totalAssets / totalExpenses) : 0;
+  // ✅ FORMULA 7: Насколько вы богаты? S/L
+  const security = totalExpenses > 0 ? (assetsFactual / totalExpenses) : 0;
   
-  // ✅ FIXED: Main formula - (Пассивный + Портфельный доходы) / Расходы
+  // ✅ FORMULA 8: Насколько ваши расходы покрыты пассивным доходом? (D+F)/L
   const expensesCoveredByPassiveIncomeRatio = totalExpenses > 0 
     ? ((passiveIncomeTotal + portfolioIncomeTotal) / totalExpenses) 
     : 0;
@@ -209,22 +214,27 @@ export function calculateAnalysis(reportData) {
   
   return {
     // Values
-    totalIncome,
-    totalExpenses,
-    totalAssets,
-    totalLiabilities,
-    assetsByBanker,
-    assetsFactual,
-    passiveIncomeTotal,
-    portfolioIncomeTotal,
-    cashFlow,
-    moneyWorking,
-    taxRate,
-    housingRate,
-    luxuryRate,
-    assetYield,
-    security,
-    expensesCoveredByPassiveIncomeRatio,
+    totalIncome, // G
+    totalExpenses, // L
+    assetsByBanker, // R
+    assetsFactual, // S
+    totalLiabilities, // U
+    passiveIncomeTotal, // D
+    portfolioIncomeTotal, // F
+    cashFlow, // M
+    taxes, // H6 (0.6)
+    housingExpenses, // J3 (1.3)
+    luxuryTotal, // Q
+    
+    // Calculated metrics
+    savingRate, // M/G
+    moneyWorking, // (D+F)/G
+    taxRate, // H6/G
+    housingRate, // J3/G
+    luxuryRate, // Q/R
+    assetYield, // (D+F)/S
+    security, // S/L
+    expensesCoveredByPassiveIncomeRatio, // (D+F)/L
     
     // Status indicators
     cashFlowGrowth,
