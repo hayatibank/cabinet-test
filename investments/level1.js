@@ -150,6 +150,27 @@ function renderBalanceSection(balance) {
 }
 
 /**
+ * Render Спотовый бот «Хаяти» - пассивный доход
+ */
+function renderSpotBotsSection(investmentProjects) {
+  // TODO: Separate collection for spot bots
+  // For now, use same data with filter or placeholder
+  
+  return `
+    <div class="investment-section spotbot-section">
+      <div class="section-header">
+        <h4>${t('spotBot.title')}</h4>
+      </div>
+      <p class="subtitle">${t('spotBot.subtitle')}</p>
+      
+      <div class="empty-state">
+        <p>${t('spotBot.noBots')}</p>
+      </div>
+    </div>
+  `;
+}
+
+/**
  * Render HODL портфель долгосрочных инвестиций («Хаяти HODL»)
  */
 function renderHodlPortfolio(balance) {
@@ -256,27 +277,6 @@ function renderInvestmentProjectsSection(investmentProjects) {
           ${sorted.map(project => renderProjectCard(project)).join('')}
         </div>
         <button class="carousel-btn carousel-next" data-carousel="projects">→</button>
-      </div>
-    </div>
-  `;
-}
-
-/**
- * Render Спотовый бот «Хаяти» - пассивный доход
- */
-function renderSpotBotsSection(investmentProjects) {
-  // TODO: Separate collection for spot bots
-  // For now, use same data with filter or placeholder
-  
-  return `
-    <div class="investment-section spotbot-section">
-      <div class="section-header">
-        <h4>${t('spotBot.title')}</h4>
-      </div>
-      <p class="subtitle">${t('spotBot.subtitle')}</p>
-      
-      <div class="empty-state">
-        <p>${t('spotBot.noBots')}</p>
       </div>
     </div>
   `;
