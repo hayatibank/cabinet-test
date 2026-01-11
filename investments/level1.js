@@ -1,14 +1,26 @@
-/* /webapp/investments/level1.js v1.1.0 */
+/* /webapp/investments/level1.js v1.2.0 */
+// CHANGELOG v1.2.0:
+// - FIXED: Migrated from local i18n to global window.i18n
+// - FIXED: Changed from ES6 export to window global
+// - ADDED: Compatibility with current app architecture
 // CHANGELOG v1.1.0:
 // - Added 4 sections: HODL, Projects, SpotBot, PaymentsMade
 // - All sections use horizontal scroll carousel
 // - Proper naming as per user specification
-// CHANGELOG v1.0.2:
-// - FIXED: Changed `list` to `investments`/`sorted` variables
-// - FIXED: All i18n keys use correct prefixes
 
-import { t } from './i18n.js';
+// ✅ Import from investmentService (keep this - it's a proper module)
 import { getBalance, getInvestmentProjects, getPayments, formatCurrency, formatCrypto } from './investmentService.js';
+
+/**
+ * Helper: Get translation from global i18n
+ */
+function t(key) {
+  if (!window.i18n || !window.i18n.initialized) {
+    console.warn('⚠️ [level1.js] i18n not initialized, returning key:', key);
+    return key;
+  }
+  return window.i18n.t(key);
+}
 
 /**
  * Render Level 1 investments dashboard
