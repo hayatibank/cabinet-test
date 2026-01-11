@@ -50,6 +50,20 @@
   transition: all 0.3s;
 }
 
+/* Center specific sections */
+.hodl-section,
+.spotbot-section,
+.payments-section {
+  text-align: center;
+}
+
+.hodl-section .subtitle,
+.spotbot-section .subtitle,
+.payments-section .subtitle {
+  margin: 0 auto;
+  max-width: 600px;
+}
+
 .investment-section:hover {
   border-color: rgba(0, 240, 255, 0.3);
   box-shadow: 0 0 20px rgba(0, 240, 255, 0.1);
@@ -282,6 +296,7 @@
   border: 1px solid var(--border);
   border-radius: 12px;
   transition: all 0.3s;
+  min-width: 320px;
 }
 
 .crypto-card:hover {
@@ -290,6 +305,7 @@
   box-shadow: 0 4px 12px rgba(255, 215, 0, 0.2);
 }
 
+/* Avatar (coin icon) - LEFT */
 .crypto-icon {
   font-size: 36px;
   width: 56px;
@@ -302,37 +318,47 @@
   flex-shrink: 0;
 }
 
+/* Info container - RIGHT (3 lines stacked) */
 .crypto-info {
   flex: 1;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: left;
 }
 
-.crypto-name {
+/* Line 1: Ticker (BTC, USDT) */
+.crypto-symbol {
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text);
-  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  line-height: 1;
+}
+
+/* Line 2: Coin name (Bitcoin, Tether) */
+.crypto-name {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-muted);
+  line-height: 1;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.crypto-symbol {
-  font-size: 13px;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
+/* Line 3: Balance */
 .crypto-amount {
   font-size: 18px;
   font-weight: 700;
   color: var(--ferrari-yellow);
   text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
   font-variant-numeric: tabular-nums;
-  text-align: right;
   white-space: nowrap;
-  flex-shrink: 0;
+  line-height: 1.2;
+  margin-top: 2px;
 }
 
 /* ==================== INVESTMENT CARDS (Projects) ==================== */
@@ -534,10 +560,7 @@
     font-size: 20px;
   }
   
-  .balance-grid {
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
-    gap: 16px;
-  }
+  /* REMOVED: balance-grid override - keep single column */
   
   .balance-card {
     padding: 20px;
@@ -596,10 +619,7 @@
     font-size: 18px;
   }
   
-  .balance-grid {
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
+  /* REMOVED: balance-grid override - keep single column from base */
   
   .balance-card {
     padding: 16px;

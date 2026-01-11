@@ -191,10 +191,10 @@ function renderHodlPortfolio(balance) {
             <div class="crypto-card carousel-item">
               <div class="crypto-icon">₿</div>
               <div class="crypto-info">
-                <div class="crypto-name">Bitcoin</div>
                 <div class="crypto-symbol">BTC</div>
+                <div class="crypto-name">Bitcoin</div>
+                <div class="crypto-amount">${formatCrypto(btc, 'BTC')}</div>
               </div>
-              <div class="crypto-amount">${formatCrypto(btc, 'BTC')}</div>
             </div>
           ` : ''}
           
@@ -202,10 +202,10 @@ function renderHodlPortfolio(balance) {
             <div class="crypto-card carousel-item">
               <div class="crypto-icon">₮</div>
               <div class="crypto-info">
-                <div class="crypto-name">Tether</div>
                 <div class="crypto-symbol">USDT</div>
+                <div class="crypto-name">Tether</div>
+                <div class="crypto-amount">${formatCurrency(usdt, '$')}</div>
               </div>
-              <div class="crypto-amount">${formatCurrency(usdt, '$')}</div>
             </div>
           ` : ''}
         </div>
@@ -305,7 +305,7 @@ function renderPaymentsMadeSection(payments) {
         <h4>${t('payments.title')}</h4>
         <div class="total-invested">
           <span class="label">${t('payments.total')}:</span>
-          <span class="amount">${formatCurrency(totalPaid, '$')}</span>
+          <span class="amount">${formatCurrency(totalPaid, '₽')}</span>
         </div>
       </div>
       <p class="subtitle">${t('payments.subtitle')}</p>
@@ -376,14 +376,14 @@ function renderPaymentCard(payment) {
         ${amountMade > 0 ? `
           <div class="detail-row">
             <span class="detail-label">💸 ${t('payments.made')}:</span>
-            <span class="detail-value positive">${formatCurrency(amountMade, '$')}</span>
+            <span class="detail-value positive">${formatCurrency(amountMade, '₽')}</span>
           </div>
         ` : ''}
         
         ${amountReinvested > 0 ? `
           <div class="detail-row">
             <span class="detail-label">🔄 ${t('payments.reinvested')}:</span>
-            <span class="detail-value">${formatCurrency(amountReinvested, '$')}</span>
+            <span class="detail-value">${formatCurrency(amountReinvested, '₽')}</span>
           </div>
         ` : ''}
         
@@ -397,7 +397,7 @@ function renderPaymentCard(payment) {
         ${amountTransferred > 0 ? `
           <div class="detail-row">
             <span class="detail-label">📤 ${t('payments.transferred')}:</span>
-            <span class="detail-value">${formatCurrency(amountTransferred, '$')}</span>
+            <span class="detail-value">${formatCurrency(amountTransferred, '₽')}</span>
           </div>
         ` : ''}
       </div>
