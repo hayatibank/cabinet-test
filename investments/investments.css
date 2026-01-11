@@ -561,6 +561,22 @@
 
 /* ==================== RESPONSIVE ==================== */
 
+/* Tablet and below: 2 columns */
+@media (max-width: 900px) {
+  .balance-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+}
+
+/* Mobile: single column */
+@media (max-width: 600px) {
+  .balance-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px;
+  }
+}
+
 /* Tablet */
 @media (max-width: 768px) {
   .level1-header h3 {
@@ -575,11 +591,7 @@
     font-size: 20px;
   }
   
-  /* Balance: 2 columns on tablet */
-  .balance-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-  }
+  /* Balance-grid handled by 900px/600px breakpoints */
   
   .balance-card {
     padding: 20px;
@@ -638,11 +650,7 @@
     font-size: 18px;
   }
   
-  /* Balance: single column on mobile */
-  .balance-grid {
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
+  /* Balance-grid handled by 600px breakpoint above */
   
   .balance-card {
     padding: 16px;
