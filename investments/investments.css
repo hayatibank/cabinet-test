@@ -64,6 +64,23 @@
   max-width: 600px;
 }
 
+.hodl-section h4,
+.spotbot-section h4,
+.payments-section h4 {
+  text-align: center;
+}
+
+.spotbot-section .empty-state,
+.payments-section .empty-state {
+  margin: 0 auto;
+}
+
+.spotbot-section .section-header,
+.payments-section .section-header {
+  justify-content: center;
+  text-align: center;
+}
+
 .investment-section:hover {
   border-color: rgba(0, 240, 255, 0.3);
   box-shadow: 0 0 20px rgba(0, 240, 255, 0.1);
@@ -126,10 +143,8 @@
 
 .balance-grid {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 16px;
-  max-width: 600px;
-  margin: 0 auto;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
 }
 
 .balance-card {
@@ -560,7 +575,11 @@
     font-size: 20px;
   }
   
-  /* REMOVED: balance-grid override - keep single column */
+  /* Balance: 2 columns on tablet */
+  .balance-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
   
   .balance-card {
     padding: 20px;
@@ -619,7 +638,11 @@
     font-size: 18px;
   }
   
-  /* REMOVED: balance-grid override - keep single column from base */
+  /* Balance: single column on mobile */
+  .balance-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
   
   .balance-card {
     padding: 16px;

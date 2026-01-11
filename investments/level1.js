@@ -125,7 +125,7 @@ function renderBalanceSection(balance) {
           <div class="balance-icon">₿</div>
           <div class="balance-info">
             <div class="balance-label">${t('level1.hodl')}</div>
-            <div class="balance-amount">${formatCrypto(btc, 'BTC')}</div>
+            <div class="balance-amount">${(btc || 0).toFixed(8)}</div>
           </div>
         </div>
         
@@ -193,7 +193,7 @@ function renderHodlPortfolio(balance) {
               <div class="crypto-info">
                 <div class="crypto-symbol">BTC</div>
                 <div class="crypto-name">Bitcoin</div>
-                <div class="crypto-amount">${formatCrypto(btc, 'BTC')}</div>
+                <div class="crypto-amount">${(btc || 0).toFixed(8)}</div>
               </div>
             </div>
           ` : ''}
@@ -204,7 +204,7 @@ function renderHodlPortfolio(balance) {
               <div class="crypto-info">
                 <div class="crypto-symbol">USDT</div>
                 <div class="crypto-name">Tether</div>
-                <div class="crypto-amount">${formatCurrency(usdt, '$')}</div>
+                <div class="crypto-amount">${(usdt || 0).toFixed(2)}</div>
               </div>
             </div>
           ` : ''}
