@@ -59,9 +59,9 @@ export async function renderLevel1(accountId) {
         </div>
         
         ${renderBalanceSection(balance)}
+        ${renderSpotBotsSection(investmentProjects)}
         ${renderHodlPortfolio(balance)}
         ${renderInvestmentProjectsSection(investmentProjects)}
-        ${renderSpotBotsSection(investmentProjects)}
         ${renderPaymentsMadeSection(payments)}
       </div>
     `;
