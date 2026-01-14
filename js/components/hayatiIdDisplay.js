@@ -1,4 +1,8 @@
-/* /webapp/js/components/hayatiIdDisplay.js v1.0.1 */
+/* /webapp/js/components/hayatiIdDisplay.js v2.0.0 */
+// CHANGELOG v2.0.0:
+// - REDESIGN: Compact display like email (one line)
+// - Small copy icon button (no text)
+// - Removed info text and label
 // CHANGELOG v1.0.1:
 // - FIXED: Safe translation fallback (handles i18n not ready edge case)
 // CHANGELOG v1.0.0:
@@ -54,22 +58,21 @@ export function renderHayatiIdInCabinet(userData) {
     ? t('hayatiId.tier.signature') 
     : t('hayatiId.tier.standard');
 
-  // Create HTML
+  // Create HTML (compact: just like email line)
   const html = `
     <div class="hayati-id-container">
-      <div class="hayati-id-label">${labelText}</div>
+      <span>Hayati 🆔:</span>
       <div class="hayati-id-value">
         <span>${hayatiId}</span>
         <span class="hayati-id-tier ${tier}">${tierText}</span>
       </div>
-      <button class="hayati-id-copy-btn" data-hayati-id="${hayatiId}">
+      <button class="hayati-id-copy-btn" data-hayati-id="${hayatiId}" title="${copyText}">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
           <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
         </svg>
         <span class="copy-text">${copyText}</span>
       </button>
-      <div class="hayati-id-info">${infoText}</div>
     </div>
   `;
 

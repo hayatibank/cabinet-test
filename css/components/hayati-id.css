@@ -1,169 +1,121 @@
-/* /webapp/css/components/hayati-id.css v1.0.0 */
-/* CHANGELOG v1.0.0:
- * - Initial release
- * - Cyberpunk futuristic style
- * - Neon glow effects
- * - Responsive design
+/* /webapp/css/components/hayati-id.css v2.0.0 */
+/* CHANGELOG v2.0.0:
+ * - REDESIGN: Compact style like email display
+ * - Removed big card, now just a text line
+ * - Small copy icon button
+ * - Minimal, unobtrusive design
  */
 
-/* ==================== HAYATI ID CONTAINER ==================== */
+/* ==================== HAYATI ID LINE (COMPACT) ==================== */
 .hayati-id-container {
   display: flex;
-  flex-direction: column;
+  align-items: center;
   gap: 8px;
-  margin-bottom: 20px;
-  padding: 16px;
-  background: linear-gradient(
-    135deg,
-    rgba(0, 240, 255, 0.05) 0%,
-    rgba(255, 0, 110, 0.05) 100%
-  );
-  border: 1px solid rgba(0, 240, 255, 0.3);
-  border-radius: 12px;
-  box-shadow: 
-    0 0 20px rgba(0, 240, 255, 0.2),
-    inset 0 0 40px rgba(0, 240, 255, 0.03);
-  transition: all 0.3s ease;
-}
-
-.hayati-id-container:hover {
-  border-color: rgba(0, 240, 255, 0.5);
-  box-shadow: 
-    0 0 30px rgba(0, 240, 255, 0.3),
-    inset 0 0 40px rgba(0, 240, 255, 0.05);
-  transform: translateY(-2px);
-}
-
-/* ==================== HAYATI ID LABEL ==================== */
-.hayati-id-label {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
+  margin-bottom: 8px;
+  font-size: 14px;
   color: var(--text-muted);
+}
+
+/* ==================== HAYATI ID VALUE ==================== */
+.hayati-id-value {
+  font-family: 'Courier New', monospace;
+  color: var(--text);
+  letter-spacing: 1px;
+  user-select: all;
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
-.hayati-id-label::before {
-  content: '🆔';
-  font-size: 14px;
-}
-
-/* ==================== HAYATI ID VALUE ==================== */
-.hayati-id-value {
-  font-size: 24px;
-  font-weight: 700;
-  font-family: 'Courier New', monospace;
-  letter-spacing: 3px;
-  color: var(--neon-blue);
-  text-shadow: 
-    0 0 10px rgba(0, 240, 255, 0.6),
-    0 0 20px rgba(0, 240, 255, 0.4),
-    0 0 30px rgba(0, 240, 255, 0.2);
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  user-select: all;
-  cursor: text;
-}
-
-/* ==================== TIER BADGE ==================== */
+/* ==================== TIER BADGE (SMALL) ==================== */
 .hayati-id-tier {
-  display: inline-flex;
-  align-items: center;
-  padding: 4px 10px;
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 600;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
   text-transform: uppercase;
-  border-radius: 12px;
-  background: rgba(0, 240, 255, 0.15);
-  border: 1px solid rgba(0, 240, 255, 0.4);
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(0, 240, 255, 0.1);
+  border: 1px solid rgba(0, 240, 255, 0.3);
   color: var(--neon-blue);
-  white-space: nowrap;
+  opacity: 0.7;
 }
 
 .hayati-id-tier.signature {
-  background: linear-gradient(
-    135deg,
-    rgba(255, 215, 0, 0.2) 0%,
-    rgba(255, 140, 0, 0.2) 100%
-  );
-  border-color: rgba(255, 215, 0, 0.6);
+  background: rgba(255, 215, 0, 0.1);
+  border-color: rgba(255, 215, 0, 0.4);
   color: #ffd700;
-  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
 }
 
-/* ==================== COPY BUTTON ==================== */
+/* ==================== COPY BUTTON (ICON ONLY) ==================== */
 .hayati-id-copy-btn {
-  padding: 6px 12px;
-  background: rgba(0, 240, 255, 0.1);
-  border: 1px solid rgba(0, 240, 255, 0.3);
-  border-radius: 8px;
-  color: var(--neon-blue);
+  padding: 4px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  color: var(--text-muted);
   font-size: 12px;
   cursor: pointer;
   transition: all 0.2s ease;
   display: flex;
   align-items: center;
-  gap: 6px;
-  white-space: nowrap;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  opacity: 0.6;
 }
 
 .hayati-id-copy-btn:hover {
-  background: rgba(0, 240, 255, 0.2);
-  border-color: rgba(0, 240, 255, 0.5);
-  box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
-  transform: translateY(-1px);
+  opacity: 1;
+  background: rgba(0, 240, 255, 0.1);
+  border-color: rgba(0, 240, 255, 0.3);
+  color: var(--neon-blue);
 }
 
 .hayati-id-copy-btn:active {
-  transform: translateY(0);
+  transform: scale(0.95);
 }
 
 .hayati-id-copy-btn.copied {
-  background: rgba(0, 255, 159, 0.2);
-  border-color: rgba(0, 255, 159, 0.5);
+  background: rgba(0, 255, 159, 0.15);
+  border-color: rgba(0, 255, 159, 0.3);
   color: #00ff9f;
+  opacity: 1;
 }
 
-/* ==================== INFO TEXT ==================== */
+.hayati-id-copy-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Hide text inside button (icon only) */
+.hayati-id-copy-btn .copy-text {
+  display: none;
+}
+
+/* ==================== HIDE INFO TEXT ==================== */
 .hayati-id-info {
-  font-size: 11px;
-  color: var(--text-muted);
-  margin-top: 4px;
-  line-height: 1.4;
+  display: none;
+}
+
+/* ==================== HIDE LABEL (use emoji inline) ==================== */
+.hayati-id-label {
+  display: none;
 }
 
 /* ==================== RESPONSIVE ==================== */
 @media (max-width: 480px) {
-  .hayati-id-value {
-    font-size: 20px;
-    letter-spacing: 2px;
+  .hayati-id-container {
+    font-size: 13px;
   }
   
   .hayati-id-copy-btn {
-    font-size: 11px;
-    padding: 5px 10px;
+    width: 22px;
+    height: 22px;
   }
-}
-
-/* ==================== ANIMATIONS ==================== */
-@keyframes pulse-glow {
-  0%, 100% {
-    box-shadow: 
-      0 0 20px rgba(0, 240, 255, 0.2),
-      inset 0 0 40px rgba(0, 240, 255, 0.03);
+  
+  .hayati-id-copy-btn svg {
+    width: 12px;
+    height: 12px;
   }
-  50% {
-    box-shadow: 
-      0 0 30px rgba(0, 240, 255, 0.4),
-      inset 0 0 40px rgba(0, 240, 255, 0.06);
-  }
-}
-
-.hayati-id-container.highlight {
-  animation: pulse-glow 2s ease-in-out infinite;
 }
