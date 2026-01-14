@@ -1,4 +1,6 @@
-/* /webapp/js/components/hayatiIdDisplay.js v1.0.0 */
+/* /webapp/js/components/hayatiIdDisplay.js v1.0.1 */
+// CHANGELOG v1.0.1:
+// - FIXED: Safe translation fallback (handles i18n not ready edge case)
 // CHANGELOG v1.0.0:
 // - Initial release
 // - Display Hayati ID in cabinet
@@ -34,8 +36,15 @@ export function renderHayatiIdInCabinet(userData) {
     return;
   }
 
-  // Get translations
-  const t = window.i18n?.t || ((key) => key);
+  // Get translations (safe fallback)
+  const t = (key) => {
+    try {
+      return window.i18n?.t?.(key) || key;
+    } catch (err) {
+      console.warn(`⚠️ Translation failed for key: ${key}`, err);
+      return key;
+    }
+  };
   
   const labelText = t('hayatiId.label');
   const copyText = t('hayatiId.copy');
