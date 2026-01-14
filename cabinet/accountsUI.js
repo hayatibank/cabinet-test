@@ -1,4 +1,7 @@
-/* /webapp/cabinet/accountsUI.js v2.3.1 */
+/* /webapp/cabinet/accountsUI.js v2.4.0 */
+// CHANGELOG v2.4.0:
+// - ADDED: Check availability before showing Create Account button
+// - Button hidden if all account types are unavailable
 // CHANGELOG v2.3.1:
 // - FIXED: Syntax error - removed extra closing braces on lines 89-90
 // CHANGELOG v2.3.0:
@@ -240,21 +243,54 @@ export async function showCreateAccountButton() {
     return;
   }
   
-  actionsContainer.innerHTML = `
-    <button class="btn btn-primary btn-create-account">
-      <span data-i18n="cabinet.createAccount">${t('cabinet.createAccount')}</span>
-    </button>
-    <button onclick="showProfileMenu()" class="btn btn-secondary">
-      <span data-i18n="cabinet.settings">${t('cabinet.settings')}</span>
-    </button>
-    <button onclick="logout()" class="btn btn-ghost">
-      <span data-i18n="auth.logout.button">${t('auth.logout.button')}</span>
-    </button>
-  `;
+  // ✅ Check availability before showing button
+  let canCreateAnything = false;
+  try {
+    const { checkAccountAvailability } = await import('./accounts.js');
+    const availability = await checkAccountAvailability();
+    
+    canCreateAnything = 
+      availability.individual.canCreate ||
+      availability.business.canCreate ||
+      availability.government.canCreate;
+    
+    console.log('🔍 Account creation availability:', canCreateAnything);
+  } catch (err) {
+    console.error('⚠️ Failed to check availability:', err);
+    // Default to showing button if check fails
+    canCreateAnything = true;
+  }
   
-  const createBtn = actionsContainer.querySelector('.btn-create-account');
-  if (createBtn) {
-    createBtn.onclick = showCreateAccountForm;
+  // ✅ Only show create button if user can create something
+  if (canCreateAnything) {
+    actionsContainer.innerHTML = `
+      <button class="btn btn-primary btn-create-account">
+        <span data-i18n="cabinet.createAccount">${t('cabinet.createAccount')}</span>
+      </button>
+      <button onclick="showProfileMenu()" class="btn btn-secondary">
+        <span data-i18n="cabinet.settings">${t('cabinet.settings')}</span>
+      </button>
+      <button onclick="logout()" class="btn btn-ghost">
+        <span data-i18n="auth.logout.button">${t('auth.logout.button')}</span>
+      </button>
+    `;
+    
+    const createBtn = actionsContainer.querySelector('.btn-create-account');
+    if (createBtn) {
+      createBtn.onclick = showCreateAccountForm;
+    }
+  } else {
+    // ✅ No create button, just settings and logout
+    actionsContainer.innerHTML = `
+      <button onclick="showProfileMenu()" class="btn btn-secondary">
+        <span data-i18n="cabinet.settings">${t('cabinet.settings')}</span>
+      </button>
+      <button onclick="logout()" class="btn btn-ghost">
+        <span data-i18n="auth.logout.button">${t('auth.logout.button')}</span>
+      </button>
+    `;
+    
+    console.log('ℹ️ Create account button hidden (no available types)');
   }
 }
 
