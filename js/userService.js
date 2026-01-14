@@ -1,4 +1,8 @@
-/* /webapp/js/userService.js v1.0.1 */
+/* /webapp/js/userService.js v2.0.0 */
+// CHANGELOG v2.0.0:
+// - BREAKING: Now uses backend API instead of direct Firestore access
+// - Solves Firestore WebSocket connection issues
+// - More reliable and consistent with other API calls
 // CHANGELOG v1.0.1:
 // - FIXED: Return null instead of throwing error (graceful degradation)
 // CHANGELOG v1.0.0:
@@ -6,27 +10,46 @@
 // - Fetch user data from Firestore
 // User data service
 
-import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js';
+import { API_URL } from './config.js';
+import { getSession } from './session.js';
 
 /**
- * Get user data from Firestore
+ * Get user data via backend API
  * @param {string} uid - User ID
- * @returns {Promise<Object>} User data including hayatiId
+ * @returns {Promise<Object|null>} User data including hayatiId
  */
 export async function getUserData(uid) {
   try {
     console.log(`📋 [UserService] Fetching user data for: ${uid}`);
     
-    const db = getFirestore();
-    const userRef = doc(db, 'users', uid);
-    const userSnap = await getDoc(userRef);
-    
-    if (!userSnap.exists()) {
-      console.warn(`⚠️ [UserService] User document not found: ${uid}`);
+    // Get auth token
+    const session = getSession();
+    if (!session || !session.authToken) {
+      console.error('❌ [UserService] No auth token available');
       return null;
     }
     
-    const userData = userSnap.data();
+    // Fetch from backend API
+    const url = `${API_URL}/api/users/${uid}?authToken=${encodeURIComponent(session.authToken)}`;
+    
+    console.log(`📡 [UserService] Request URL: ${url.replace(/authToken=.+/, 'authToken=***')}`);
+    
+    const response = await fetch(url);
+    
+    if (!response.ok) {
+      console.error(`❌ [UserService] API error: ${response.status}`);
+      return null;
+    }
+    
+    const data = await response.json();
+    
+    if (!data.success) {
+      console.error(`❌ [UserService] API returned success=false`);
+      return null;
+    }
+    
+    const userData = data.userData;
+    
     console.log(`✅ [UserService] User data loaded:`, {
       uid: userData.uid,
       email: userData.email,
@@ -43,7 +66,7 @@ export async function getUserData(uid) {
 }
 
 /**
- * Get user's Hayati ID
+ * Get user's Hayati ID via backend API
  * @param {string} uid - User ID
  * @returns {Promise<string|null>} Hayati ID or null
  */
