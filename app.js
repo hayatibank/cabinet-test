@@ -1,4 +1,8 @@
-/* /webapp/app.js v3.0.3 */
+/* /webapp/app.js v3.1.0 */
+// CHANGELOG v3.1.0:
+// - ADDED: getUserData() to fetch full user data from Firestore
+// - FIXED: showCabinet() now receives full userData (including hayatiId)
+// - User data now loaded before cabinet display
 // CHANGELOG v3.0.3:
 // - FIXED: Explicit updatePage() call after i18n init with 50ms delay
 // - ADDED: Wait for DOM to be fully ready before first translation update
@@ -18,6 +22,7 @@ import { setupLoginHandler, setupRegisterHandler, setupResetHandler, setupFormSw
 import { getSession, saveSession, getCurrentChatId, listAllSessions } from './js/session.js';
 import { showLoadingScreen, showAuthScreen, showCabinet } from './js/ui.js';
 import { setupTokenInterceptor, setupPeriodicTokenCheck, setupBackgroundTokenRefresh, ensureFreshToken } from './js/tokenManager.js';
+import { getUserData } from './js/userService.js'; // ✅ NEW
 import './auth/accountActions.js';
 import './cabinet/accountsUI.js';
 import { claimHYC } from './HayatiCoin/hycService.js';
@@ -126,8 +131,11 @@ window.addEventListener('DOMContentLoaded', async () => {
         // Claim HYC for app login (silent)
         await claimHYC('app_login');
         
-        // ✅ NOW show cabinet (i18n is ready)
-        showCabinet({ uid: session.uid, email: session.email });
+        // ✅ Fetch full user data from Firestore
+        const userData = await getUserData(session.uid);
+        
+        // ✅ NOW show cabinet with full userData (including hayatiId)
+        showCabinet(userData || { uid: session.uid, email: session.email });
       } else {
         console.log('⚠️ Token expired');
         showAuthScreen('login');
@@ -165,7 +173,10 @@ window.addEventListener('DOMContentLoaded', async () => {
             // Claim HYC for app login (silent)
             await claimHYC('app_login');
             
-            showCabinet({ uid: user.uid, email: user.email });
+            // ✅ Fetch full user data from Firestore
+            const userData = await getUserData(user.uid);
+            
+            showCabinet(userData || { uid: user.uid, email: user.email });
           } else {
             console.log('⚠️ Silent login failed');
             showAuthScreen('login');
