@@ -1,4 +1,7 @@
-/* /webapp/app.js v3.1.0 */
+/* /webapp/app.js v3.1.1 */
+// CHANGELOG v3.1.1:
+// - ADDED: Try-catch fallback for getUserData() (Firestore offline handling)
+// - Cabinet now shows even if Firestore is offline
 // CHANGELOG v3.1.0:
 // - ADDED: getUserData() to fetch full user data from Firestore
 // - FIXED: showCabinet() now receives full userData (including hayatiId)
@@ -131,8 +134,14 @@ window.addEventListener('DOMContentLoaded', async () => {
         // Claim HYC for app login (silent)
         await claimHYC('app_login');
         
-        // ✅ Fetch full user data from Firestore
-        const userData = await getUserData(session.uid);
+        // ✅ Fetch full user data from Firestore (with fallback)
+        let userData;
+        try {
+          userData = await getUserData(session.uid);
+        } catch (err) {
+          console.warn('⚠️ [Session] Could not fetch user data, using minimal data:', err.message);
+          userData = null;
+        }
         
         // ✅ NOW show cabinet with full userData (including hayatiId)
         showCabinet(userData || { uid: session.uid, email: session.email });
@@ -173,8 +182,14 @@ window.addEventListener('DOMContentLoaded', async () => {
             // Claim HYC for app login (silent)
             await claimHYC('app_login');
             
-            // ✅ Fetch full user data from Firestore
-            const userData = await getUserData(user.uid);
+            // ✅ Fetch full user data from Firestore (with fallback)
+            let userData;
+            try {
+              userData = await getUserData(user.uid);
+            } catch (err) {
+              console.warn('⚠️ [Telegram] Could not fetch user data, using minimal data:', err.message);
+              userData = null;
+            }
             
             showCabinet(userData || { uid: user.uid, email: user.email });
           } else {

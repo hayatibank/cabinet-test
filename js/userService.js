@@ -1,4 +1,6 @@
-/* /webapp/js/userService.js v1.0.0 */
+/* /webapp/js/userService.js v1.0.1 */
+// CHANGELOG v1.0.1:
+// - FIXED: Return null instead of throwing error (graceful degradation)
 // CHANGELOG v1.0.0:
 // - Initial release
 // - Fetch user data from Firestore
@@ -36,7 +38,7 @@ export async function getUserData(uid) {
     
   } catch (err) {
     console.error(`❌ [UserService] Error fetching user data:`, err);
-    throw err;
+    return null; // ✅ Return null instead of throwing
   }
 }
 

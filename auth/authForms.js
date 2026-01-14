@@ -1,4 +1,6 @@
-/* /webapp/auth/authForms.js v2.3.0 */
+/* /webapp/auth/authForms.js v2.3.1 */
+// CHANGELOG v2.3.1:
+// - ADDED: Try-catch fallback for getUserData() (Firestore offline handling)
 // CHANGELOG v2.3.0:
 // - ADDED: getUserData() to fetch full user data after login/register
 // - FIXED: showCabinet() now receives full userData (including hayatiId)
@@ -82,8 +84,14 @@ export function setupLoginHandler(auth) {
       // ✅ Request HYC registration reward
       await requestRegistrationReward(user.uid);
 
-      // ✅ Fetch full user data from Firestore
-      const userData = await getUserData(user.uid);
+      // ✅ Fetch full user data from Firestore (with fallback)
+      let userData;
+      try {
+        userData = await getUserData(user.uid);
+      } catch (err) {
+        console.warn('⚠️ [Login] Could not fetch user data, using minimal data:', err.message);
+        userData = null;
+      }
       
       // Show cabinet
       showCabinet(userData || { uid: user.uid, email: user.email });
@@ -219,8 +227,14 @@ export function setupRegisterHandler(auth, db) {
         email: user.email
       }, chatId);
       
-      // ✅ Fetch full user data from Firestore
-      const userData = await getUserData(user.uid);
+      // ✅ Fetch full user data from Firestore (with fallback)
+      let userData;
+      try {
+        userData = await getUserData(user.uid);
+      } catch (err) {
+        console.warn('⚠️ [Register] Could not fetch user data, using minimal data:', err.message);
+        userData = null;
+      }
       
       // Show cabinet
       showCabinet(userData || { uid: user.uid, email: user.email });
