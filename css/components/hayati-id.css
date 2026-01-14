@@ -1,5 +1,7 @@
-/* /webapp/css/components/hayati-id.css v2.0.0 */
-/* CHANGELOG v2.0.0:
+/* /webapp/css/components/hayati-id.css v2.0.1 */
+/* CHANGELOG v2.0.1:
+ * - FIXED: Centered alignment (justify-content: center)
+ * CHANGELOG v2.0.0:
  * - REDESIGN: Compact style like email display
  * - Removed big card, now just a text line
  * - Small copy icon button
@@ -10,6 +12,7 @@
 .hayati-id-container {
   display: flex;
   align-items: center;
+  justify-content: center; /* ✅ Centered */
   gap: 8px;
   margin-bottom: 8px;
   font-size: 14px;
