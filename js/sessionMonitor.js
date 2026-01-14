@@ -1,4 +1,6 @@
-/* /webapp/js/sessionMonitor.js v1.0.0 */
+/* /webapp/js/sessionMonitor.js v1.0.1 */
+// CHANGELOG v1.0.1:
+// - FIXED: Removed alert on session expiry (silent redirect)
 // CHANGELOG v1.0.0:
 // - Initial release
 // - Monitor session expiry and auto-refresh
@@ -75,14 +77,11 @@ function checkSession() {
   if (timeLeft === 0) {
     console.warn('⚠️ [SessionMonitor] Session expired, redirecting to login...');
     
-    // Clear session
+    // Clear session SILENTLY
     localStorage.removeItem('authSession');
     
-    // Show login screen
+    // Show login screen (no alert)
     showAuthScreen('login');
-    
-    // Show notification
-    alert('⏰ Your session has expired. Please log in again.');
   } else if (timeLeft < (10 * 60 * 1000)) {
     // Less than 10 minutes left
     const minutesLeft = Math.floor(timeLeft / 60000);

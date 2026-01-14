@@ -1,4 +1,8 @@
-/* /webapp/app.js v3.4.0 */
+/* /webapp/app.js v3.4.1 */
+// CHANGELOG v3.4.1:
+// - FIXED: Removed alerts (silent session handling)
+// - FIXED: Infinite reload loop prevention
+// - All session management now silent (no user notifications)
 // CHANGELOG v3.4.0:
 // - ADDED: Session monitoring (checks every minute)
 // - ADDED: Visibility monitor (checks when page becomes visible)
@@ -246,6 +250,9 @@ window.addEventListener('DOMContentLoaded', async () => {
     
     console.log('✅✅✅ App initialization complete!');
     
+    // ✅ Clear cleanup flag on success
+    sessionStorage.removeItem('firebase_cleanup_attempted');
+    
   } catch (err) {
     console.error('❌❌❌ CRITICAL ERROR during initialization:', err);
     
@@ -253,7 +260,19 @@ window.addEventListener('DOMContentLoaded', async () => {
     if (err.code && err.code.startsWith('auth/')) {
       console.log('🧹 Firebase auth error detected, clearing state...');
       
-      // Clear IndexedDB and localStorage
+      // Check if we already tried cleanup (prevent infinite loop)
+      const cleanupAttempted = sessionStorage.getItem('firebase_cleanup_attempted');
+      if (cleanupAttempted) {
+        console.error('❌ Cleanup already attempted, showing login instead');
+        sessionStorage.removeItem('firebase_cleanup_attempted');
+        showAuthScreen('login');
+        return;
+      }
+      
+      // Mark cleanup as attempted
+      sessionStorage.setItem('firebase_cleanup_attempted', 'true');
+      
+      // Clear IndexedDB and localStorage SILENTLY
       try {
         localStorage.clear();
         const databases = await indexedDB.databases();
@@ -267,8 +286,8 @@ window.addEventListener('DOMContentLoaded', async () => {
         console.error('⚠️ Cleanup failed:', cleanErr);
       }
       
-      // Show friendly message
-      alert('⚠️ Session expired or conflict detected.\n\nThe page will reload.');
+      // SILENT reload - no alert, just refresh
+      console.log('🔄 Reloading page...');
       window.location.reload();
       return;
     }
