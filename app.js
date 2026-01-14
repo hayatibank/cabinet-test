@@ -1,4 +1,13 @@
-/* /webapp/app.js v3.2.0 */
+/* /webapp/app.js v3.4.0 */
+// CHANGELOG v3.4.0:
+// - ADDED: Session monitoring (checks every minute)
+// - ADDED: Visibility monitor (checks when page becomes visible)
+// - Auto-redirect to login when session expires
+// CHANGELOG v3.3.0:
+// - ADDED: Firebase duplicate init protection
+// - ADDED: Clear stale auth state on startup (prevents multi-account conflicts)
+// - ADDED: Graceful auth error handling (auto-cleanup IndexedDB)
+// - FIXED: Session expired/conflict detection with auto-reload
 // CHANGELOG v3.2.0:
 // - FIXED: Removed experimentalForceLongPolling (causes offline issues)
 // - Firestore now uses default WebSocket connection
@@ -29,6 +38,7 @@ import { getSession, saveSession, getCurrentChatId, listAllSessions } from './js
 import { showLoadingScreen, showAuthScreen, showCabinet } from './js/ui.js';
 import { setupTokenInterceptor, setupPeriodicTokenCheck, setupBackgroundTokenRefresh, ensureFreshToken } from './js/tokenManager.js';
 import { getUserData } from './js/userService.js'; // ✅ NEW
+import { setupSessionMonitor, setupVisibilityMonitor } from './js/sessionMonitor.js'; // ✅ NEW
 import './auth/accountActions.js';
 import './cabinet/accountsUI.js';
 import { claimHYC } from './HayatiCoin/hycService.js';
@@ -79,8 +89,30 @@ window.addEventListener('DOMContentLoaded', async () => {
     // ==================== STEP 3: FIREBASE INIT ====================
     console.log('🔥 [app.js] Step 3/7: Initializing Firebase...');
     
-    const app = initializeApp(FIREBASE_CONFIG);
+    // ✅ Check if Firebase already initialized (prevent duplicate init)
+    let app;
+    try {
+      app = initializeApp(FIREBASE_CONFIG);
+    } catch (err) {
+      if (err.code === 'app/duplicate-app') {
+        console.log('⚠️ Firebase already initialized, using existing instance');
+        const { getApp } = await import('https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js');
+        app = getApp();
+      } else {
+        throw err;
+      }
+    }
+    
     const auth = getAuth(app);
+    
+    // ✅ Clear any stale auth state on startup
+    try {
+      await auth.signOut();
+      console.log('🧹 Cleared stale Firebase auth state');
+    } catch (cleanupErr) {
+      console.log('ℹ️ No auth state to clear');
+    }
+    
     const db = initializeFirestore(app, {
       cacheSizeBytes: CACHE_SIZE_UNLIMITED
       // ❌ REMOVED: experimentalForceLongPolling - causes offline issues
@@ -95,8 +127,11 @@ window.addEventListener('DOMContentLoaded', async () => {
     setupTokenInterceptor();
     setupPeriodicTokenCheck();
     setupBackgroundTokenRefresh();
+    setupSessionMonitor(); // ✅ NEW: Monitor session expiry
+    setupVisibilityMonitor(); // ✅ NEW: Check session on page visible
     
     console.log('✅ Token auto-refresh enabled');
+    console.log('✅ Session monitoring enabled');
     
     // ==================== STEP 5: AUTH HANDLERS ====================
     console.log('🔐 [app.js] Step 5/7: Setting up auth handlers...');
@@ -213,6 +248,30 @@ window.addEventListener('DOMContentLoaded', async () => {
     
   } catch (err) {
     console.error('❌❌❌ CRITICAL ERROR during initialization:', err);
+    
+    // ✅ Handle Firebase auth errors gracefully
+    if (err.code && err.code.startsWith('auth/')) {
+      console.log('🧹 Firebase auth error detected, clearing state...');
+      
+      // Clear IndexedDB and localStorage
+      try {
+        localStorage.clear();
+        const databases = await indexedDB.databases();
+        databases.forEach(db => {
+          if (db.name?.includes('firebase')) {
+            indexedDB.deleteDatabase(db.name);
+            console.log(`🗑️ Deleted Firebase DB: ${db.name}`);
+          }
+        });
+      } catch (cleanErr) {
+        console.error('⚠️ Cleanup failed:', cleanErr);
+      }
+      
+      // Show friendly message
+      alert('⚠️ Session expired or conflict detected.\n\nThe page will reload.');
+      window.location.reload();
+      return;
+    }
     
     // Show error to user
     alert(`Initialization failed: ${err.message}\n\nPlease refresh the page.`);
