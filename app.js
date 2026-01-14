@@ -1,4 +1,7 @@
-/* /webapp/app.js v3.1.1 */
+/* /webapp/app.js v3.2.0 */
+// CHANGELOG v3.2.0:
+// - FIXED: Removed experimentalForceLongPolling (causes offline issues)
+// - Firestore now uses default WebSocket connection
 // CHANGELOG v3.1.1:
 // - ADDED: Try-catch fallback for getUserData() (Firestore offline handling)
 // - Cabinet now shows even if Firestore is offline
@@ -79,12 +82,12 @@ window.addEventListener('DOMContentLoaded', async () => {
     const app = initializeApp(FIREBASE_CONFIG);
     const auth = getAuth(app);
     const db = initializeFirestore(app, {
-      experimentalForceLongPolling: true,
       cacheSizeBytes: CACHE_SIZE_UNLIMITED
+      // ❌ REMOVED: experimentalForceLongPolling - causes offline issues
     });
     
     console.log('✅ Firebase initialized');
-    console.log('🔌 Firestore: Long Polling mode');
+    console.log('🔌 Firestore: WebSocket mode (default)');
     
     // ==================== STEP 4: TOKEN MANAGEMENT ====================
     console.log('🔒 [app.js] Step 4/7: Setting up token management...');
