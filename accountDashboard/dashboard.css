@@ -1,5 +1,8 @@
-/* /webapp/accountDashboard/dashboard.css v1.2.0 */
-/* CHANGELOG v1.2.0:
+/* /webapp/accountDashboard/dashboard.css v1.3.0 */
+/* CHANGELOG v1.3.0:
+ * - ENHANCED: Brighter lock icon (opacity 0.8, brightness filter)
+ * - ENHANCED: Step numbers for locked steps now use neon-blue with slight transparency
+ * CHANGELOG v1.2.0:
  * - FIXED: Step labels now always use neon-blue color (removed locked override)
  * - All step labels now have consistent color regardless of lock state
  * CHANGELOG v1.1.0:
@@ -122,7 +125,8 @@
   top: 8px;
   right: 8px;
   font-size: 12px;
-  opacity: 0.6;
+  opacity: 0.8; /* ✅ Increased from 0.6 */
+  filter: brightness(1.5); /* ✅ Make lock brighter */
 }
 
 .step-label {
@@ -131,6 +135,13 @@
   white-space: nowrap;
   color: var(--neon-blue);
   font-weight: 500;
+}
+
+/* ✅ NEW: Brighten step number for locked steps */
+.nav-step.locked .step-number {
+  background: rgba(0, 240, 255, 0.15); /* ✅ Increased from 0.05 */
+  color: var(--neon-blue);           /* ✅ Use neon-blue instead of muted */
+  opacity: 0.7;                      /* ✅ Slightly transparent */
 }
 
 /* ==================== DASHBOARD CONTENT ==================== */

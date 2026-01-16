@@ -1,4 +1,7 @@
-/* /webapp/accountDashboard/accountNavigation.js v1.6.0 */
+/* /webapp/accountDashboard/accountNavigation.js v1.7.0 */
+// CHANGELOG v1.7.0:
+// - FIXED: Permissions check now has 3s timeout (non-blocking for Android/slow networks)
+// - Dashboard always loads with step 1 unlocked even if API fails
 // CHANGELOG v1.6.0:
 // - CHANGED: Now uses Firestore-based permissions (not hardcoded)
 // - CHANGED: All 7 steps can be locked/unlocked individually
@@ -48,9 +51,32 @@ export async function showAccountDashboard(accountId) {
     // Set global accountId for nested components
     window.currentAccountId = accountId;
     
-    // Check premium status
-    const premiumStatus = await checkPremiumStatus();
-    console.log('🔐 Premium status:', premiumStatus);
+    // Check premium status (non-blocking, defaults to step1 unlocked)
+    let premiumStatus;
+    try {
+      premiumStatus = await Promise.race([
+        checkPremiumStatus(),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 3000))
+      ]);
+      console.log('✅ Premium status:', premiumStatus);
+    } catch (err) {
+      console.warn('⚠️ Premium check failed/timeout, using defaults:', err.message);
+      // Default: step 1 unlocked, rest locked
+      premiumStatus = {
+        uid: null,
+        permissions: {
+          step1: true,
+          step2: false,
+          step3: false,
+          step4: false,
+          step5: false,
+          step6: false,
+          step7: false
+        },
+        unlockedSteps: [1],
+        lockedSteps: [2, 3, 4, 5, 6, 7]
+      };
+    }
     
     // Get account data
     const account = await getAccountById(accountId);
