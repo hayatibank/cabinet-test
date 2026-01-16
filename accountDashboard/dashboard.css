@@ -1,5 +1,12 @@
-/* /webapp/accountDashboard/dashboard.css v1.0.0 */
-/* CHANGELOG v1.0.0:
+/* /webapp/accountDashboard/dashboard.css v1.2.0 */
+/* CHANGELOG v1.2.0:
+ * - FIXED: Step labels now always use neon-blue color (removed locked override)
+ * - All step labels now have consistent color regardless of lock state
+ * CHANGELOG v1.1.0:
+ * - CHANGED: Step labels now use neon-blue color for better visibility
+ * - ADDED: Locked state for premium steps (2-4)
+ * - ADDED: Lock icon and disabled state styling
+ * CHANGELOG v1.0.0:
  * - Initial release
  * - Extracted from css/screens/dashboard.css
  * - Isolated for Account Dashboard module
@@ -90,10 +97,40 @@
   box-shadow: 0 0 15px rgba(0, 240, 255, 0.5);
 }
 
+/* ==================== LOCKED STEPS ==================== */
+
+.nav-step.locked {
+  cursor: not-allowed;
+  opacity: 0.5;
+  position: relative;
+}
+
+.nav-step.locked:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--border);
+  transform: none;
+}
+
+.nav-step.locked .step-number {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* ✅ REMOVED: .step-label color override - now always neon-blue */
+
+.lock-icon {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-size: 12px;
+  opacity: 0.6;
+}
+
 .step-label {
   font-size: 12px;
   text-align: center;
   white-space: nowrap;
+  color: var(--neon-blue);
+  font-weight: 500;
 }
 
 /* ==================== DASHBOARD CONTENT ==================== */
