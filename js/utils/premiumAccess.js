@@ -1,4 +1,6 @@
-/* /webapp/js/utils/premiumAccess.js v2.0.0 */
+/* /webapp/js/utils/premiumAccess.js v2.0.1 */
+// CHANGELOG v2.0.1:
+// - FIXED: Use API_URL instead of API_BASE (matching config.js export)
 // CHANGELOG v2.0.0:
 // - CHANGED: Now reads from Firestore via /permissions/:uid endpoint
 // - REMOVED: Hardcoded lockedSteps
@@ -8,7 +10,7 @@
 // - Client-side premium access checking
 // Premium access management for frontend
 
-import { API_BASE } from '../config.js';
+import { API_URL } from '../config.js';
 import { getSession } from '../session.js';
 
 /**
@@ -37,7 +39,7 @@ export async function checkPremiumStatus() {
       };
     }
     
-    const response = await fetch(`${API_BASE}/permissions/${session.uid}`);
+    const response = await fetch(`${API_URL}/api/permissions/${session.uid}`);
     
     if (!response.ok) {
       throw new Error(`Permissions check failed: ${response.status}`);
