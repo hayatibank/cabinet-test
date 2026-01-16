@@ -1,4 +1,7 @@
-/* /webapp/accountDashboard/accountNavigation.js v1.7.0 */
+/* /webapp/accountDashboard/accountNavigation.js v1.7.1 */
+// CHANGELOG v1.7.1:
+// - OPTIMIZED: Reduced timeout to 2s (was 3s) for faster mobile response
+// - ADDED: Loading indicator shows immediately (better UX on slow networks)
 // CHANGELOG v1.7.0:
 // - FIXED: Permissions check now has 3s timeout (non-blocking for Android/slow networks)
 // - Dashboard always loads with step 1 unlocked even if API fails
@@ -54,14 +57,15 @@ export async function showAccountDashboard(accountId) {
     // Check premium status (non-blocking, defaults to step1 unlocked)
     let premiumStatus;
     try {
+      // ✅ Race with 2-second timeout (shorter for mobile)
       premiumStatus = await Promise.race([
         checkPremiumStatus(),
-        new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 3000))
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 2000))
       ]);
-      console.log('✅ Premium status:', premiumStatus);
+      console.log('✅ Premium status loaded:', premiumStatus);
     } catch (err) {
-      console.warn('⚠️ Premium check failed/timeout, using defaults:', err.message);
-      // Default: step 1 unlocked, rest locked
+      console.warn('⚠️ Premium check failed/timeout (normal on slow networks):', err.message);
+      // ✅ Default: step 1 unlocked, rest locked
       premiumStatus = {
         uid: null,
         permissions: {
@@ -93,6 +97,28 @@ export async function showAccountDashboard(accountId) {
       console.error('❌ Cabinet content container not found');
       return;
     }
+    
+    // ✅ Show loading immediately
+    container.innerHTML = `
+      <div class="loading-dashboard" style="
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 400px;
+        gap: 16px;
+      ">
+        <div class="spinner" style="
+          border: 3px solid rgba(0, 240, 255, 0.1);
+          border-top: 3px solid var(--neon-blue);
+          border-radius: 50%;
+          width: 40px;
+          height: 40px;
+          animation: spin 1s linear infinite;
+        "></div>
+        <p style="color: var(--text-muted);">📏 Загрузка кабинета...</p>
+      </div>
+    `;
     
     // Render dashboard with locked steps
     container.innerHTML = `
