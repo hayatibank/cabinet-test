@@ -1,4 +1,8 @@
-/* /webapp/accountDashboard/accountNavigation.js v1.7.1 */
+/* /webapp/accountDashboard/accountNavigation.js v1.8.0 */
+// CHANGELOG v1.8.0:
+// - CRITICAL FIX: Removed ALL alert() calls (causing Android freeze)
+// - Error messages now show in UI instead of blocking alerts
+// - Locked steps no longer show alert popup
 // CHANGELOG v1.7.1:
 // - OPTIMIZED: Reduced timeout to 2s (was 3s) for faster mobile response
 // - ADDED: Loading indicator shows immediately (better UX on slow networks)
@@ -86,7 +90,26 @@ export async function showAccountDashboard(accountId) {
     const account = await getAccountById(accountId);
     
     if (!account) {
-      alert('❌ Аккаунт не найден');
+      console.error('❌ Account not found:', accountId);
+      // Show error in UI instead of alert
+      container.innerHTML = `
+        <div class="error-screen" style="
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          min-height: 400px;
+          gap: 16px;
+          padding: 40px;
+          text-align: center;
+        ">
+          <div style="font-size: 64px;">❌</div>
+          <h2 style="color: var(--neon-pink);">Аккаунт не найден</h2>
+          <button class="btn btn-3d" onclick="window.accountNavigation.goBack()">
+            <span>← Назад к списку</span>
+          </button>
+        </div>
+      `;
       return;
     }
     
@@ -158,7 +181,29 @@ export async function showAccountDashboard(accountId) {
     
   } catch (err) {
     console.error('❌ Error loading dashboard:', err);
-    alert('❌ Ошибка загрузки кабинета');
+    // Show error in UI instead of alert
+    const container = document.querySelector('.cabinet-content');
+    if (container) {
+      container.innerHTML = `
+        <div class="error-screen" style="
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          min-height: 400px;
+          gap: 16px;
+          padding: 40px;
+          text-align: center;
+        ">
+          <div style="font-size: 64px;">⚠️</div>
+          <h2 style="color: var(--neon-pink);">Ошибка загрузки</h2>
+          <p style="color: var(--text-muted); font-size: 14px;">${err.message}</p>
+          <button class="btn btn-3d" onclick="window.accountNavigation.goBack()">
+            <span>← Назад к списку</span>
+          </button>
+        </div>
+      `;
+    }
   }
 }
 
@@ -205,7 +250,8 @@ function attachDashboardListeners(account, premiumStatus) {
       // Check if step is locked
       if (!isStepUnlocked(step, premiumStatus)) {
         const message = window.i18n?.t('premium.locked.message') || '🔒 Этот раздел доступен только premium пользователям.\n\nСкоро будет доступно для всех!';
-        alert(message);
+        console.log('🔒 Step locked:', step, message);
+        // ✅ Don't show alert on Android - just log and prevent action
         return;
       }
       
