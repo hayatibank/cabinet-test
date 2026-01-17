@@ -1,4 +1,7 @@
-/* /webapp/offeringZone/offeringZone.js v1.3.0 */
+/* /webapp/offeringZone/offeringZone.js v1.4.0 */
+// CHANGELOG v1.4.0:
+// - ADDED: Integration with realEstate/unitDetail.js for detailed view
+// - FIXED: Click handler now properly navigates to unit detail page
 // CHANGELOG v1.3.0:
 // - MIGRATED: From modular i18n to global window.i18n
 // - REMOVED: import { t } (Android freeze fix)
@@ -11,6 +14,7 @@
 // - FIXED: Import paths
 
 import { calculateAvailableBudget, fetchMarketSnapshot, filterUnitsByBudget, getTopOffers } from './offeringService.js';
+import { renderUnitDetail } from '../realEstate/unitDetail.js';
 
 /**
  * Render offering zone
@@ -228,7 +232,7 @@ function createOfferCard(unit, rates) {
         <span class="price-aed">${Math.round(unit.unitPriceAed).toLocaleString()} AED</span>
       </div>
       
-      <button class="btn btn-primary btn-offer" onclick="window.openUnitDetails('${unit.projectId}', '${unit.id}')">
+      <button class="btn btn-primary btn-offer" onclick="window.openUnitDetailFromOffering('${unit.projectId}', '${unit.unitNumber}')">
         ${t('offering.learnMore')}
       </button>
     </div>
@@ -248,9 +252,11 @@ function formatCurrency(amount) {
 }
 
 /**
- * Open unit details (placeholder)
+ * Open unit details from offering zone
  */
-window.openUnitDetails = function(projectId, unitId) {
-  const t = window.i18n.t.bind(window.i18n);
-  alert(`${t('message.comingSoon')}\n\n${t('message.projectLabel')}: ${projectId}\n${t('message.unitLabel')}: ${unitId}`);
+window.openUnitDetailFromOffering = async function(projectId, unitNumber) {
+  console.log('🏢 Opening unit detail:', projectId, unitNumber);
+  
+  // Render unit detail page
+  await renderUnitDetail(projectId, unitNumber, 'cabinetContent');
 };

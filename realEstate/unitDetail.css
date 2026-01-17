@@ -1,0 +1,491 @@
+/* /webapp/realEstate/unitDetail.css v1.0.0 */
+/* Unit Detail Page - Premium Ferrari Design */
+
+.unit-detail-page {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ==================== BACK BUTTON ==================== */
+
+.detail-back {
+  margin-bottom: 20px;
+}
+
+.btn-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  border-radius: 8px;
+  color: var(--neon-blue);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-back:hover {
+  background: rgba(0, 240, 255, 0.1);
+  border-color: var(--neon-blue);
+  transform: translateX(-4px);
+}
+
+/* ==================== HERO SECTION ==================== */
+
+.detail-hero {
+  position: relative;
+  height: 500px;
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 30px;
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+}
+
+.hero-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 40px 30px 30px;
+  background: linear-gradient(to top, rgba(15, 23, 42, 0.95), transparent);
+}
+
+.hero-title {
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--neon-blue);
+  text-shadow: 0 0 30px rgba(0, 240, 255, 0.6);
+  margin-bottom: 10px;
+}
+
+.hero-subtitle {
+  font-size: 18px;
+  color: var(--text-muted);
+  margin-bottom: 20px;
+}
+
+.hero-price {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.hero-price-main {
+  font-size: 42px;
+  font-weight: 700;
+  color: var(--neon-green);
+  text-shadow: 0 0 20px rgba(0, 255, 159, 0.5);
+}
+
+.hero-price-alt {
+  font-size: 16px;
+  color: var(--text-muted);
+}
+
+.hero-badges {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  backdrop-filter: blur(10px);
+}
+
+.badge-available {
+  background: rgba(0, 255, 159, 0.2);
+  border: 1px solid var(--neon-green);
+  color: var(--neon-green);
+}
+
+.badge-roi {
+  background: rgba(0, 240, 255, 0.2);
+  border: 1px solid var(--neon-blue);
+  color: var(--neon-blue);
+}
+
+/* ==================== MAIN CONTENT ==================== */
+
+.detail-content {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 30px;
+}
+
+.detail-main {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.detail-sidebar {
+  position: sticky;
+  top: 20px;
+  height: fit-content;
+}
+
+/* ==================== SECTIONS ==================== */
+
+.detail-section {
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  border-radius: 16px;
+  padding: 24px;
+  backdrop-filter: blur(10px);
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.section-icon {
+  font-size: 24px;
+}
+
+.section-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--neon-blue);
+  margin: 0;
+}
+
+/* ==================== SPECS GRID ==================== */
+
+.specs-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.spec-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.spec-label {
+  font-size: 13px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.spec-value {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.spec-value-highlight {
+  color: var(--neon-green);
+}
+
+/* ==================== PAYMENT PLAN ==================== */
+
+.payment-summary {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 16px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+.payment-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.payment-item:last-child {
+  border-bottom: none;
+  padding-top: 16px;
+  margin-top: 8px;
+  border-top: 2px solid rgba(0, 240, 255, 0.3);
+}
+
+.payment-label {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.payment-value {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.payment-total .payment-label {
+  font-size: 16px;
+  color: var(--text);
+}
+
+.payment-total .payment-value {
+  font-size: 20px;
+  color: var(--neon-green);
+}
+
+.payment-breakdown {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+.payment-breakdown p {
+  margin: 8px 0;
+}
+
+/* ==================== AMENITIES ==================== */
+
+.amenities-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.amenity-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.amenity-icon {
+  font-size: 20px;
+}
+
+.amenity-name {
+  font-size: 14px;
+  color: var(--text);
+}
+
+/* ==================== CTA SIDEBAR ==================== */
+
+.cta-card {
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.1), rgba(255, 0, 110, 0.1));
+  border: 1px solid rgba(0, 240, 255, 0.4);
+  border-radius: 16px;
+  padding: 24px;
+  backdrop-filter: blur(10px);
+}
+
+.cta-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--neon-blue);
+  margin-bottom: 16px;
+}
+
+.cta-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.btn-cta-primary {
+  padding: 14px 20px;
+  background: linear-gradient(135deg, var(--neon-blue), var(--neon-pink));
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-align: center;
+}
+
+.btn-cta-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 40px rgba(0, 240, 255, 0.4);
+}
+
+.btn-cta-secondary {
+  padding: 12px 20px;
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  border-radius: 10px;
+  color: var(--neon-blue);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-align: center;
+}
+
+.btn-cta-secondary:hover {
+  background: rgba(0, 240, 255, 0.15);
+  border-color: var(--neon-blue);
+}
+
+.contact-info {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.contact-icon {
+  color: var(--neon-green);
+}
+
+/* ==================== GALLERY ==================== */
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.gallery-item {
+  aspect-ratio: 16/9;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+
+.gallery-item:hover {
+  transform: scale(1.05);
+}
+
+.gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.btn-view-floorplan {
+  display: block;
+  margin-top: 16px;
+  padding: 12px;
+  background: rgba(0, 240, 255, 0.1);
+  border: 1px solid var(--neon-blue);
+  border-radius: 8px;
+  color: var(--neon-blue);
+  text-align: center;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-view-floorplan:hover {
+  background: rgba(0, 240, 255, 0.2);
+}
+
+/* ==================== LOCATION ==================== */
+
+.location-map {
+  width: 100%;
+  height: 300px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.map-placeholder {
+  font-size: 48px;
+}
+
+.location-details {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+/* ==================== RESPONSIVE ==================== */
+
+@media (max-width: 968px) {
+  .detail-content {
+    grid-template-columns: 1fr;
+  }
+  
+  .detail-sidebar {
+    position: static;
+  }
+  
+  .hero-title {
+    font-size: 28px;
+  }
+  
+  .hero-price-main {
+    font-size: 32px;
+  }
+  
+  .specs-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .detail-hero {
+    height: 300px;
+  }
+  
+  .hero-overlay {
+    padding: 20px;
+  }
+  
+  .amenities-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .gallery-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .unit-detail-page {
+    padding: 16px;
+  }
+  
+  .detail-section {
+    padding: 16px;
+  }
+  
+  .hero-title {
+    font-size: 22px;
+  }
+  
+  .hero-price-main {
+    font-size: 24px;
+  }
+  
+  .gallery-grid {
+    grid-template-columns: 1fr;
+  }
+}

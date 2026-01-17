@@ -52,6 +52,10 @@
 @import "../20L/20L.css";
 @import "../HayatiCoin/hayatiCoin.css";
 
+/* Real Estate Module */
+@import "../realEstate/realEstate.css";
+@import "../realEstate/unitDetail.css";
+
 /* ==================== RESPONSIVE ==================== */
 @import "./responsive.css";
 
