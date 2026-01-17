@@ -36,7 +36,7 @@ let exchangeRates = {
  * Render browse page
  * @param {string} containerId - Container element ID
  */
-export async function renderBrowsePage(containerId = 'cabinetContent') {
+export async function renderBrowsePage(containerId = 'dashboardContent') {
   const container = document.getElementById(containerId);
   if (!container) {
     console.error('Container not found:', containerId);
@@ -423,5 +423,27 @@ function updateStats() {
  */
 window.openUnitDetail = async function(projectId, unitNumber) {
   console.log('🏢 Opening unit detail:', projectId, unitNumber);
-  await renderUnitDetail(projectId, unitNumber, 'cabinetContent');
+  
+  // Find container (same logic as offering zone)
+  let containerId = 'dashboardContent';
+  let container = document.getElementById(containerId);
+  
+  if (!container) {
+    containerId = 'cabinetContent';
+    container = document.getElementById(containerId);
+  }
+  
+  if (!container) {
+    container = document.querySelector('.cabinet-content');
+    if (container) {
+      containerId = container.id || 'cabinet-content';
+    }
+  }
+  
+  if (!container) {
+    console.error('❌ No container found!');
+    return;
+  }
+  
+  await renderUnitDetail(projectId, unitNumber, containerId);
 };

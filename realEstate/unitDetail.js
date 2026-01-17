@@ -23,7 +23,7 @@ let exchangeRates = {
  * @param {string} unitId - Unit ID (e.g. "I-102")
  * @param {string} containerId - Container element ID
  */
-export async function renderUnitDetail(projectId, unitId, containerId = 'cabinetContent') {
+export async function renderUnitDetail(projectId, unitId, containerId = 'dashboardContent') {
   const container = document.getElementById(containerId);
   if (!container) {
     console.error('Container not found:', containerId);

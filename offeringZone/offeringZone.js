@@ -257,6 +257,33 @@ function formatCurrency(amount) {
 window.openUnitDetailFromOffering = async function(projectId, unitNumber) {
   console.log('🏢 Opening unit detail:', projectId, unitNumber);
   
+  // Find the correct content container
+  // Priority: dashboardContent (inside account dashboard) > cabinetContent (main cabinet) > fallback
+  let containerId = 'dashboardContent';
+  let container = document.getElementById(containerId);
+  
+  if (!container) {
+    console.log('🔍 dashboardContent not found, trying cabinetContent...');
+    containerId = 'cabinetContent';
+    container = document.getElementById(containerId);
+  }
+  
+  if (!container) {
+    console.warn('⚠️ No standard container found, trying cabinet-content class...');
+    container = document.querySelector('.cabinet-content');
+    if (container) {
+      containerId = container.id || 'cabinet-content';
+    }
+  }
+  
+  if (!container) {
+    console.error('❌ No suitable container found!');
+    alert('⚠️ Ошибка: не найден контейнер для отображения');
+    return;
+  }
+  
+  console.log(`✅ Using container: ${containerId}`);
+  
   // Render unit detail page
-  await renderUnitDetail(projectId, unitNumber, 'cabinetContent');
+  await renderUnitDetail(projectId, unitNumber, containerId);
 };
