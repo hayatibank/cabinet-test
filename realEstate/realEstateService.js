@@ -1,8 +1,17 @@
-/* /webapp/realEstate/realEstateService.js v1.0.0 */
+/* /webapp/realEstate/realEstateService.js v1.1.0 */
+// CHANGELOG v1.1.0:
+// - CRITICAL FIX: Use HBD_AVAILABLE_UNITS for unit details (avoid Firestore path issues with # symbol)
+// - OPTIMIZED: No additional Firestore requests for unit details
+// - Project info still fetched separately when needed
 // Real Estate data service - Firestore operations
 
 import { getSession } from '../js/session.js';
 import { API_URL } from '../js/config.js';
+
+// Cache for available units
+let cachedUnits = null;
+let cacheTimestamp = null;
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 
 /**
  * Fetch all available units from market pool
@@ -10,6 +19,12 @@ import { API_URL } from '../js/config.js';
  */
 export async function fetchAllUnits() {
   try {
+    // Check cache first
+    if (cachedUnits && cacheTimestamp && (Date.now() - cacheTimestamp < CACHE_TTL)) {
+      console.log(`✅ Using cached units (${cachedUnits.length} units)`);
+      return cachedUnits;
+    }
+    
     const session = getSession();
     if (!session) throw new Error('No session');
     
@@ -34,6 +49,10 @@ export async function fetchAllUnits() {
     const result = await response.json();
     const units = result.documents || [];
     
+    // Update cache
+    cachedUnits = units;
+    cacheTimestamp = Date.now();
+    
     console.log(`✅ Fetched ${units.length} available units`);
     
     return units;
@@ -47,36 +66,30 @@ export async function fetchAllUnits() {
 /**
  * Fetch single unit details
  * @param {string} projectId - Project ID (e.g. "#DXB513")
- * @param {string} unitId - Unit ID (e.g. "I-102")
+ * @param {string} unitNumber - Unit number (e.g. "I-102" or "1124")
  * @returns {Promise<Object>} Unit details
  */
-export async function fetchUnitDetails(projectId, unitId) {
+export async function fetchUnitDetails(projectId, unitNumber) {
   try {
-    const session = getSession();
-    if (!session) throw new Error('No session');
+    console.log(`🏢 Fetching unit details: ${projectId}/${unitNumber}`);
     
-    console.log(`🏢 Fetching unit details: ${projectId}/units/${unitId}`);
+    // Get all units from cache/market pool
+    const allUnits = await fetchAllUnits();
     
-    const response = await fetch(`${API_URL}/api/firestore/get`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'ngrok-skip-browser-warning': 'true'
-      },
-      body: JSON.stringify({
-        path: `HBD/${projectId}/units/${unitId}`,
-        authToken: session.authToken
-      })
-    });
+    // Find unit by projectId AND unitNumber
+    const unit = allUnits.find(u => 
+      u.projectId === projectId && 
+      (u.unitNumber === unitNumber || u.id === unitNumber)
+    );
     
-    if (!response.ok) {
+    if (!unit) {
+      console.error(`❌ Unit not found: ${projectId}/${unitNumber}`);
       throw new Error('Unit not found');
     }
     
-    const result = await response.json();
-    console.log('✅ Unit details fetched');
+    console.log('✅ Unit details found:', unit.unitNumber);
     
-    return result;
+    return unit;
     
   } catch (err) {
     console.error('❌ Error fetching unit details:', err);
@@ -91,11 +104,15 @@ export async function fetchUnitDetails(projectId, unitId) {
  */
 export async function fetchProjectInfo(projectId) {
   try {
+    console.log(`📋 Fetching project info: ${projectId}`);
+    
+    // ⚠️ URL-encode the # symbol to avoid Firestore path issues
+    const encodedProjectId = encodeURIComponent(projectId);
+    
     const session = getSession();
     if (!session) throw new Error('No session');
     
-    console.log(`📋 Fetching project info: ${projectId}`);
-    
+    // Get all docs from info collection and find 'main'
     const response = await fetch(`${API_URL}/api/firestore/get`, {
       method: 'POST',
       headers: {
@@ -103,19 +120,69 @@ export async function fetchProjectInfo(projectId) {
         'ngrok-skip-browser-warning': 'true'
       },
       body: JSON.stringify({
-        path: `HBD/${projectId}/info/main`,
+        path: `HBD/${encodedProjectId}/info`,
         authToken: session.authToken
       })
     });
     
     if (!response.ok) {
+      console.warn(`⚠️ Failed to fetch project info from Firestore, using unit data as fallback`);
+      // Fallback: get project data from any unit with matching projectId
+      const units = await fetchAllUnits();
+      const anyUnitFromProject = units.find(u => u.projectId === projectId);
+      
+      if (anyUnitFromProject) {
+        // Extract project-level data from unit
+        return {
+          projectId: anyUnitFromProject.projectId,
+          projectName: anyUnitFromProject.projectName,
+          developerName: anyUnitFromProject.developerName,
+          districtName: anyUnitFromProject.districtName,
+          cityName: anyUnitFromProject.cityName,
+          dateHandover: anyUnitFromProject.dateHandover,
+          projectIntroImgLink: anyUnitFromProject.projectIntroImgLink,
+          // Other fields may not be available
+          paymentPlan: anyUnitFromProject.paymentPlan || 'N/A',
+          ownership: anyUnitFromProject.ownership || 'freehold',
+          location: anyUnitFromProject.location || ''
+        };
+      }
+      
       throw new Error('Project info not found');
     }
     
     const result = await response.json();
+    
+    // Find 'main' document
+    const mainInfo = result.documents?.find(doc => doc.id === 'main');
+    
+    if (!mainInfo) {
+      console.warn(`⚠️ 'main' document not found in project info`);
+      // Fallback same as above
+      const units = await fetchAllUnits();
+      const anyUnitFromProject = units.find(u => u.projectId === projectId);
+      
+      if (anyUnitFromProject) {
+        return {
+          projectId: anyUnitFromProject.projectId,
+          projectName: anyUnitFromProject.projectName,
+          developerName: anyUnitFromProject.developerName,
+          districtName: anyUnitFromProject.districtName,
+          cityName: anyUnitFromProject.cityName,
+          dateHandover: anyUnitFromProject.dateHandover,
+          projectIntroImgLink: anyUnitFromProject.projectIntroImgLink,
+          paymentPlan: anyUnitFromProject.paymentPlan || 'N/A',
+          ownership: anyUnitFromProject.ownership || 'freehold',
+          location: anyUnitFromProject.location || ''
+        };
+      }
+      
+      throw new Error('Project info not found');
+    }
+    
     console.log('✅ Project info fetched');
     
-    return result;
+    return mainInfo;
     
   } catch (err) {
     console.error('❌ Error fetching project info:', err);
